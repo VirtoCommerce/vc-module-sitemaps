@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.SitemapsModul
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.SitemapsModule.Data", "VirtoCommerce.SitemapsModule.Data\VirtoCommerce.SitemapsModule.Data.csproj", "{F6483B0A-C883-4DA1-91B6-E553E29C3C5D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.SitemapsModule.Test", "VirtoCommerce.SitemapsModule.Test\VirtoCommerce.SitemapsModule.Test.csproj", "{6582590F-324A-430E-BB77-40BA3F340BA1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{F6483B0A-C883-4DA1-91B6-E553E29C3C5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6483B0A-C883-4DA1-91B6-E553E29C3C5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6483B0A-C883-4DA1-91B6-E553E29C3C5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6582590F-324A-430E-BB77-40BA3F340BA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6582590F-324A-430E-BB77-40BA3F340BA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6582590F-324A-430E-BB77-40BA3F340BA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6582590F-324A-430E-BB77-40BA3F340BA1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

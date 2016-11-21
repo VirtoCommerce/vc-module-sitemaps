@@ -1,0 +1,67 @@
+﻿{
+  "sitemapsModule": {
+    "widgets": {
+      "storeSitemaps": {
+        "title": "Sitemaps"
+      }
+    },
+    "blades": {
+      "sitemapList": {
+        "title": "Sitemaps",
+        "toolbar": {
+          "addSitemap": "Add sitemap",
+          "removeSitemap": "Remove sitemap",
+          "refresh": "Refresh"
+        },
+        "labels": {
+          "noSitemaps": "There are no sitemaps yet"
+        },
+        "gridHeaders": {
+          "filename": "Filename"
+        }
+      },
+      "sitemap": {
+        "newSitemapTitle": "New sitemap",
+        "toolbar": {
+          "addItems": "Add items",
+          "removeItems": "Remove items",
+          "saveSitemap": "Save sitemap",
+          "previewXml": "Preview XML"
+        },
+        "formSitemap": {
+          "labelFilename": "Filename"
+        },
+        "gridHeaders": {
+          "title": "Title",
+          "type": "Type"
+        }
+      },
+      "addItems": {
+        "title": "Add items",
+        "addCatalogItems": {
+          "title": "Catalog items",
+          "description": "Include product and categories"
+        }
+      },
+      "addCatalogItems": {
+        "title": "Add catalog items",
+        "toolbar": {
+          "addSelected": "Add selected"
+        }
+      }
+    },
+    "contextMenu": {
+      "manage": "Manage",
+      "remove": "Remove"
+    },
+    "dialogs": {
+      "confirmRemoveSitemap": {
+        "title": "Removing sitemaps",
+        "message": "Do you want to remove sitemap?"
+      }
+    },
+    "errorMessages": {
+      "filenameNotUnique": "Sitemap with this filename is already exists"
+    }
+  }
+}
