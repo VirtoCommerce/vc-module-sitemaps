@@ -41,6 +41,9 @@
     }
 
     function addItemsToSitemap(items, blade) {
+        if (!blade.currentEntity.items) {
+            blade.currentEntity.items = [];
+        }
         _.each(items, function (item) {
             blade.currentEntity.items.push({
                 title: item.name,

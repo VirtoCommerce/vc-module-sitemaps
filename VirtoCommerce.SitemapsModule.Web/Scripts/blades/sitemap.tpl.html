@@ -25,7 +25,7 @@
                     name: 'imageUrl',
                     displayName: '',
                     cellTemplate: 'sitemap-item-list-image-cell.tpl.html',
-                    width: 80
+                    width: 40
                 }, {
                     name: 'title',
                     displayName: 'sitemapsModule.blades.sitemap.gridHeaders.title'
@@ -73,5 +73,5 @@
 </script>
 
 <script id="sitemap-item-list-image-cell.tpl.html" type="text/ng-template">
-    <img height="40" ng-src="{{ COL_FIELD }}" />
+    <img ng-src="{{ COL_FIELD }}" />
 </script>
