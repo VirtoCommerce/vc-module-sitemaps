@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Omu.ValueInjecter;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.SitemapsModule.Core.Model;
 
 namespace VirtoCommerce.SitemapsModule.Data.Model
 {
@@ -13,10 +15,6 @@ namespace VirtoCommerce.SitemapsModule.Data.Model
 
         [StringLength(512)]
         public string ImageUrl { get; set; }
-
-        [Required]
-        [StringLength(2048)]
-        public string AbsoluteUrl { get; set; }
 
         [Required]
         [StringLength(128)]
@@ -32,6 +30,36 @@ namespace VirtoCommerce.SitemapsModule.Data.Model
 
         public virtual SitemapEntity Sitemap { get; set; }
 
+        public virtual SitemapItem ToModel(SitemapItem sitemapItem)
+        {
+            if (sitemapItem == null)
+            {
+                throw new ArgumentNullException("sitemapItem");
+            }
+
+            sitemapItem.InjectFrom(this);
+
+            return sitemapItem;
+        }
+
+        public virtual SitemapItemEntity FromModel(SitemapItem sitemapItem, PrimaryKeyResolvingMap pkMap)
+        {
+            if (sitemapItem == null)
+            {
+                throw new ArgumentNullException("sitemapItem");
+            }
+            if (pkMap == null)
+            {
+                throw new ArgumentNullException("pkMap");
+            }
+
+            pkMap.AddPair(sitemapItem, this);
+
+            this.InjectFrom(sitemapItem);
+
+            return this;
+        }
+
         public virtual void Patch(SitemapItemEntity target)
         {
             if (target == null)
@@ -39,10 +67,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Model
                 throw new ArgumentNullException("target");
             }
 
-            target.AbsoluteUrl = AbsoluteUrl;
-            target.ImageUrl = ImageUrl;
-            target.ObjectType = ObjectType;
-            target.Title = Title;
+            target.InjectFrom(this);
         }
     }
 }

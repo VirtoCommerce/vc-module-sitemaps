@@ -28,7 +28,6 @@ namespace VirtoCommerce.SitemapsModule.Data.Migrations
                         Id = c.String(nullable: false, maxLength: 128),
                         Title = c.String(nullable: false, maxLength: 256),
                         ImageUrl = c.String(maxLength: 512),
-                        AbsoluteUrl = c.String(nullable: false, maxLength: 2048),
                         ObjectId = c.String(nullable: false, maxLength: 128),
                         ObjectType = c.String(nullable: false, maxLength: 128),
                         SitemapId = c.String(nullable: false, maxLength: 128),

@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Web.Http;
+﻿using System.Web.Http;
 using System.Web.Http.Description;
-using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.SitemapsModule.Data.Services;
-using VirtoCommerce.SitemapsModule.Web.Model;
+using VirtoCommerce.SitemapsModule.Core.Model;
+using VirtoCommerce.SitemapsModule.Core.Services;
 
 namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 {
@@ -12,52 +9,25 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
     public class SitemapsModuleApiController : ApiController
     {
         private readonly ISitemapService _sitemapService;
+        private readonly ISitemapItemService _sitemapItemService;
 
-        public SitemapsModuleApiController(ISitemapService sitemapService)
+        public SitemapsModuleApiController(ISitemapService sitemapService, ISitemapItemService sitemapItemService)
         {
             _sitemapService = sitemapService;
+            _sitemapItemService = sitemapItemService;
         }
 
-        [HttpGet]
-        [Route("")]
-        [ResponseType(typeof(Sitemap[]))]
-        public IHttpActionResult GetAll(string storeId)
+        [HttpPost]
+        [Route("search")]
+        [ResponseType(typeof(SearchResponse<Sitemap>))]
+        public IHttpActionResult SearchSitemap(SitemapSearchRequest request)
         {
-            if (string.IsNullOrWhiteSpace(storeId))
+            if (request == null)
             {
-                return BadRequest("storeId is null");
+                return BadRequest("request is null");
             }
 
-            var dataSitemaps = _sitemapService.GetSitemaps(storeId);
-
-            var webSitemaps = new List<Sitemap>(dataSitemaps.Select(i => AbstractTypeFactory<Sitemap>.TryCreateInstance().FromDataModel(i)));
-
-            return Ok(webSitemaps);
-        }
-
-        [HttpGet]
-        [Route("{sitemapId}")]
-        [ResponseType(typeof(Sitemap))]
-        public IHttpActionResult GetById(string storeId, string sitemapId)
-        {
-            if (string.IsNullOrWhiteSpace(storeId))
-            {
-                return BadRequest("storeId is null");
-            }
-            if (string.IsNullOrWhiteSpace(sitemapId))
-            {
-                return BadRequest("sitemapId is null");
-            }
-
-            var dataSitemap = _sitemapService.GetSitemapById(storeId, sitemapId);
-            if (dataSitemap == null)
-            {
-                return NotFound();
-            }
-
-            var webSitemap = AbstractTypeFactory<Sitemap>.TryCreateInstance().FromDataModel(dataSitemap);
-
-            return Ok(webSitemap);
+            return Ok(_sitemapService.Search(request));
         }
 
         [HttpPost]
@@ -70,7 +40,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                 return BadRequest("sitemap is null");
             }
 
-            _sitemapService.SaveChanges(new[] { sitemap.ToDataModel() });
+            _sitemapService.SaveChanges(new[] { sitemap });
 
             return Ok();
         }
@@ -85,7 +55,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                 return BadRequest("sitemap is null");
             }
 
-            _sitemapService.SaveChanges(new[] { sitemap.ToDataModel() });
+            _sitemapService.SaveChanges(new[] { sitemap });
 
             return Ok();
         }
@@ -105,6 +75,57 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             }
 
             _sitemapService.DeleteSitemaps(storeId, sitemapIds);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("items/search")]
+        [ResponseType(typeof(SearchResponse<SitemapItem>))]
+        public IHttpActionResult SearchItems(SitemapItemSearchRequest request)
+        {
+            if (request == null)
+            {
+                return BadRequest("request is null");
+            }
+
+            return Ok(_sitemapItemService.Search(request));
+        }
+
+        [HttpPost]
+        [Route("{sitemapId}/items")]
+        [ResponseType(typeof(void))]
+        public IHttpActionResult AddItems(string sitemapId, [FromBody]SitemapItem[] items)
+        {
+            if (string.IsNullOrEmpty(sitemapId))
+            {
+                return BadRequest("sitemapId is null");
+            }
+            if (items == null)
+            {
+                return BadRequest("items is null");
+            }
+
+            _sitemapItemService.Add(sitemapId, items);
+
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Route("{sitemapId}/items")]
+        [ResponseType(typeof(void))]
+        public IHttpActionResult RemoveItems(string sitemapId, [FromUri]string[] itemIds)
+        {
+            if (string.IsNullOrWhiteSpace(sitemapId))
+            {
+                return BadRequest("sitemapId is null");
+            }
+            if (itemIds == null)
+            {
+                return BadRequest("itemIds is null");
+            }
+
+            _sitemapItemService.Remove(sitemapId, itemIds);
 
             return Ok();
         }

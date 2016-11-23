@@ -1,5 +1,5 @@
 ﻿angular.module('virtoCommerce.sitemapsModule')
-.controller('virtoCommerce.sitemapsModule.sitemapItemsAddController', ['$scope', 'platformWebApp.bladeNavigationService', function ($scope, bladeNavigationService) {
+.controller('virtoCommerce.sitemapsModule.sitemapItemsAddController', ['$scope', 'platformWebApp.bladeNavigationService', 'virtoCommerce.sitemapsModule.sitemaps', function ($scope, bladeNavigationService, sitemapsResource) {
     var blade = $scope.blade;
     blade.headIcon = 'fa fa-sitemap';
     blade.isLoading = false;
@@ -41,16 +41,28 @@
     }
 
     function addItemsToSitemap(items, blade) {
-        if (!blade.currentEntity.items) {
-            blade.currentEntity.items = [];
-        }
+        blade.isLoading = true;
+        var sitemapItems = [];
         _.each(items, function (item) {
-            blade.currentEntity.items.push({
+            sitemapItems.push({
                 title: item.name,
                 imageUrl: item.imageUrl,
                 objectId: item.id,
                 objectType: item.type
             });
         });
+        if (blade.currentEntity.isNew) {
+            blade.currentEntity.items = sitemapItems;
+            blade.isLoading = false;
+        } else {
+            sitemapsResource.addSitemapItems({
+                sitemapId: blade.currentEntity.id
+            }, sitemapItems, function (response) {
+                blade.refresh();
+            }, function (error) {
+                bladeNavigationService.setError('Error ' + error.status, blade);
+                blade.isLoading = false;
+            });
+        }
     }
 }]);

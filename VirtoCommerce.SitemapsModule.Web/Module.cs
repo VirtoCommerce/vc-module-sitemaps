@@ -3,6 +3,7 @@ using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.Platform.Data.Infrastructure;
 using VirtoCommerce.Platform.Data.Infrastructure.Interceptors;
+using VirtoCommerce.SitemapsModule.Core.Services;
 using VirtoCommerce.SitemapsModule.Data.Repositories;
 using VirtoCommerce.SitemapsModule.Data.Services;
 
@@ -31,6 +32,7 @@ namespace VirtoCommerce.SitemapsModule.Web
         {
             _container.RegisterType<ISitemapRepository>(new InjectionFactory(c => new SitemapRepository(_connectionStringName, new EntityPrimaryKeyGeneratorInterceptor(), _container.Resolve<AuditableInterceptor>())));
             _container.RegisterType<ISitemapService, SitemapService>();
+            _container.RegisterType<ISitemapItemService, SitemapItemService>();
         }
 
         public override void PostInitialize()

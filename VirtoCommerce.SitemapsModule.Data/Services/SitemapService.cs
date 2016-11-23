@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Data.Infrastructure;
+using VirtoCommerce.SitemapsModule.Core.Model;
+using VirtoCommerce.SitemapsModule.Core.Services;
 using VirtoCommerce.SitemapsModule.Data.Model;
 using VirtoCommerce.SitemapsModule.Data.Repositories;
 
@@ -18,37 +18,38 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
 
         protected Func<ISitemapRepository> RepositoryFactory { get; private set; }
 
-        public virtual SitemapEntity GetSitemapById(string storeId, string sitemapId)
+        public virtual SearchResponse<Sitemap> Search(SitemapSearchRequest request)
         {
-            if (string.IsNullOrEmpty(storeId))
+            if (request == null)
             {
-                throw new ArgumentException("storeId");
-            }
-            if (string.IsNullOrEmpty(sitemapId))
-            {
-                throw new ArgumentException("sitemapId");
+                throw new ArgumentNullException("request");
             }
 
             using (var repository = RepositoryFactory())
             {
-                return repository.Sitemaps.Include(s => s.Items).FirstOrDefault(s => s.StoreId == storeId && s.Id == sitemapId);
+                var response = new SearchResponse<Sitemap>();
+
+                var sitemapEntities = repository.Sitemaps.Where(s => s.StoreId == request.StoreId);
+                if (request.SitemapIds != null && request.SitemapIds.Any())
+                {
+                    sitemapEntities = repository.GetSitemapsByIds(request.SitemapIds).Where(s => s.StoreId == request.StoreId).AsQueryable();
+                }
+                response.TotalCount = sitemapEntities.Count();
+
+                foreach (var sitemapEntity in sitemapEntities.OrderByDescending(s => s.CreatedDate).Skip(request.Skip).Take(request.Take))
+                {
+                    var sitemap = AbstractTypeFactory<Sitemap>.TryCreateInstance();
+                    if (sitemap != null)
+                    {
+                        response.Items.Add(sitemapEntity.ToModel(sitemap));
+                    }
+                }
+
+                return response;
             }
         }
 
-        public virtual ICollection<SitemapEntity> GetSitemaps(string storeId)
-        {
-            if (string.IsNullOrEmpty(storeId))
-            {
-                throw new ArgumentException("storeId");
-            }
-
-            using (var repository = RepositoryFactory())
-            {
-                return repository.Sitemaps.Where(s => s.StoreId == storeId).OrderByDescending(s => s.CreatedDate).ToList();
-            }
-        }
-
-        public virtual void SaveChanges(SitemapEntity[] sitemaps)
+        public virtual void SaveChanges(Sitemap[] sitemaps)
         {
             if (sitemaps == null)
             {
@@ -60,24 +61,23 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 var pkMap = new PrimaryKeyResolvingMap();
                 var changeTracker = GetChangeTracker(repository);
 
-                var sitemapIdsToSave = sitemaps.Where(s => !s.IsTransient()).Select(s => s.Id).ToArray();
-                var existingSitemaps = repository.GetSitemapsByIds(sitemapIdsToSave);
+                var existSitemapEntities = repository.GetSitemapsByIds(sitemaps.Where(s => !s.IsTransient()).Select(s => s.Id).ToArray());
                 foreach (var sitemap in sitemaps)
                 {
-                    foreach (var sitemapItem in sitemap.Items)
+                    var sitemapSourceEntity = AbstractTypeFactory<SitemapEntity>.TryCreateInstance();
+                    if (sitemapSourceEntity != null)
                     {
-                        sitemapItem.AbsoluteUrl = "http://localhost";
-                    }
-
-                    var existingSitemap = existingSitemaps.FirstOrDefault(s => s.Id == sitemap.Id);
-                    if (existingSitemap != null)
-                    {
-                        sitemap.Patch(existingSitemap);
-                        changeTracker.Attach(existingSitemap);
-                    }
-                    else
-                    {
-                        repository.Add(sitemap);
+                        sitemapSourceEntity.FromModel(sitemap, pkMap);
+                        var sitemapTargetEntity = existSitemapEntities.FirstOrDefault(s => s.StoreId == sitemap.StoreId && s.Id == sitemap.Id);
+                        if (sitemapTargetEntity != null)
+                        {
+                            changeTracker.Attach(sitemapTargetEntity);
+                            sitemapSourceEntity.Patch(sitemapTargetEntity);
+                        }
+                        else
+                        {
+                            repository.Add(sitemapSourceEntity);
+                        }
                     }
                 }
 
@@ -102,10 +102,10 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 var storeSitemaps = repository.Sitemaps.Where(s => s.StoreId == storeId);
                 foreach (var sitemapId in sitemapIds)
                 {
-                    var sitemap = storeSitemaps.FirstOrDefault(s => s.Id == sitemapId);
-                    if (sitemap != null)
+                    var sitemapEntity = storeSitemaps.FirstOrDefault(s => s.Id == sitemapId);
+                    if (sitemapEntity != null)
                     {
-                        repository.Remove(sitemap);
+                        repository.Remove(sitemapEntity);
                     }
                 }
 

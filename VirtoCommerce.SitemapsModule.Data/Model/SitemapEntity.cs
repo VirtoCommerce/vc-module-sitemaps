@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Omu.ValueInjecter;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.SitemapsModule.Core.Model;
 
 namespace VirtoCommerce.SitemapsModule.Data.Model
 {
@@ -22,6 +25,43 @@ namespace VirtoCommerce.SitemapsModule.Data.Model
 
         public virtual ObservableCollection<SitemapItemEntity> Items { get; set; }
 
+        public virtual Sitemap ToModel(Sitemap sitemap)
+        {
+            if (sitemap == null)
+            {
+                throw new ArgumentNullException("sitemap");
+            }
+
+            sitemap.InjectFrom(this);
+
+            sitemap.Items = Items.Select(i => i.ToModel(AbstractTypeFactory<SitemapItem>.TryCreateInstance())).ToList();
+
+            return sitemap;
+        }
+
+        public virtual SitemapEntity FromModel(Sitemap sitemap, PrimaryKeyResolvingMap pkMap)
+        {
+            if (sitemap == null)
+            {
+                throw new ArgumentNullException("sitemap");
+            }
+            if (pkMap == null)
+            {
+                throw new ArgumentNullException("pkMap");
+            }
+
+            pkMap.AddPair(sitemap, this);
+
+            this.InjectFrom(sitemap);
+
+            if (sitemap.Items != null)
+            {
+                Items = new ObservableCollection<SitemapItemEntity>(sitemap.Items.Select(i => AbstractTypeFactory<SitemapItemEntity>.TryCreateInstance().FromModel(i, pkMap)));
+            }
+
+            return this;
+        }
+
         public virtual void Patch(SitemapEntity target)
         {
             if (target == null)
@@ -29,8 +69,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Model
                 throw new ArgumentNullException("target");
             }
 
-            target.Filename = Filename;
-            target.StoreId = StoreId;
+            target.InjectFrom(this);
 
             if (!Items.IsNullCollection())
             {

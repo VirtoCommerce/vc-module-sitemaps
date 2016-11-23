@@ -1,18 +1,15 @@
 ﻿angular.module('virtoCommerce.sitemapsModule')
-.controller('virtoCommerce.sitemapsModule.sitemapController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.uiGridHelper', 'virtoCommerce.sitemapsModule.sitemaps', function ($scope, bladeNavigationService, uiGridHelper, sitemapsResource) {
+.controller('virtoCommerce.sitemapsModule.sitemapController', ['$scope', 'platformWebApp.bladeUtils', 'platformWebApp.bladeNavigationService', 'platformWebApp.uiGridHelper', 'virtoCommerce.sitemapsModule.sitemaps', function ($scope, bladeUtils, bladeNavigationService, uiGridHelper, sitemapsResource) {
+    bladeUtils.initializePagination($scope);
     var blade = $scope.blade;
     blade.headIcon = 'fa fa-sitemap';
-    blade.toolbarCommands = getBladeToolbar();
-    blade.originalEntity = angular.copy(blade.currentEntity);
-    blade.selectedItems = [];
     blade.isLoading = false;
+    blade.toolbarCommands = getBladeToolbarCommands();
     blade.refresh = function () {
-        getSitemapById(blade.parentBlade.storeId, blade.currentEntity.id);
+        searchSitemapItems(blade.currentEntity.id, ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount, $scope.pageSettings.itemsPerPageCount);
     }
     blade.removeSitemapItems = function (items) {
-        _.each(items, function (item) {
-            blade.currentEntity.items = _.reject(blade.currentEntity.items, function (i) { return i.id === item.id });
-        });
+        removeSitemapItems(blade.currentEntity, _.map(items, function (i) { return i.id }));
     }
 
     $scope.setForm = function (form) {
@@ -22,11 +19,10 @@
     $scope.setGridOptions = function (gridOptions) {
         uiGridHelper.initialize($scope, gridOptions, function (gridApi) {
         });
+        bladeUtils.initializePagination($scope);
     }
 
-    blade.refresh();
-
-    function getBladeToolbar() {
+    function getBladeToolbarCommands() {
         return [{
             name: 'sitemapsModule.blades.sitemap.toolbar.addItems',
             icon: 'fa fa-plus',
@@ -34,7 +30,7 @@
                 return true;
             },
             executeMethod: function () {
-                showAddItemsBlade(blade.currentEntity.items);
+                showAddItemsBlade($scope.gridApi.selection.getSelectedRows());
             }
         }, {
             name: 'sitemapsModule.blades.sitemap.toolbar.removeItems',
@@ -49,7 +45,7 @@
             name: 'sitemapsModule.blades.sitemap.toolbar.saveSitemap',
             icon: 'fa fa-save',
             canExecuteMethod: function () {
-                return $scope.formScope && $scope.formScope.$valid && !angular.equals(blade.originalEntity, blade.currentEntity) && filenameIsUnique();
+                return $scope.formScope && $scope.formScope.$valid;
             },
             executeMethod: function () {
                 if (blade.currentEntity.isNew) {
@@ -58,26 +54,7 @@
                     updateSitemap(blade.currentEntity);
                 }
             }
-        }, {
-            name: 'sitemapsModule.blades.sitemap.toolbar.previewXml',
-            icon: 'fa fa-file-code-o',
-            canExecuteMethod: function () {
-                return false;
-            },
-            executeMethod: function () {
-            }
         }];
-    }
-
-    function filenameIsUnique() {
-        //var isUnique = !_.some(blade.parentBlade.currentEntities, function (s) { return s.filename == blade.currentEntity.filename });
-        //if (!isUnique) {
-        //    $scope.formScope.filename.$setValidity('unique', false);
-        //} else {
-        //    $scope.formScope.filename.$setValidity('unique', true);
-        //}
-        //return isUnique;
-        return true;
     }
 
     function showAddItemsBlade(selectedItems) {
@@ -91,44 +68,58 @@
         bladeNavigationService.showBlade(addItemsBlade, blade);
     }
 
-    function getSitemapById(storeId, sitemapId) {
-        if (!sitemapId) {
-            return;
-        }
-        blade.isLoading = true;
-        sitemapsResource.getById({
-            storeId: storeId,
-            sitemapId: sitemapId
-        }, function (response) {
-            blade.isLoading = false;
-            blade.currentEntity = response;
-        }, function (error) {
-            showError(blade, error);
-        });
-    }
-
     function addSitemap(sitemap) {
         blade.isLoading = true;
-        sitemapsResource.add({}, sitemap, function (response) {
-            blade.isLoading = false;
+        sitemapsResource.addSitemap({}, sitemap, function (response) {
             blade.parentBlade.refresh();
+            blade.isLoading = false;
         }, function (error) {
-            showError(blade, error);
+            bladeNavigationService.setError('Error ' + error.status, blade);
+            blade.isLoading = false;
         });
     }
 
     function updateSitemap(sitemap) {
         blade.isLoading = true;
-        sitemapsResource.update({}, sitemap, function (response) {
+        sitemapsResource.updateSitemap({}, sitemap, function (response) {
             blade.isLoading = false;
             blade.parentBlade.refresh();
         }, function (error) {
-            showError(blade, error);
+            bladeNavigationService.setError('Error ' + error.status, blade);
+            blade.isLoading = false;
         });
     }
 
-    function showError(blade, error) {
-        bladeNavigationService.setError('Error ' + error.status, blade);
-        blade.isLoading = false;
+    function searchSitemapItems(sitemapId, skip, take) {
+        blade.isLoading = true;
+        sitemapsResource.searchSitemapItems({}, {
+            sitemapId: sitemapId,
+            skip: skip,
+            take: take
+        }, function (response) {
+            $scope.pageSettings.totalItems = response.totalCount;
+            blade.currentEntity.items = response.items;
+            blade.isLoading = false;
+        }, function (error) {
+            bladeNavigationService.setError('Error ' + error.status, blade);
+            blade.isLoading = false;
+        });
+    }
+
+    function removeSitemapItems(sitemap, itemIds) {
+        if (sitemap.isNew) {
+        } else {
+            blade.isLoading = true;
+            sitemapsResource.removeSitemapItems({
+                sitemapId: sitemap.id,
+                itemIds: itemIds
+            }, function (response) {
+                blade.refresh();
+                blade.isLoading = false;
+            }, function (error) {
+                bladeNavigationService.setError('Error ' + error.status, blade);
+                blade.isLoading = false;
+            });
+        }
     }
 }]);

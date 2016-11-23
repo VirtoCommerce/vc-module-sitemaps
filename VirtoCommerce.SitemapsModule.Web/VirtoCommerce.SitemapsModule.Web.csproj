@@ -153,13 +153,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\Api\SitemapsModuleApiController.cs" />
-    <Compile Include="Model\Sitemap.cs" />
-    <Compile Include="Model\SitemapItem.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\VirtoCommerce.SitemapsModule.Core\VirtoCommerce.SitemapsModule.Core.csproj">
+      <Project>{f729833a-3222-4b4d-9a90-599bdbb09667}</Project>
+      <Name>VirtoCommerce.SitemapsModule.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VirtoCommerce.SitemapsModule.Data\VirtoCommerce.SitemapsModule.Data.csproj">
       <Project>{f6483b0a-c883-4da1-91b6-e553e29c3c5d}</Project>
       <Name>VirtoCommerce.SitemapsModule.Data</Name>
