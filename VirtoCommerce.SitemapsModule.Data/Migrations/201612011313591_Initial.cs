@@ -19,7 +19,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Migrations
                         CreatedBy = c.String(maxLength: 64),
                         ModifiedBy = c.String(maxLength: 64),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.Filename);
             
             CreateTable(
                 "dbo.SitemapItem",
@@ -46,6 +47,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Migrations
         {
             DropForeignKey("dbo.SitemapItem", "SitemapId", "dbo.Sitemap");
             DropIndex("dbo.SitemapItem", new[] { "SitemapId" });
+            DropIndex("dbo.Sitemap", new[] { "Filename" });
             DropTable("dbo.SitemapItem");
             DropTable("dbo.Sitemap");
         }

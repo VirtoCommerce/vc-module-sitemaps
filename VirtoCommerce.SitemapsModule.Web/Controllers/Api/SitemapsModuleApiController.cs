@@ -173,6 +173,11 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         {
             var apiResponse = new HttpResponseMessage(HttpStatusCode.NotFound);
 
+            if (string.IsNullOrEmpty(storeId) || string.IsNullOrEmpty(sitemapFilename))
+            {
+                apiResponse.StatusCode = HttpStatusCode.BadRequest;
+            }
+
             var sitemapOptions = GetSetemapOptions();
 
             using (var stream = new MemoryStream())

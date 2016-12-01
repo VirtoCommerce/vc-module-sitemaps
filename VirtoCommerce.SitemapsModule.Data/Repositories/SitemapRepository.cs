@@ -1,4 +1,6 @@
-﻿using System.Data.Entity;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure.Annotations;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using VirtoCommerce.Platform.Data.Infrastructure;
@@ -24,6 +26,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Repositories
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 
             modelBuilder.Entity<SitemapEntity>().HasKey(x => x.Id).Property(x => x.Id);
+            modelBuilder.Entity<SitemapEntity>().Property(x => x.Filename)
+                .HasColumnAnnotation(IndexAnnotation.AnnotationName, new IndexAnnotation(new IndexAttribute()));
             modelBuilder.Entity<SitemapEntity>().ToTable("Sitemap");
 
             modelBuilder.Entity<SitemapItemEntity>().HasKey(x => x.Id).Property(x => x.Id);

@@ -83,9 +83,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Migrations\201611251007091_Initial.cs" />
-    <Compile Include="Migrations\201611251007091_Initial.Designer.cs">
-      <DependentUpon>201611251007091_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201612011313591_Initial.cs" />
+    <Compile Include="Migrations\201612011313591_Initial.Designer.cs">
+      <DependentUpon>201612011313591_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\SitemapEntity.cs" />
@@ -109,8 +109,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201611251007091_Initial.resx">
-      <DependentUpon>201611251007091_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201612011313591_Initial.resx">
+      <DependentUpon>201612011313591_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
