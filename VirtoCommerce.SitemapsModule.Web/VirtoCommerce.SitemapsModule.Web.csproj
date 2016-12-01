@@ -147,6 +147,8 @@
     <Content Include="Scripts\blades\sitemap-items-add.tpl.html" />
     <Content Include="Scripts\blades\sitemap-list.js" />
     <Content Include="Scripts\blades\sitemap-list.tpl.html" />
+    <Content Include="Scripts\blades\sitemap-preview.js" />
+    <Content Include="Scripts\blades\sitemap-preview.tpl.html" />
     <Content Include="Scripts\blades\sitemap.js" />
     <Content Include="Scripts\blades\sitemap.tpl.html" />
     <Content Include="Scripts\resources\sitemaps.js" />

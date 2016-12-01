@@ -175,13 +175,14 @@
     }
 
     function previewXml(storeId, sitemapFilename) {
-        sitemapsResource.xml({
+        var previewBlade = {
+            id: 'sitemapPreviewBlade',
+            title: 'sitemapsModule.blades.preview.title',
+            controller: 'virtoCommerce.sitemapsModule.sitemapPreviewController',
+            template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/sitemap-preview.tpl.html',
             storeId: storeId,
-            sitemapFilename: sitemapFilename
-        }, function (response) {
-        }, function (error) {
-            bladeNavigationService.setError('Error ' + error.status, blade);
-            blade.isLoading = false;
-        });
+            filename: sitemapFilename
+        }
+        bladeNavigationService.showBlade(previewBlade, blade);
     }
 }]);

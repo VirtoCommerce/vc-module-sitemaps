@@ -49,6 +49,9 @@
         "toolbar": {
           "addSelected": "Add selected"
         }
+      },
+      "preview": {
+        "title": "Preview"
       }
     },
     "contextMenu": {
