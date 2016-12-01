@@ -1,13 +1,15 @@
-﻿using VirtoCommerce.SitemapsModule.Core.Model;
+﻿using VirtoCommerce.SitemapsModule.Core.Models;
 
 namespace VirtoCommerce.SitemapsModule.Core.Services
 {
     public interface ISitemapService
     {
-        SearchResponse<Sitemap> Search(SitemapSearchRequest request);
+        Sitemap GetById(string id);
 
-        void SaveChanges(Sitemap[] sitemaps);
+        SearchResponse<Sitemap> Search(SitemapSearchRequest searchRequest);
 
-        void DeleteSitemaps(string storeId, string[] sitemapIds);
+        void SaveChanges(Sitemap sitemap);
+
+        void Remove(string[] sitemapIds);
     }
 }

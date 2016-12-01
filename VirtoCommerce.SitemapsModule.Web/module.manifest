@@ -88,40 +88,14 @@
                 <defaultValue>0.7</defaultValue>
             </setting>
         </group>
-        <group name="Sitemap|CMS Links">
-            <setting>
-                <name>Sitemap.CmsPageUpdateFrequency</name>
-                <title>CMS page update frequency</title>
-                <description>How frequently the CMS page is likely to change. This value provides general information to search engines and may not correlate exactly to how often they crawl the page.</description>
-                <valueType>string</valueType>
-                <isArray>true</isArray>
-                <allowedValues>
-                    <value>always</value>
-                    <value>hourly</value>
-                    <value>daily</value>
-                    <value>weekly</value>
-                    <value>monthly</value>
-                    <value>yearly</value>
-                    <value>never</value>
-                </allowedValues>
-                <defaultValue>monthly</defaultValue>
-            </setting>
-            <setting>
-                <name>Sitemap.CmsPagePriority</name>
-                <title>CMS page priority</title>
-                <description>The priority of URL relative to other URLs on site. Valid values range from 0.0 to 1.0. This value does not affect how pages are compared to pages on other sites — it only lets the search engines know which pages deem most important for the crawlers.</description>
-                <valueType>decimal</valueType>
-                <defaultValue>0.5</defaultValue>
-            </setting>
-        </group>
     </settings>
     <permissions>
         <group name="Sitemap">
-            <permission id="sitemap:access" name="Access to open a sitemaps blade" />
-            <permission id="sitemap:create" name="Access to create a sitemap"/>
-            <permission id="sitemap:read" name="Access to view a sitemap details"/>
-            <permission id="sitemap:update" name="Access to update a sitemap"/>
-            <permission id="sitemap:delete" name="Access to delete a sitemap"/>
+            <permission id="sitemaps:access" name="Access to open a sitemaps blade" />
+            <permission id="sitemaps:create" name="Access to create a sitemap"/>
+            <permission id="sitemaps:read" name="Access to view a sitemap details"/>
+            <permission id="sitemaps:update" name="Access to update a sitemap"/>
+            <permission id="sitemaps:delete" name="Access to delete a sitemap"/>
         </group>
     </permissions>
 </module>

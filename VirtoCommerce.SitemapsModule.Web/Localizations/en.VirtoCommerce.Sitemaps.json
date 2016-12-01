@@ -17,7 +17,8 @@
           "noSitemaps": "There are no sitemaps yet"
         },
         "gridHeaders": {
-          "filename": "Filename"
+          "filename": "Filename",
+          "itemsCount": "Items count"
         }
       },
       "sitemap": {

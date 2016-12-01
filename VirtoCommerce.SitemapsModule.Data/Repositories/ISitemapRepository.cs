@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.SitemapsModule.Data.Model;
+using VirtoCommerce.SitemapsModule.Data.Models;
 
 namespace VirtoCommerce.SitemapsModule.Data.Repositories
 {
@@ -9,7 +9,5 @@ namespace VirtoCommerce.SitemapsModule.Data.Repositories
         IQueryable<SitemapEntity> Sitemaps { get; }
 
         IQueryable<SitemapItemEntity> SitemapItems { get; }
-
-        SitemapEntity[] GetSitemapsByIds(string[] ids);
     }
 }

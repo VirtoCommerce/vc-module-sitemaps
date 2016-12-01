@@ -31,8 +31,10 @@ namespace VirtoCommerce.SitemapsModule.Web
         public override void Initialize()
         {
             _container.RegisterType<ISitemapRepository>(new InjectionFactory(c => new SitemapRepository(_connectionStringName, new EntityPrimaryKeyGeneratorInterceptor(), _container.Resolve<AuditableInterceptor>())));
-            _container.RegisterType<ISitemapService, SitemapService>();
             _container.RegisterType<ISitemapItemService, SitemapItemService>();
+            _container.RegisterType<ISitemapService, SitemapService>();
+            _container.RegisterType<ISitemapUrlBuilder, SitemapUrlBuilder>();
+            _container.RegisterType<ISitemapXmlGenerator, SitemapXmlGenerator>();
         }
 
         public override void PostInitialize()

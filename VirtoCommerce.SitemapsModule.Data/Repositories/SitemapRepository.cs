@@ -3,7 +3,7 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using VirtoCommerce.Platform.Data.Infrastructure;
 using VirtoCommerce.Platform.Data.Infrastructure.Interceptors;
-using VirtoCommerce.SitemapsModule.Data.Model;
+using VirtoCommerce.SitemapsModule.Data.Models;
 
 namespace VirtoCommerce.SitemapsModule.Data.Repositories
 {
@@ -36,17 +36,18 @@ namespace VirtoCommerce.SitemapsModule.Data.Repositories
 
         public IQueryable<SitemapEntity> Sitemaps
         {
-            get { return GetAsQueryable<SitemapEntity>(); }
+            get
+            {
+                return GetAsQueryable<SitemapEntity>();
+            }
         }
 
         public IQueryable<SitemapItemEntity> SitemapItems
         {
-            get { return GetAsQueryable<SitemapItemEntity>(); }
-        }
-
-        public virtual SitemapEntity[] GetSitemapsByIds(string[] ids)
-        {
-            return Sitemaps.Where(s => ids.Contains(s.Id)).ToArray();
+            get
+            {
+                return GetAsQueryable<SitemapItemEntity>();
+            }
         }
     }
 }

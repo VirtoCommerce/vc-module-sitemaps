@@ -2,9 +2,9 @@
 using System.Linq;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Data.Infrastructure;
-using VirtoCommerce.SitemapsModule.Core.Model;
+using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
-using VirtoCommerce.SitemapsModule.Data.Model;
+using VirtoCommerce.SitemapsModule.Data.Models;
 using VirtoCommerce.SitemapsModule.Data.Repositories;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services
@@ -24,23 +24,31 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             {
                 throw new ArgumentNullException("request");
             }
+            if (string.IsNullOrEmpty(request.SitemapId))
+            {
+                throw new ArgumentException("request.sitemapId");
+            }
 
             using (var repository = RepositoryFactory())
             {
-                var response = new SearchResponse<SitemapItem>();
+                var searchResponse = new SearchResponse<SitemapItem>();
 
-                var sitemapItemEntities = repository.SitemapItems.Where(i => i.SitemapId == request.SitemapId);
-                response.TotalCount = sitemapItemEntities.Count();
-                foreach (var sitemapItemEntity in sitemapItemEntities.OrderByDescending(i => i.CreatedDate).Skip(request.Skip).Take(request.Take))
+                var sitemapItemEntities = repository.SitemapItems.Where(i => i.SitemapId == request.SitemapId).OrderByDescending(i => i.CreatedDate);
+                searchResponse.TotalCount = sitemapItemEntities.Count();
+
+                if (sitemapItemEntities.Any())
                 {
-                    var sitemapItem = AbstractTypeFactory<SitemapItem>.TryCreateInstance();
-                    if (sitemapItem != null)
+                    foreach (var sitemapItemEntity in sitemapItemEntities.Skip(request.Skip).Take(request.Take))
                     {
-                        response.Items.Add(sitemapItemEntity.ToModel(sitemapItem));
+                        var sitemapItem = AbstractTypeFactory<SitemapItem>.TryCreateInstance();
+                        if (sitemapItem != null)
+                        {
+                            searchResponse.Items.Add(sitemapItemEntity.ToModel(sitemapItem));
+                        }
                     }
                 }
 
-                return response;
+                return searchResponse;
             }
         }
 
@@ -74,32 +82,34 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             }
         }
 
-        public virtual void Remove(string sitemapId, string[] sitemapItemIds)
+        public virtual void Remove(string sitemapId, string[] itemIds)
         {
             if (string.IsNullOrEmpty(sitemapId))
             {
                 throw new ArgumentException("sitemapId");
             }
-            if (sitemapItemIds == null)
+            if (itemIds == null)
             {
-                throw new ArgumentNullException("sitemapItemIds");
+                throw new ArgumentNullException("itemIds");
             }
 
             using (var repository = RepositoryFactory())
             {
-                var sitemapEntities = repository.GetSitemapsByIds(new[] { sitemapId });
-                if (sitemapEntities != null && sitemapEntities.Any())
+                var sitemapEntity = repository.Sitemaps.FirstOrDefault(s => s.Id == sitemapId);
+                if (sitemapEntity != null)
                 {
-                    var sitemapEntity = sitemapEntities.First();
-                    foreach (var sitemapItemId in sitemapItemIds)
+                    var sitemapItemEntities = repository.SitemapItems.Where(i => itemIds.Contains(i.Id));
+                    if (sitemapItemEntities.Any())
                     {
-                        var sitemapItemEntity = repository.SitemapItems.FirstOrDefault(i => i.SitemapId == sitemapEntity.Id && i.Id == sitemapItemId);
-                        repository.Remove(sitemapItemEntity);
-                        sitemapEntity.Items.Remove(sitemapItemEntity);
+                        foreach (var sitemapItemEntity in sitemapItemEntities)
+                        {
+                            repository.Remove(sitemapItemEntity);
+                            sitemapEntity.Items.Remove(sitemapItemEntity);
+                        }
+
+                        CommitChanges(repository);
                     }
                 }
-
-                CommitChanges(repository);
             }
         }
     }

@@ -12,8 +12,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Migrations
                 c => new
                     {
                         Id = c.String(nullable: false, maxLength: 128),
-                        StoreId = c.String(nullable: false, maxLength: 64),
                         Filename = c.String(nullable: false, maxLength: 256),
+                        StoreId = c.String(nullable: false, maxLength: 64),
                         CreatedDate = c.DateTime(nullable: false),
                         ModifiedDate = c.DateTime(),
                         CreatedBy = c.String(maxLength: 64),

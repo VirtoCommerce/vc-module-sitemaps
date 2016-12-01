@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace VirtoCommerce.SitemapsModule.Core.Model
+namespace VirtoCommerce.SitemapsModule.Core.Models
 {
     public class SearchResponse<T>
     {

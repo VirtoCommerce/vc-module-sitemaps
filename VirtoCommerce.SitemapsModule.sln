@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.SitemapsModule.Web", "VirtoCommerce.SitemapsModule.Web\VirtoCommerce.SitemapsModule.Web.csproj", "{E65C0585-8635-4DA4-91D6-4C3BD8DA8ECF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.SitemapsModule.Core", "VirtoCommerce.SitemapsModule.Core\VirtoCommerce.SitemapsModule.Core.csproj", "{B6C713D5-8681-429D-8D1A-A976AA46B599}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.SitemapsModule.Data", "VirtoCommerce.SitemapsModule.Data\VirtoCommerce.SitemapsModule.Data.csproj", "{F6483B0A-C883-4DA1-91B6-E553E29C3C5D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.SitemapsModule.Data", "VirtoCommerce.SitemapsModule.Data\VirtoCommerce.SitemapsModule.Data.csproj", "{2F235969-BE39-497C-8F1D-8B7A091F5BFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.SitemapsModule.Test", "VirtoCommerce.SitemapsModule.Test\VirtoCommerce.SitemapsModule.Test.csproj", "{6582590F-324A-430E-BB77-40BA3F340BA1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.SitemapsModule.Web", "VirtoCommerce.SitemapsModule.Web\VirtoCommerce.SitemapsModule.Web.csproj", "{C7DC3878-3979-4036-A321-B01E98F49174}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.SitemapsModule.Core", "VirtoCommerce.SitemapsModule.Core\VirtoCommerce.SitemapsModule.Core.csproj", "{F729833A-3222-4B4D-9A90-599BDBB09667}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.SitemapsModule.Test", "VirtoCommerce.SitemapsModule.Test\VirtoCommerce.SitemapsModule.Test.csproj", "{921AB956-D4C5-4818-83F4-CD00E9A36B53}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,22 +17,22 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E65C0585-8635-4DA4-91D6-4C3BD8DA8ECF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E65C0585-8635-4DA4-91D6-4C3BD8DA8ECF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E65C0585-8635-4DA4-91D6-4C3BD8DA8ECF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E65C0585-8635-4DA4-91D6-4C3BD8DA8ECF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F6483B0A-C883-4DA1-91B6-E553E29C3C5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F6483B0A-C883-4DA1-91B6-E553E29C3C5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F6483B0A-C883-4DA1-91B6-E553E29C3C5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F6483B0A-C883-4DA1-91B6-E553E29C3C5D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6582590F-324A-430E-BB77-40BA3F340BA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6582590F-324A-430E-BB77-40BA3F340BA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6582590F-324A-430E-BB77-40BA3F340BA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6582590F-324A-430E-BB77-40BA3F340BA1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F729833A-3222-4B4D-9A90-599BDBB09667}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F729833A-3222-4B4D-9A90-599BDBB09667}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F729833A-3222-4B4D-9A90-599BDBB09667}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F729833A-3222-4B4D-9A90-599BDBB09667}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6C713D5-8681-429D-8D1A-A976AA46B599}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6C713D5-8681-429D-8D1A-A976AA46B599}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6C713D5-8681-429D-8D1A-A976AA46B599}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6C713D5-8681-429D-8D1A-A976AA46B599}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F235969-BE39-497C-8F1D-8B7A091F5BFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F235969-BE39-497C-8F1D-8B7A091F5BFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F235969-BE39-497C-8F1D-8B7A091F5BFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F235969-BE39-497C-8F1D-8B7A091F5BFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7DC3878-3979-4036-A321-B01E98F49174}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7DC3878-3979-4036-A321-B01E98F49174}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7DC3878-3979-4036-A321-B01E98F49174}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7DC3878-3979-4036-A321-B01E98F49174}.Release|Any CPU.Build.0 = Release|Any CPU
+		{921AB956-D4C5-4818-83F4-CD00E9A36B53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{921AB956-D4C5-4818-83F4-CD00E9A36B53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{921AB956-D4C5-4818-83F4-CD00E9A36B53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{921AB956-D4C5-4818-83F4-CD00E9A36B53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

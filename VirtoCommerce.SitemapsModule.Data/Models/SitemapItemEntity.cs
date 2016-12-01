@@ -3,9 +3,9 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.SitemapsModule.Core.Model;
+using VirtoCommerce.SitemapsModule.Core.Models;
 
-namespace VirtoCommerce.SitemapsModule.Data.Model
+namespace VirtoCommerce.SitemapsModule.Data.Models
 {
     public class SitemapItemEntity : AuditableEntity
     {
@@ -24,7 +24,6 @@ namespace VirtoCommerce.SitemapsModule.Data.Model
         [StringLength(128)]
         public string ObjectType { get; set; }
 
-        [ForeignKey("Sitemap")]
         [StringLength(128)]
         public string SitemapId { get; set; }
 
@@ -58,16 +57,6 @@ namespace VirtoCommerce.SitemapsModule.Data.Model
             this.InjectFrom(sitemapItem);
 
             return this;
-        }
-
-        public virtual void Patch(SitemapItemEntity target)
-        {
-            if (target == null)
-            {
-                throw new ArgumentNullException("target");
-            }
-
-            target.InjectFrom(this);
         }
     }
 }

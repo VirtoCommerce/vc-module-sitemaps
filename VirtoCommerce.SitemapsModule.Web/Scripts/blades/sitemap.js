@@ -6,7 +6,10 @@
     blade.isLoading = false;
     blade.toolbarCommands = getBladeToolbarCommands();
     blade.refresh = function () {
-        searchSitemapItems(blade.currentEntity.id, ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount, $scope.pageSettings.itemsPerPageCount);
+        if (!blade.currentEntity.isNew) {
+            getSitemapById(blade.currentEntity.id);
+            searchSitemapItems(blade.currentEntity.id, ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount, $scope.pageSettings.itemsPerPageCount);
+        }
     }
     blade.removeSitemapItems = function (items) {
         removeSitemapItems(blade.currentEntity, _.map(items, function (i) { return i.id }));
@@ -45,14 +48,40 @@
             name: 'sitemapsModule.blades.sitemap.toolbar.saveSitemap',
             icon: 'fa fa-save',
             canExecuteMethod: function () {
-                return $scope.formScope && $scope.formScope.$valid;
+                return $scope.formScope && $scope.formScope.$valid && !angular.equals(blade.originalEntity, blade.currentEntity);
             },
             executeMethod: function () {
+                blade.isLoading = true;
                 if (blade.currentEntity.isNew) {
-                    addSitemap(blade.currentEntity);
+                    sitemapsResource.searchSitemaps({}, {
+                        storeId: blade.currentEntity.storeId,
+                        filename: blade.currentEntity.filename,
+                        skip: 0,
+                        take: 1
+                    }, function (response) {
+                        if (response.totalCount == 0) {
+                            $scope.formScope.filename.$setValidity('unique', true);
+                            saveChanges(blade.currentEntity);
+                        } else {
+                            $scope.formScope.filename.$setValidity('unique', false);
+                            blade.isLoading = false;
+                        }
+                    }, function (error) {
+                        bladeNavigationService.setError('Error ' + error.status, blade);
+                        blade.isLoading = false;
+                    });
                 } else {
-                    updateSitemap(blade.currentEntity);
+                    saveChanges(blade.currentEntity);
                 }
+            }
+        }, {
+            name: 'sitemapsModule.blades.sitemap.toolbar.previewXml',
+            icon: 'fa fa-file-code-o',
+            canExecuteMethod: function () {
+                return blade.currentEntity.itemsTotalCount > 0;
+            },
+            executeMethod: function () {
+                previewXml(blade.parentBlade.storeId, blade.currentEntity.filename);
             }
         }];
     }
@@ -66,6 +95,27 @@
             selectedItems: selectedItems
         }
         bladeNavigationService.showBlade(addItemsBlade, blade);
+    }
+
+    function saveChanges(sitemap) {
+        if (sitemap.isNew) {
+            addSitemap(sitemap);
+        } else {
+            updateSitemap(sitemap);
+        }
+    }
+
+    function getSitemapById(sitemapId) {
+        blade.isLoading = true;
+        sitemapsResource.getSitemapById({
+            id: sitemapId
+        }, function (response) {
+            blade.currentEntity = response;
+            blade.isLoading = false;
+        }, function (error) {
+            bladeNavigationService.setError('Error ' + error.status, blade);
+            blade.isLoading = false;
+        });
     }
 
     function addSitemap(sitemap) {
@@ -99,6 +149,7 @@
         }, function (response) {
             $scope.pageSettings.totalItems = response.totalCount;
             blade.currentEntity.items = response.items;
+            blade.currentEntity.totalItemsCount = response.totalCount;
             blade.isLoading = false;
         }, function (error) {
             bladeNavigationService.setError('Error ' + error.status, blade);
@@ -121,5 +172,16 @@
                 blade.isLoading = false;
             });
         }
+    }
+
+    function previewXml(storeId, sitemapFilename) {
+        sitemapsResource.xml({
+            storeId: storeId,
+            sitemapFilename: sitemapFilename
+        }, function (response) {
+        }, function (error) {
+            bladeNavigationService.setError('Error ' + error.status, blade);
+            blade.isLoading = false;
+        });
     }
 }]);

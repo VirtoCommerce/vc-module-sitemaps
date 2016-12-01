@@ -1,8 +1,8 @@
-using System.Data.Entity.Migrations;
-
 namespace VirtoCommerce.SitemapsModule.Data.Migrations
 {
-    public sealed class Configuration : DbMigrationsConfiguration<Repositories.SitemapRepository>
+    using System.Data.Entity.Migrations;
+
+    public sealed class Configuration : DbMigrationsConfiguration<VirtoCommerce.SitemapsModule.Data.Repositories.SitemapRepository>
     {
         public Configuration()
         {

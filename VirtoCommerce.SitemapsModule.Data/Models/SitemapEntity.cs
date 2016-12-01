@@ -2,11 +2,10 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.SitemapsModule.Core.Model;
+using VirtoCommerce.SitemapsModule.Core.Models;
 
-namespace VirtoCommerce.SitemapsModule.Data.Model
+namespace VirtoCommerce.SitemapsModule.Data.Models
 {
     public class SitemapEntity : AuditableEntity
     {
@@ -16,12 +15,12 @@ namespace VirtoCommerce.SitemapsModule.Data.Model
         }
 
         [Required]
-        [StringLength(64)]
-        public string StoreId { get; set; }
-
-        [Required]
         [StringLength(256)]
         public string Filename { get; set; }
+
+        [Required]
+        [StringLength(64)]
+        public string StoreId { get; set; }
 
         public virtual ObservableCollection<SitemapItemEntity> Items { get; set; }
 
@@ -33,8 +32,6 @@ namespace VirtoCommerce.SitemapsModule.Data.Model
             }
 
             sitemap.InjectFrom(this);
-
-            sitemap.Items = Items.Select(i => i.ToModel(AbstractTypeFactory<SitemapItem>.TryCreateInstance())).ToList();
 
             return sitemap;
         }
@@ -54,27 +51,17 @@ namespace VirtoCommerce.SitemapsModule.Data.Model
 
             this.InjectFrom(sitemap);
 
-            if (sitemap.Items != null)
-            {
-                Items = new ObservableCollection<SitemapItemEntity>(sitemap.Items.Select(i => AbstractTypeFactory<SitemapItemEntity>.TryCreateInstance().FromModel(i, pkMap)));
-            }
-
             return this;
         }
 
-        public virtual void Patch(SitemapEntity target)
+        public virtual void Patch(SitemapEntity sitemapEntity)
         {
-            if (target == null)
+            if (sitemapEntity == null)
             {
-                throw new ArgumentNullException("target");
+                throw new ArgumentNullException("sitemapEntity");
             }
 
-            target.InjectFrom(this);
-
-            if (!Items.IsNullCollection())
-            {
-                Items.Patch(target.Items, (sourceItem, targetItem) => sourceItem.Patch(targetItem));
-            }
+            sitemapEntity.InjectFrom(this);
         }
     }
 }

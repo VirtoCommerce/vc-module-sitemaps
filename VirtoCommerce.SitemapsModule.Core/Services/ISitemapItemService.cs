@@ -1,4 +1,4 @@
-﻿using VirtoCommerce.SitemapsModule.Core.Model;
+﻿using VirtoCommerce.SitemapsModule.Core.Models;
 
 namespace VirtoCommerce.SitemapsModule.Core.Services
 {
@@ -6,8 +6,8 @@ namespace VirtoCommerce.SitemapsModule.Core.Services
     {
         SearchResponse<SitemapItem> Search(SitemapItemSearchRequest request);
 
-        void Add(string sitemapId, SitemapItem[] sitemapItems);
+        void Add(string sitemapId, SitemapItem[] items);
 
-        void Remove(string sitemapId, string[] sitemapItemIds);
+        void Remove(string sitemapId, string[] itemIds);
     }
 }

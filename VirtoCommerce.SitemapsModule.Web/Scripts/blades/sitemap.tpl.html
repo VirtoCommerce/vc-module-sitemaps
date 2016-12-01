@@ -3,10 +3,11 @@
     <div class="blade-inner">
         <div class="inner-block">
             <form class="form" name="formSitemap">
+                <p ng-bind="angular.equals(blade.originalEntity, blade.currentEntity)"></p>
                 <div class="form-group" ng-init="setForm(formSitemap)">
                     <label class="form-label" for="filename" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.labelFilename' | translate"></label>
                     <div class="form-input">
-                        <input id="filename" name="filename" required="required" type="text" ng-model="blade.currentEntity.filename" />
+                        <input id="filename" name="filename" required="required" type="text" ng-model="blade.currentEntity.filename" ng-change="formSitemap.filename.$setValidity('unique', null)" />
                     </div>
                     <div class="form-error" ng-if="formSitemap.filename.$error.unique" ng-bind="'sitemapsModule.errorMessages.filenameNotUnique' | translate"></div>
                 </div>
