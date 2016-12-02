@@ -101,8 +101,9 @@
     function addSitemap(sitemap) {
         blade.isLoading = true;
         sitemapsResource.addSitemap({}, sitemap, function (response) {
-            blade.parentBlade.refresh();
             blade.currentEntity = response;
+            blade.refresh();
+            blade.parentBlade.refresh();
             blade.isLoading = false;
         }, function (error) {
             bladeNavigationService.setError('Error ' + error.status, blade);
