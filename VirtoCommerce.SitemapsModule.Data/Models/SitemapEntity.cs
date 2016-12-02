@@ -2,6 +2,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.SitemapsModule.Core.Models;
 

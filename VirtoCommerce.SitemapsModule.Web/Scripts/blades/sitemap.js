@@ -52,27 +52,7 @@
             },
             executeMethod: function () {
                 blade.isLoading = true;
-                if (blade.currentEntity.isNew) {
-                    sitemapsResource.searchSitemaps({}, {
-                        storeId: blade.currentEntity.storeId,
-                        filename: blade.currentEntity.filename,
-                        skip: 0,
-                        take: 1
-                    }, function (response) {
-                        if (response.totalCount == 0) {
-                            $scope.formScope.filename.$setValidity('unique', true);
-                            saveChanges(blade.currentEntity);
-                        } else {
-                            $scope.formScope.filename.$setValidity('unique', false);
-                            blade.isLoading = false;
-                        }
-                    }, function (error) {
-                        bladeNavigationService.setError('Error ' + error.status, blade);
-                        blade.isLoading = false;
-                    });
-                } else {
-                    saveChanges(blade.currentEntity);
-                }
+                saveChanges(blade.currentEntity);
             }
         }, {
             name: 'sitemapsModule.blades.sitemap.toolbar.previewXml',
@@ -122,6 +102,7 @@
         blade.isLoading = true;
         sitemapsResource.addSitemap({}, sitemap, function (response) {
             blade.parentBlade.refresh();
+            blade.currentEntity = response;
             blade.isLoading = false;
         }, function (error) {
             bladeNavigationService.setError('Error ' + error.status, blade);

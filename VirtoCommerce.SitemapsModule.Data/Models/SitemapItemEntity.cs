@@ -58,5 +58,15 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
 
             return this;
         }
+
+        public virtual void Patch(SitemapItemEntity sitemapItemEntity)
+        {
+            if (sitemapItemEntity == null)
+            {
+                throw new ArgumentNullException("sitemapItemEntity");
+            }
+
+            sitemapItemEntity.InjectFrom(this);
+        }
     }
 }

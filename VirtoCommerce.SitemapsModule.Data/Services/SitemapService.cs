@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Data.Infrastructure;
@@ -58,17 +59,17 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             {
                 throw new ArgumentNullException("request");
             }
-            if (string.IsNullOrEmpty(request.StoreId))
-            {
-                throw new ArgumentException("request.storeId");
-            }
 
             using (var repository = RepositoryFactory())
             {
                 var searchResponse = new SearchResponse<Sitemap>();
 
-                var sitemapEntities = repository.Sitemaps.Where(s => s.StoreId == request.StoreId);
+                var sitemapEntities = repository.Sitemaps;
 
+                if (!string.IsNullOrEmpty(request.StoreId))
+                {
+                    sitemapEntities = sitemapEntities.Where(s => s.StoreId == request.StoreId);
+                }
                 if (!string.IsNullOrEmpty(request.Filename))
                 {
                     sitemapEntities = sitemapEntities.Where(s => s.Filename == request.Filename);
@@ -116,6 +117,15 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                     }
                     else
                     {
+                        foreach (var sitemapItem in sitemap.Items)
+                        {
+                            var sitemapItemEntity = AbstractTypeFactory<SitemapItemEntity>.TryCreateInstance();
+                            if (sitemapItemEntity != null)
+                            {
+                                sitemapItemEntity.FromModel(sitemapItem, pkMap);
+                                sitemapSourceEntity.Items.Add(sitemapItemEntity);
+                            }
+                        }
                         repository.Add(sitemapSourceEntity);
                     }
                 }

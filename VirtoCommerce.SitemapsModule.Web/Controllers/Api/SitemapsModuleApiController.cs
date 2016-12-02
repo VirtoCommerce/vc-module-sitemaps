@@ -70,7 +70,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         [Route("")]
         [ResponseType(typeof(void))]
         [CheckPermission(Permission = SitemapsPredefinedPermissions.Create)]
-        public IHttpActionResult CreateSitemap(Sitemap sitemap)
+        public IHttpActionResult AddSitemap(Sitemap sitemap)
         {
             if (sitemap == null)
             {
@@ -79,7 +79,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
             _sitemapService.SaveChanges(sitemap);
 
-            return Ok();
+            return Ok(sitemap);
         }
 
         [HttpPut]
