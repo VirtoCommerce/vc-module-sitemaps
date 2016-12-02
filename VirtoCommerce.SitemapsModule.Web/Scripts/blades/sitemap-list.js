@@ -43,6 +43,15 @@
             executeMethod: function () {
                 blade.refresh();
             }
+        }, {
+            name: 'sitemapsModule.blades.sitemapList.toolbar.preview',
+            icon: 'fa fa-file-code-o',
+            canExecuteMethod: function () {
+                return $scope.pageSettings.totalItems > 0;
+            },
+            executeMethod: function () {
+                previewXml(blade.storeId, 'sitemap.xml');
+            }
         }];
     }
 
@@ -105,5 +114,17 @@
             bladeNavigationService.setError('Error ' + error.status, blade);
             blade.isLoading = false;
         });
+    }
+
+    function previewXml(storeId, sitemapFilename) {
+        var previewBlade = {
+            id: 'sitemapPreviewBlade',
+            title: 'sitemapsModule.blades.preview.title',
+            controller: 'virtoCommerce.sitemapsModule.sitemapPreviewController',
+            template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/sitemap-preview.tpl.html',
+            storeId: storeId,
+            filename: sitemapFilename
+        }
+        bladeNavigationService.showBlade(previewBlade, blade);
     }
 }]);

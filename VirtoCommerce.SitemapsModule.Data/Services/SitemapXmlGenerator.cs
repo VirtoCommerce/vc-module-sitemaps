@@ -52,7 +52,21 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             var store = StoreService.GetById(storeId);
             if (store != null)
             {
-                xmlRecord = GetSitemapIndexXmlRecord(store, options);
+                var sitemapsSearchResponse = SitemapService.Search(new SitemapSearchRequest
+                {
+                    StoreId = store.Id,
+                    Skip = 0,
+                    Take = options.RecordsLimitPerFile
+                });
+
+                xmlRecord = new SitemapIndexXmlRecord
+                {
+                    Sitemaps = sitemapsSearchResponse.Items.Where(i => i.ItemsTotalCount > 0).Select(i => new SitemapIndexItemXmlRecord
+                    {
+                        ModifiedDate = DateTime.UtcNow,
+                        Url = SitemapUrlBuilder.ToAbsoluteUrl(store, i.Filename)
+                    }).ToList()
+                };
             }
 
             return xmlRecord;
@@ -82,25 +96,6 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             }
 
             return xmlRecord;
-        }
-
-        private SitemapIndexXmlRecord GetSitemapIndexXmlRecord(Store store, SitemapOptions options)
-        {
-            var sitemapsSearchResponse = SitemapService.Search(new SitemapSearchRequest
-            {
-                StoreId = store.Id,
-                Skip = 0,
-                Take = options.RecordsLimitPerFile
-            });
-
-            return new SitemapIndexXmlRecord
-            {
-                Sitemaps = sitemapsSearchResponse.Items.Where(i => i.ItemsTotalCount > 0).Select(i => new SitemapIndexItemXmlRecord
-                {
-                    ModifiedDate = DateTime.UtcNow,
-                    Url = SitemapUrlBuilder.ToAbsoluteUrl(store, i.Filename)
-                }).ToList()
-            };
         }
 
         private SitemapXmlRecord GetSitemapXmlRecord(Store store, string sitemapFilename, SitemapOptions options)

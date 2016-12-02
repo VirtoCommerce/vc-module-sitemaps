@@ -11,7 +11,8 @@
         "toolbar": {
           "addSitemap": "Add sitemap",
           "removeSitemap": "Remove sitemap",
-          "refresh": "Refresh"
+          "refresh": "Refresh",
+          "preview": "Preview index sitemap"
         },
         "labels": {
           "noSitemaps": "There are no sitemaps yet"
