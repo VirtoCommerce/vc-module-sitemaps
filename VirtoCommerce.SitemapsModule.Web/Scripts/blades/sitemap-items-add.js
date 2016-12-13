@@ -40,6 +40,19 @@
         bladeNavigationService.showBlade(newBlade, blade.parentBlade);
     }
 
+    $scope.addCustomItem = function () {
+        var addCustomItemBlade = {
+            id: 'addCustomItemBlade',
+            title: 'sitemapsModule.blades.addCustomItem.title',
+            controller: 'virtoCommerce.sitemapsModule.sitemapItemsAddCustomItemController',
+            template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/sitemap-add-custom-item.tpl.html',
+            currentEntity: {
+                sitemap: blade.sitemap
+            }
+        }
+        bladeNavigationService.showBlade(addCustomItemBlade, blade);
+    }
+
     function addItemsToSitemap(items, blade) {
         blade.isLoading = true;
         var sitemapItems = [];

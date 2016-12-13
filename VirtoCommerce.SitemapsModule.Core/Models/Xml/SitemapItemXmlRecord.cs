@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace VirtoCommerce.SitemapsModule.Core.Models
+namespace VirtoCommerce.SitemapsModule.Core.Models.Xml
 {
     [Serializable]
     public class SitemapItemXmlRecord

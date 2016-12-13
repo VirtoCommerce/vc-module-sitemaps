@@ -1,8 +1,6 @@
-﻿using Omu.ValueInjecter;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.SitemapsModule.Core.Models;
 
@@ -23,6 +21,9 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
         [StringLength(64)]
         public string StoreId { get; set; }
 
+        [StringLength(256)]
+        public string UrlTemplate { get; set; }
+
         public virtual ObservableCollection<SitemapItemEntity> Items { get; set; }
 
         public virtual Sitemap ToModel(Sitemap sitemap)
@@ -32,7 +33,14 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
                 throw new ArgumentNullException("sitemap");
             }
 
-            sitemap.InjectFrom(this);
+            sitemap.CreatedBy = CreatedBy;
+            sitemap.CreatedDate = CreatedDate;
+            sitemap.Filename = Filename;
+            sitemap.Id = Id;
+            sitemap.ModifiedBy = ModifiedBy;
+            sitemap.ModifiedDate = ModifiedDate;
+            sitemap.StoreId = StoreId;
+            sitemap.UrlTemplate = UrlTemplate;
 
             return sitemap;
         }
@@ -50,7 +58,9 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
 
             pkMap.AddPair(sitemap, this);
 
-            this.InjectFrom(sitemap);
+            Filename = sitemap.Filename;
+            StoreId = sitemap.StoreId;
+            UrlTemplate = sitemap.UrlTemplate;
 
             return this;
         }
@@ -62,7 +72,9 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
                 throw new ArgumentNullException("sitemapEntity");
             }
 
-            sitemapEntity.InjectFrom(this);
+            sitemapEntity.Filename = Filename;
+            sitemapEntity.StoreId = StoreId;
+            sitemapEntity.UrlTemplate = UrlTemplate;
         }
     }
 }

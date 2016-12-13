@@ -1,15 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.IO.Packaging;
 using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Web.Http;
 using System.Web.Http.Description;
-using System.Xml.Serialization;
-using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.Domain.Commerce.Model.Search;
+using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Web.Security;
 using VirtoCommerce.SitemapsModule.Core.Models;
+using VirtoCommerce.SitemapsModule.Core.Models.Xml;
 using VirtoCommerce.SitemapsModule.Core.Services;
+using VirtoCommerce.SitemapsModule.Web.Model;
 using VirtoCommerce.SitemapsModule.Web.Security;
 
 namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
@@ -21,20 +23,27 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         private readonly ISitemapService _sitemapService;
         private readonly ISitemapItemService _sitemapItemService;
         private readonly ISitemapXmlGenerator _sitemapXmlGenerator;
-        private readonly ISettingsManager _settingManager;
+        private readonly IBlobStorageProvider _blobStorageProvider;
+        private readonly IBlobUrlResolver _blobUrlResolver;
 
-        public SitemapsModuleApiController(ISitemapService sitemapService, ISitemapItemService sitemapItemService, ISitemapXmlGenerator sitemapXmlGenerator, ISettingsManager settingManager)
+        public SitemapsModuleApiController(
+            ISitemapService sitemapService,
+            ISitemapItemService sitemapItemService,
+            ISitemapXmlGenerator sitemapXmlGenerator,
+            IBlobStorageProvider blobStorageProvider,
+            IBlobUrlResolver blobUrlResolver)
         {
             _sitemapService = sitemapService;
             _sitemapItemService = sitemapItemService;
             _sitemapXmlGenerator = sitemapXmlGenerator;
-            _settingManager = settingManager;
+            _blobStorageProvider = blobStorageProvider;
+            _blobUrlResolver = blobUrlResolver;
         }
 
         [HttpPost]
         [Route("search")]
-        [ResponseType(typeof(SearchResponse<Sitemap>))]
-        public IHttpActionResult SearchSitemaps(SitemapSearchRequest request)
+        [ResponseType(typeof(GenericSearchResult<Sitemap>))]
+        public IHttpActionResult SearchSitemaps(SitemapSearchCriteria request)
         {
             if (request == null)
             {
@@ -77,7 +86,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                 return BadRequest("sitemap is null");
             }
 
-            _sitemapService.SaveChanges(sitemap);
+            _sitemapService.SaveChanges(new[] { sitemap });
 
             return Ok(sitemap);
         }
@@ -93,7 +102,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                 return BadRequest("sitemap is null");
             }
 
-            _sitemapService.SaveChanges(sitemap);
+            _sitemapService.SaveChanges(new[] { sitemap });
 
             return StatusCode(HttpStatusCode.NoContent);
         }
@@ -116,8 +125,8 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
         [HttpPost]
         [Route("items/search")]
-        [ResponseType(typeof(SearchResponse<SitemapItem>))]
-        public IHttpActionResult SearchSitemapItems(SitemapItemSearchRequest request)
+        [ResponseType(typeof(GenericSearchResult<SitemapItem>))]
+        public IHttpActionResult SearchSitemapItems(SitemapItemSearchCriteria request)
         {
             if (request == null)
             {
@@ -149,81 +158,90 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         }
 
         [HttpDelete]
-        [Route("{sitemapId}/items")]
+        [Route("items")]
         [ResponseType(typeof(void))]
-        public IHttpActionResult RemoveSitemapItems(string sitemapId, [FromUri]string[] itemIds)
+        public IHttpActionResult RemoveSitemapItems([FromUri]string[] itemIds)
         {
-            if (string.IsNullOrWhiteSpace(sitemapId))
-            {
-                return BadRequest("sitemapId is null");
-            }
             if (itemIds == null)
             {
                 return BadRequest("itemIds is null");
             }
 
-            _sitemapItemService.Remove(sitemapId, itemIds);
+            _sitemapItemService.Remove(itemIds);
 
             return StatusCode(HttpStatusCode.NoContent);
         }
 
         [HttpGet]
-        [Route("xml")]
-        public HttpResponseMessage GenerateSitemapXml(string storeId, string sitemapFilename)
+        [Route("schema")]
+        [ResponseType(typeof(SitemapIndexXmlRecord))]
+        public IHttpActionResult GetSitemapsSchema(string storeId)
         {
-            var apiResponse = new HttpResponseMessage(HttpStatusCode.NotFound);
-
-            if (string.IsNullOrEmpty(storeId) || string.IsNullOrEmpty(sitemapFilename))
+            if (string.IsNullOrEmpty(storeId))
             {
-                apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                return BadRequest("storeId is empty");
             }
 
-            var sitemapOptions = GetSetemapOptions();
+            var sitemapSchema = _sitemapXmlGenerator.GetSitemapSchema(storeId);
 
-            using (var stream = new MemoryStream())
-            {
-                XmlSerializer xmlSerializer = null;
-
-                var xns = new XmlSerializerNamespaces();
-                xns.Add("", "http://www.sitemaps.org/schemas/sitemap/0.9");
-
-                if (sitemapFilename.Equals("sitemap.xml", StringComparison.OrdinalIgnoreCase))
-                {
-                    var sitemapIndex = _sitemapXmlGenerator.GenerateSitemapIndex(storeId, sitemapOptions);
-                    xmlSerializer = new XmlSerializer(sitemapIndex.GetType());
-                    xmlSerializer.Serialize(stream, sitemapIndex, xns);
-                }
-                else
-                {
-                    var sitemap = _sitemapXmlGenerator.GenerateSitemap(storeId, sitemapFilename, sitemapOptions);
-                    if (sitemap != null)
-                    {
-                        xmlSerializer = new XmlSerializer(sitemap.GetType());
-                        xmlSerializer.Serialize(stream, sitemap, xns);
-                    }
-                }
-
-                stream.Position = 0;
-
-                var streamReader = new StreamReader(stream);
-
-                apiResponse.StatusCode = HttpStatusCode.OK;
-                apiResponse.Content = new StringContent(streamReader.ReadToEnd(), Encoding.UTF8, "application/xml");
-            }
-
-            return apiResponse;
+            return Ok(sitemapSchema);
         }
 
-        private SitemapOptions GetSetemapOptions()
+        [HttpGet]
+        [Route("generate")]
+        [ResponseType(typeof(Stream))]
+        public IHttpActionResult GenerateSitemap(string storeId, string sitemapUrl)
         {
-            return new SitemapOptions
+            if (string.IsNullOrEmpty(storeId))
             {
-                CategoryPagePriority = _settingManager.GetValue("Sitemap.CategoryPagePriority", 0.7M),
-                CategoryPageUpdateFrequency = _settingManager.GetValue("Sitemap.CategoryPageUpdateFrequency", PageUpdateFrequency.Weekly),
-                ProductPagePriority = _settingManager.GetValue("Sitemap.ProductPagePriority", 1.0M),
-                ProductPageUpdateFrequency = _settingManager.GetValue("Sitemap.ProductPageUpdateFrequency", PageUpdateFrequency.Daily),
-                RecordsLimitPerFile = _settingManager.GetValue("Sitemap.RecordsLimitPerFile", 10000)
-            };
+                return BadRequest("storeId is empty");
+            }
+            if (string.IsNullOrEmpty(sitemapUrl))
+            {
+                return BadRequest("sitemapUrl is empty");
+            }
+
+            var sitemapSchema = _sitemapXmlGenerator.GetSitemapSchema(storeId);
+            var stream = _sitemapXmlGenerator.GenerateSitemapXml(sitemapSchema, sitemapUrl);
+
+            return Ok(stream);
+        }
+
+        [HttpGet]
+        [Route("download")]
+        [ResponseType(typeof(Model.Package))]
+        public IHttpActionResult DownloadSitemaps(string storeId)
+        {
+            if (string.IsNullOrEmpty(storeId))
+            {
+                return BadRequest("storeId is empty");
+            }
+
+            var zipPackageRelativeUrl = "tmp/sitemap.zip";
+            var sitemapSchema = _sitemapXmlGenerator.GetSitemapSchema(storeId, true);
+
+            using (var targetStream = _blobStorageProvider.OpenWrite(zipPackageRelativeUrl))
+            {
+                using (var zipPackage = ZipPackage.Open(targetStream, FileMode.Create))
+                {
+                    CreateSitemapPart(zipPackage, sitemapSchema, "sitemap.xml");
+                    foreach (var sitemapMapping in sitemapSchema)
+                    {
+                        CreateSitemapPart(zipPackage, sitemapSchema, sitemapMapping.Filename);
+                    }
+                }
+            }
+
+            return Ok(new Model.Package { Url = _blobUrlResolver.GetAbsoluteUrl(zipPackageRelativeUrl) });
+        }
+
+        private void CreateSitemapPart(System.IO.Packaging.Package package, ICollection<SitemapMapping> sitemapMappings, string sitemapFilename)
+        {
+            var uri = PackUriHelper.CreatePartUri(new Uri(sitemapFilename, UriKind.Relative));
+            var sitemapPart = package.CreatePart(uri, System.Net.Mime.MediaTypeNames.Text.Xml, CompressionOption.Normal);
+            var stream = _sitemapXmlGenerator.GenerateSitemapXml(sitemapMappings, sitemapFilename);
+            var sitemapPartStream = sitemapPart.GetStream();
+            stream.CopyTo(sitemapPartStream);
         }
     }
 }

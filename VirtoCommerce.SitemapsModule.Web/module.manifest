@@ -35,6 +35,20 @@
                 <valueType>integer</valueType>
                 <defaultValue>10000</defaultValue>
             </setting>
+            <setting>
+                <name>Sitemap.FilenameSeparator</name>
+                <title>Filename separator</title>
+                <description>The separator for sitemap filename and its part in case of sitemap items count is greater than records limit per file</description>
+                <valueType>string</valueType>
+                <defaultValue>--</defaultValue>
+            </setting>
+            <setting>
+                <name>Sitemap.CatalogSearchBunchSize</name>
+                <title>Catalog search bunch size</title>
+                <description>The bunch size for catalog search items</description>
+                <valueType>integer</valueType>
+                <defaultValue>1000</defaultValue>
+            </setting>
         </group>
         <group name="Sitemap|Product Links">
             <setting>

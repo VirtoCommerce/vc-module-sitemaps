@@ -1,12 +1,13 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using VirtoCommerce.SitemapsModule.Core.Models;
 
 namespace VirtoCommerce.SitemapsModule.Core.Services
 {
     public interface ISitemapXmlGenerator
     {
-        SitemapIndexXmlRecord GenerateSitemapIndex(string storeId, SitemapOptions options);
+        ICollection<SitemapMapping> GetSitemapSchema(string storeId, bool includeItems = false);
 
-        SitemapXmlRecord GenerateSitemap(string storeId, string sitemapFilename, SitemapOptions options);
+        Stream GenerateSitemapXml(ICollection<SitemapMapping> sitemapMappings, string sitemapUrl);
     }
 }

@@ -1,4 +1,5 @@
-﻿using VirtoCommerce.SitemapsModule.Core.Models;
+﻿using VirtoCommerce.Domain.Commerce.Model.Search;
+using VirtoCommerce.SitemapsModule.Core.Models;
 
 namespace VirtoCommerce.SitemapsModule.Core.Services
 {
@@ -6,9 +7,9 @@ namespace VirtoCommerce.SitemapsModule.Core.Services
     {
         Sitemap GetById(string id);
 
-        SearchResponse<Sitemap> Search(SitemapSearchRequest searchRequest);
+        GenericSearchResult<Sitemap> Search(SitemapSearchCriteria criteria);
 
-        void SaveChanges(Sitemap sitemap);
+        void SaveChanges(Sitemap[] sitemaps);
 
         void Remove(string[] sitemapIds);
     }

@@ -4,12 +4,12 @@
     {
         public int RecordsLimitPerFile { get; set; }
 
-        public string CategoryPageUpdateFrequency { get; set; }
+        public string FilenameSeparator { get; set; }
 
-        public decimal CategoryPagePriority { get; set; }
+        public int CatalogSearchBunchSize { get; set; }
 
-        public string ProductPageUpdateFrequency { get; set; }
+        public SitemapItemOptions CategoryOptions { get; set; }
 
-        public decimal ProductPagePriority { get; set; }
+        public SitemapItemOptions ProductOptions { get; set; }
     }
 }

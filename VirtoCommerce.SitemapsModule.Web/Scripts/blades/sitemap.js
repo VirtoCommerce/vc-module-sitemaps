@@ -5,6 +5,7 @@
     blade.headIcon = 'fa fa-sitemap';
     blade.isLoading = false;
     blade.toolbarCommands = getBladeToolbarCommands();
+    blade.currentEntity.urlTemplate = '{slug}';
     blade.refresh = function () {
         if (!blade.currentEntity.isNew) {
             getSitemapById(blade.currentEntity.id);
@@ -54,15 +55,6 @@
                 blade.isLoading = true;
                 saveChanges(blade.currentEntity);
             }
-        }, {
-            name: 'sitemapsModule.blades.sitemap.toolbar.previewXml',
-            icon: 'fa fa-file-code-o',
-            canExecuteMethod: function () {
-                return blade.currentEntity.itemsTotalCount > 0;
-            },
-            executeMethod: function () {
-                previewXml(blade.parentBlade.storeId, blade.currentEntity.filename);
-            }
         }];
     }
 
@@ -72,7 +64,8 @@
             title: 'sitemapsModule.blades.addItems.title',
             controller: 'virtoCommerce.sitemapsModule.sitemapItemsAddController',
             template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/sitemap-items-add.tpl.html',
-            selectedItems: selectedItems
+            selectedItems: selectedItems,
+            sitemap: blade.currentEntity
         }
         bladeNavigationService.showBlade(addItemsBlade, blade);
     }
@@ -105,6 +98,7 @@
             blade.refresh();
             blade.parentBlade.refresh();
             blade.isLoading = false;
+            addSitemapItems(response.id, sitemap.items);
         }, function (error) {
             bladeNavigationService.setError('Error ' + error.status, blade);
             blade.isLoading = false;
@@ -130,8 +124,22 @@
             take: take
         }, function (response) {
             $scope.pageSettings.totalItems = response.totalCount;
-            blade.currentEntity.items = response.items;
+            blade.currentEntity.items = response.results;
             blade.currentEntity.totalItemsCount = response.totalCount;
+            blade.isLoading = false;
+        }, function (error) {
+            bladeNavigationService.setError('Error ' + error.status, blade);
+            blade.isLoading = false;
+        });
+    }
+
+    function addSitemapItems(sitemapId, sitemapItems) {
+        blade.isLoading = true;
+        sitemapsResource.addSitemapItems({
+            sitemapId: sitemapId
+        }, sitemapItems, function (response) {
+            blade.refresh();
+            blade.parentBlade.refresh();
             blade.isLoading = false;
         }, function (error) {
             bladeNavigationService.setError('Error ' + error.status, blade);
@@ -141,30 +149,24 @@
 
     function removeSitemapItems(sitemap, itemIds) {
         if (sitemap.isNew) {
+            _.each(itemIds, function (itemId) {
+                var item = _.find(sitemap.items, function (i) { return i.id == itemId });
+                if (item) {
+                    sitemap.items = _.without(sitemap.items, item);
+                }
+            });
         } else {
             blade.isLoading = true;
             sitemapsResource.removeSitemapItems({
-                sitemapId: sitemap.id,
                 itemIds: itemIds
             }, function (response) {
                 blade.refresh();
+                blade.parentBlade.refresh();
                 blade.isLoading = false;
             }, function (error) {
                 bladeNavigationService.setError('Error ' + error.status, blade);
                 blade.isLoading = false;
             });
         }
-    }
-
-    function previewXml(storeId, sitemapFilename) {
-        var previewBlade = {
-            id: 'sitemapPreviewBlade',
-            title: 'sitemapsModule.blades.preview.title',
-            controller: 'virtoCommerce.sitemapsModule.sitemapPreviewController',
-            template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/sitemap-preview.tpl.html',
-            storeId: storeId,
-            filename: sitemapFilename
-        }
-        bladeNavigationService.showBlade(previewBlade, blade);
     }
 }]);

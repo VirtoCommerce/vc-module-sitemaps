@@ -1,7 +1,5 @@
-﻿using Omu.ValueInjecter;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.SitemapsModule.Core.Models;
 
@@ -16,7 +14,6 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
         [StringLength(512)]
         public string ImageUrl { get; set; }
 
-        [Required]
         [StringLength(128)]
         public string ObjectId { get; set; }
 
@@ -27,6 +24,9 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
         [StringLength(128)]
         public string SitemapId { get; set; }
 
+        [StringLength(256)]
+        public string UrlTemplate { get; set; }
+
         public virtual SitemapEntity Sitemap { get; set; }
 
         public virtual SitemapItem ToModel(SitemapItem sitemapItem)
@@ -36,7 +36,17 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
                 throw new ArgumentNullException("sitemapItem");
             }
 
-            sitemapItem.InjectFrom(this);
+            sitemapItem.CreatedBy = CreatedBy;
+            sitemapItem.CreatedDate = CreatedDate;
+            sitemapItem.Id = Id;
+            sitemapItem.ImageUrl = ImageUrl;
+            sitemapItem.ModifiedBy = ModifiedBy;
+            sitemapItem.ModifiedDate = ModifiedDate;
+            sitemapItem.ObjectId = ObjectId;
+            sitemapItem.ObjectType = ObjectType;
+            sitemapItem.SitemapId = SitemapId;
+            sitemapItem.Title = Title;
+            sitemapItem.UrlTemplate = UrlTemplate;
 
             return sitemapItem;
         }
@@ -54,7 +64,12 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
 
             pkMap.AddPair(sitemapItem, this);
 
-            this.InjectFrom(sitemapItem);
+            ImageUrl = sitemapItem.ImageUrl;
+            ObjectId = sitemapItem.ObjectId;
+            ObjectType = sitemapItem.ObjectType;
+            SitemapId = sitemapItem.SitemapId;
+            Title = sitemapItem.Title;
+            UrlTemplate = sitemapItem.UrlTemplate;
 
             return this;
         }
@@ -66,7 +81,12 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
                 throw new ArgumentNullException("sitemapItemEntity");
             }
 
-            sitemapItemEntity.InjectFrom(this);
+            sitemapItemEntity.ImageUrl = ImageUrl;
+            sitemapItemEntity.ObjectId = ObjectId;
+            sitemapItemEntity.ObjectType = ObjectType;
+            sitemapItemEntity.SitemapId = SitemapId;
+            sitemapItemEntity.Title = Title;
+            sitemapItemEntity.UrlTemplate = UrlTemplate;
         }
     }
 }

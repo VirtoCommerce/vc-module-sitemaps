@@ -1,4 +1,12 @@
-﻿<div class="blade-static __bottom" ng-if="pageSettings.itemsPerPageCount < pageSettings.totalItems" ng-include="'pagerTemplate.html'"></div>
+﻿<div class="blade-static" ng-if="zipDownloadUrl">
+    <div class="form-group">
+        <label class="form-label" ng-bind="'sitemapsModule.blades.sitemapList.zipPackageReadyMessage' | translate"></label>
+        <div class="form-input">
+            <a ng-href="{{ zipDownloadUrl }}" ng-bind="zipDownloadUrl"></a>
+        </div>
+    </div>
+</div>
+<div class="blade-static __bottom" ng-if="pageSettings.itemsPerPageCount < pageSettings.totalItems" ng-include="'pagerTemplate.html'"></div>
 <div class="blade-content __medium-wide">
     <div class="blade-inner">
         <div class="inner-block">
@@ -18,7 +26,7 @@
                     displayName: 'sitemapsModule.blades.sitemapList.gridHeaders.filename',
                     width: '75%'
                 }, {
-                    name: 'itemsTotalCount',
+                    name: 'totalItemsCount',
                     displayName: 'sitemapsModule.blades.sitemapList.gridHeaders.itemsCount'
                 }]})">
                 <div ui-grid="gridOptions"

@@ -44,13 +44,13 @@
                 blade.refresh();
             }
         }, {
-            name: 'sitemapsModule.blades.sitemapList.toolbar.preview',
-            icon: 'fa fa-file-code-o',
+            name: 'sitemapsModule.blades.sitemapList.toolbar.download',
+            icon: 'fa fa-download',
             canExecuteMethod: function () {
                 return $scope.pageSettings.totalItems > 0;
             },
             executeMethod: function () {
-                previewXml(blade.storeId, 'sitemap.xml');
+                downloadSitemaps(blade.storeId);
             }
         }];
     }
@@ -97,7 +97,7 @@
             take: take
         }, function (response) {
             $scope.pageSettings.totalItems = response.totalCount;
-            $scope.listEntries = response.items;
+            $scope.listEntries = response.results;
             blade.isLoading = false;
         }, function (error) {
             bladeNavigationService.setError('Error ' + error.status, blade);
@@ -116,15 +116,14 @@
         });
     }
 
-    function previewXml(storeId, sitemapFilename) {
-        var previewBlade = {
-            id: 'sitemapPreviewBlade',
-            title: 'sitemapsModule.blades.preview.title',
-            controller: 'virtoCommerce.sitemapsModule.sitemapPreviewController',
-            template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/sitemap-preview.tpl.html',
-            storeId: storeId,
-            filename: sitemapFilename
-        }
-        bladeNavigationService.showBlade(previewBlade, blade);
+    function downloadSitemaps(storeId) {
+        blade.isLoading = true;
+        sitemapsResource.downloadSitemaps({ storeId: storeId }, function (response) {
+            $scope.zipDownloadUrl = response.url;
+            blade.isLoading = false;
+        }, function (error) {
+            bladeNavigationService.setError('Error ' + error.status, blade);
+            blade.isLoading = false;
+        });
     }
 }]);

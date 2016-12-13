@@ -14,8 +14,10 @@ namespace VirtoCommerce.SitemapsModule.Core.Models
 
         public string StoreId { get; set; }
 
-        public int ItemsTotalCount { get; set; }
-
         public ICollection<SitemapItem> Items { get; set; }
+
+        public string UrlTemplate { get; set; }
+
+        public int TotalItemsCount { get; set; }
     }
 }

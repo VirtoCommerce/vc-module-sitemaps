@@ -12,26 +12,24 @@
           "addSitemap": "Add sitemap",
           "removeSitemap": "Remove sitemap",
           "refresh": "Refresh",
-          "preview": "Preview index sitemap"
-        },
-        "labels": {
-          "noSitemaps": "There are no sitemaps yet"
+          "download": "Download sitemaps"
         },
         "gridHeaders": {
           "filename": "Filename",
           "itemsCount": "Items count"
-        }
+        },
+        "zipPackageReadyMessage": "The sitemaps ZIP-package is ready. You can download it by the link below."
       },
       "sitemap": {
         "newSitemapTitle": "New sitemap",
         "toolbar": {
           "addItems": "Add items",
           "removeItems": "Remove items",
-          "saveSitemap": "Save sitemap",
-          "previewXml": "Preview XML"
+          "saveSitemap": "Save sitemap"
         },
         "formSitemap": {
-          "labelFilename": "Filename"
+          "labelFilename": "Filename",
+          "urlTemplate": "URL template"
         },
         "gridHeaders": {
           "title": "Title",
@@ -43,6 +41,10 @@
         "addCatalogItems": {
           "title": "Catalog items",
           "description": "Include product and categories"
+        },
+        "addCustomItem": {
+          "title": "Custom item",
+          "description": "Item with custom URL"
         }
       },
       "addCatalogItems": {
@@ -51,8 +53,14 @@
           "addSelected": "Add selected"
         }
       },
-      "preview": {
-        "title": "Preview"
+      "addCustomItem": {
+        "title": "Add custom item",
+        "toolbar": {
+          "save": "Save"
+        },
+        "formCustomSitemapItem": {
+          "labelUrlTemplate": "URL template"
+        }
       }
     },
     "contextMenu": {
