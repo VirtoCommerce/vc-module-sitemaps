@@ -15,6 +15,6 @@ namespace VirtoCommerce.SitemapsModule.Core.Models
 
         public string Url { get; set; }
 
-        public ICollection<SitemapItemMapping> Items { get; set; }
+        public IEnumerable<SitemapItemMapping> Items { get; set; }
     }
 }

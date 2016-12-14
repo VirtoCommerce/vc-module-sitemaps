@@ -5,7 +5,7 @@
     blade.headIcon = 'fa fa-sitemap';
     blade.isLoading = false;
     blade.toolbarCommands = getBladeToolbarCommands();
-    blade.currentEntity.urlTemplate = '{slug}';
+    blade.currentEntity.urlTemplate = '{storeUrl}/{slug}';
     blade.refresh = function () {
         if (!blade.currentEntity.isNew) {
             getSitemapById(blade.currentEntity.id);
@@ -98,7 +98,9 @@
             blade.refresh();
             blade.parentBlade.refresh();
             blade.isLoading = false;
-            addSitemapItems(response.id, sitemap.items);
+            if (sitemap.items && sitemap.items.length) {
+                addSitemapItems(response.id, sitemap.items);
+            }
         }, function (error) {
             bladeNavigationService.setError('Error ' + error.status, blade);
             blade.isLoading = false;
@@ -139,7 +141,7 @@
             sitemapId: sitemapId
         }, sitemapItems, function (response) {
             blade.refresh();
-            blade.parentBlade.refresh();
+            //blade.parentBlade.refresh();
             blade.isLoading = false;
         }, function (error) {
             bladeNavigationService.setError('Error ' + error.status, blade);

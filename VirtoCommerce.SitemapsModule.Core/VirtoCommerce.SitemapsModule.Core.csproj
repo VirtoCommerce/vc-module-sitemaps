@@ -54,12 +54,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\SitemapItemTypes.cs" />
     <Compile Include="Models\PageUpdateFrequency.cs" />
     <Compile Include="Models\Sitemap.cs" />
     <Compile Include="Models\SitemapItemMapping.cs" />
     <Compile Include="Models\SitemapItemOptions.cs" />
     <Compile Include="Models\SitemapMapping.cs" />
     <Compile Include="Models\SitemapOptions.cs" />
+    <Compile Include="Models\UrlTemplatePatterns.cs" />
     <Compile Include="Models\Xml\SitemapIndexItemXmlRecord.cs" />
     <Compile Include="Models\Xml\SitemapIndexXmlRecord.cs" />
     <Compile Include="Models\SitemapItem.cs" />

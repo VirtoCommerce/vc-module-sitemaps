@@ -6,17 +6,23 @@
                 <div class="form-group" ng-init="setForm(formSitemap)">
                     <label class="form-label" for="filename" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.labelFilename' | translate"></label>
                     <div class="form-input">
-                        <input id="filename" name="filename" required="required" type="text" ng-model="blade.currentEntity.filename" />
+                        <input id="filename" name="filename" required="required" type="text" ng-pattern="/^([a-z_\-\s0-9\.]+)+\.(xml)$/" ng-model="blade.currentEntity.filename" />
+                        <div class="description" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.descriptionFilename' | translate"></div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="urlTemplate" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.urlTemplate' | translate"></label>
+                    <label class="form-label" for="urlTemplate" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.labelUrlTemplate' | translate"></label>
                     <div class="form-input">
                         <input id="urlTemplate" name="urlTemplate" required="required" type="text" ng-model="blade.currentEntity.urlTemplate" />
+                        <div class="description" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.descriptionUrlTemplate' | translate"></div>
                     </div>
                 </div>
             </form>
-            <div class="table-wrapper" ng-init="setGridOptions({
+            <div class="form-group">
+                <label class="form-label" for="urlTemplate" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.labelSitemapItems' | translate"></label>
+            </div>
+            <div class="note" ng-show="pageSettings.totalItems === 0" ng-bind="'sitemapsModule.blades.sitemap.noSitemapsIemsMessage' | translate"></div>
+            <div class="table-wrapper" ng-show="pageSettings.totalItems > 0" ng-init="setGridOptions({
                 data: 'blade.currentEntity.items',
                 rowTemplate: 'sitemap-item-list-row.tpl.html',
                 columnDefs: [{

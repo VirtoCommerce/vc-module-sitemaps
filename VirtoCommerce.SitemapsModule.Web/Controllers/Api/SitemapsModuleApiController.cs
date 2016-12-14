@@ -11,7 +11,6 @@ using VirtoCommerce.Platform.Core.Web.Security;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Models.Xml;
 using VirtoCommerce.SitemapsModule.Core.Services;
-using VirtoCommerce.SitemapsModule.Web.Model;
 using VirtoCommerce.SitemapsModule.Web.Security;
 
 namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api

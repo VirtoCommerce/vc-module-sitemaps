@@ -107,6 +107,9 @@
 
     function removeSitemaps(sitemapIds) {
         blade.isLoading = true;
+        _.each(blade.childrenBlades, function (childBlade) {
+            bladeNavigationService.closeBlade(childBlade);
+        });
         sitemapsResource.remove({ ids: sitemapIds }, function () {
             blade.refresh();
             blade.isLoading = false;

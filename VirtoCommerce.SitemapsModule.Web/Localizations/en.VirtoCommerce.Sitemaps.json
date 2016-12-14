@@ -8,6 +8,7 @@
     "blades": {
       "sitemapList": {
         "title": "Sitemaps",
+        "subtitle": "Manage sitemaps to include them into index sitemap.xml",
         "toolbar": {
           "addSitemap": "Add sitemap",
           "removeSitemap": "Remove sitemap",
@@ -18,7 +19,7 @@
           "filename": "Filename",
           "itemsCount": "Items count"
         },
-        "zipPackageReadyMessage": "The sitemaps ZIP-package is ready. You can download it by the link below."
+        "noSitemapsMessage": "There are no sitemaps yet"
       },
       "sitemap": {
         "newSitemapTitle": "New sitemap",
@@ -29,12 +30,16 @@
         },
         "formSitemap": {
           "labelFilename": "Filename",
-          "urlTemplate": "URL template"
+          "descriptionFilename": "Filename is the unique sitemap identifier in context of index sitemap, i.e.: 'electronics.xml', 'products.xml', etc. Requirements for sitemap filename are the same to the file system. Please avoid of using 'sitemap.xml' as sitemap filename.",
+          "labelUrlTemplate": "URL template",
+          "descriptionUrlTemplate": "To generate a sitemap URL can be used the next patterns: {storeUrl} - will be replaced with store URL value, {storeSecureUrl} - will be replaced with store secure URL, {language} - will be replaced with language code (i.e. en-US), {slug} - will be replaced with SEO semantic URL part",
+          "labelSitemapItems": "Sitemap items"
         },
         "gridHeaders": {
           "title": "Title",
           "type": "Type"
-        }
+        },
+        "noSitemapsIemsMessage": "There are no sitemap items yet"
       },
       "addItems": {
         "title": "Add items",
