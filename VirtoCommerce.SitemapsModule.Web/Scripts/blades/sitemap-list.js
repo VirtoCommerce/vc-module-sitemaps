@@ -122,11 +122,22 @@
     function downloadSitemaps(storeId) {
         blade.isLoading = true;
         sitemapsResource.downloadSitemaps({ storeId: storeId }, function (response) {
-            $scope.zipDownloadUrl = response.url;
+            showSitemapGenerationCompleteDialog(response.url);
             blade.isLoading = false;
         }, function (error) {
             bladeNavigationService.setError('Error ' + error.status, blade);
             blade.isLoading = false;
         });
+    }
+
+    function showSitemapGenerationCompleteDialog(zipUrl) {
+        var dialog = {
+            id: 'sitemapGenerationComplete',
+            title: 'sitemapsModule.dialogs.sitemapGenerationComplete.title',
+            message: zipUrl,
+            callback: function (confirm) {
+            }
+        }
+        dialogService.showNotificationDialog(dialog);
     }
 }]);

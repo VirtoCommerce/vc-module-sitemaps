@@ -11,6 +11,7 @@ using VirtoCommerce.Platform.Core.Web.Security;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Models.Xml;
 using VirtoCommerce.SitemapsModule.Core.Services;
+using VirtoCommerce.SitemapsModule.Web.Model;
 using VirtoCommerce.SitemapsModule.Web.Security;
 
 namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
@@ -208,7 +209,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
         [HttpGet]
         [Route("download")]
-        [ResponseType(typeof(Model.Package))]
+        [ResponseType(typeof(SitemapPackage))]
         public IHttpActionResult DownloadSitemaps(string storeId)
         {
             if (string.IsNullOrEmpty(storeId))
@@ -231,7 +232,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                 }
             }
 
-            return Ok(new Model.Package { Url = _blobUrlResolver.GetAbsoluteUrl(zipPackageRelativeUrl) });
+            return Ok(new SitemapPackage { Url = _blobUrlResolver.GetAbsoluteUrl(zipPackageRelativeUrl) });
         }
 
         private void CreateSitemapPart(System.IO.Packaging.Package package, ICollection<SitemapMapping> sitemapMappings, string sitemapFilename)

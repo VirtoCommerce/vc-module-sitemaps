@@ -1,6 +1,6 @@
 ﻿namespace VirtoCommerce.SitemapsModule.Web.Model
 {
-    public class Package
+    public class SitemapPackage
     {
         public string Url { get; set; }
     }

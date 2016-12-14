@@ -353,7 +353,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                     sitemapItemMappings.Add(new SitemapItemMapping
                     {
                         ObjectId = seoSupportItem.Id,
-                        ObjectType = seoSupportItem.SeoObjectType,
+                        ObjectType = objectType,
                         Url = GetAbsoluteUrl(store, urlTemplate, seoInfo)
                     });
                 }
