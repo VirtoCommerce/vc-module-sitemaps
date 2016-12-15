@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Domain.Customer.Services;
+using VirtoCommerce.Domain.Customer.Model;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services
 {
@@ -245,7 +246,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             var customSitemapItemMappings = GetCustomSitemapItemMappings(store, sitemap);
             sitemapItemMappings.AddRange(customSitemapItemMappings);
 
-            // TODO: Add vendor sitemap items
+            var vendorSitemapItemMappings = GetVendorSitemapItemMappings(store, sitemap);
+            sitemapItemMappings.AddRange(vendorSitemapItemMappings);
 
             // TODO: Add static content sitemap items
 
@@ -312,6 +314,33 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             return customSitemapItemMappings;
         }
 
+        private ICollection<SitemapItemMapping> GetVendorSitemapItemMappings(Store store, Sitemap sitemap)
+        {
+            var vendorSitemapItemMappings = new List<SitemapItemMapping>();
+
+            var vendorSearchCriteria = new MembersSearchCriteria
+            {
+                MemberType = SitemapItemTypes.Vendor,
+                Skip = 0,
+                Take = _sitemapOptions.RecordsLimitPerFile
+            };
+            var vendorSearchResult = MemberSearchService.SearchMembers(vendorSearchCriteria);
+            var partsCount = (int)Math.Ceiling((double)vendorSearchResult.TotalCount / _sitemapOptions.RecordsLimitPerFile);
+            for (var i = 1; i <= partsCount; i++)
+            {
+                foreach (var member in vendorSearchResult.Results)
+                {
+                    var vendor = member as Vendor;
+                    if (vendor != null)
+                    {
+                        vendorSitemapItemMappings.AddRange(BuildSitemapItemMappings(new[] { vendor }, store, SitemapItemTypes.Vendor, sitemap.UrlTemplate));
+                    }
+                }
+            }
+
+            return vendorSitemapItemMappings;
+        }
+
         private ICollection<SitemapItemMapping> BuildSitemapItemMappings(IEnumerable<SitemapItem> sitemapItems, Store store)
         {
             var sitemapItemMappings = new List<SitemapItemMapping>();
@@ -335,6 +364,10 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
 
             foreach (var seoSupportItem in seoSupportItems)
             {
+                if (seoSupportItem.SeoInfos == null)
+                {
+                    seoSupportItem.SeoInfos = new List<SeoInfo>();
+                }
                 var seoInfos = seoSupportItem.SeoInfos.Where(si => si.IsActive && store.Languages.Contains(si.LanguageCode)).ToList();
                 if (!seoInfos.Any())
                 {
