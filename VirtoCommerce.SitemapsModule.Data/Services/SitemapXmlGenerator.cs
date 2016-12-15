@@ -318,23 +318,28 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
         {
             var vendorSitemapItemMappings = new List<SitemapItemMapping>();
 
-            var vendorSearchCriteria = new MembersSearchCriteria
+            var memberSearchCriteria = new MembersSearchCriteria
             {
                 MemberType = SitemapItemTypes.Vendor,
                 Skip = 0,
                 Take = _sitemapOptions.RecordsLimitPerFile
             };
-            var vendorSearchResult = MemberSearchService.SearchMembers(vendorSearchCriteria);
-            var partsCount = (int)Math.Ceiling((double)vendorSearchResult.TotalCount / _sitemapOptions.RecordsLimitPerFile);
+            var memberSearchResult = MemberSearchService.SearchMembers(memberSearchCriteria);
+            var partsCount = (int)Math.Ceiling((double)memberSearchResult.TotalCount / _sitemapOptions.RecordsLimitPerFile);
             for (var i = 1; i <= partsCount; i++)
             {
-                foreach (var member in vendorSearchResult.Results)
+                foreach (var member in memberSearchResult.Results)
                 {
                     var vendor = member as Vendor;
                     if (vendor != null)
                     {
                         vendorSitemapItemMappings.AddRange(BuildSitemapItemMappings(new[] { vendor }, store, SitemapItemTypes.Vendor, sitemap.UrlTemplate));
                     }
+                }
+                if (partsCount > 1)
+                {
+                    memberSearchCriteria.Skip = _sitemapOptions.RecordsLimitPerFile * i;
+                    memberSearchResult = MemberSearchService.SearchMembers(memberSearchCriteria);
                 }
             }
 
