@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace VirtoCommerce.SitemapsModule.Core.Models.Xml
+namespace VirtoCommerce.SitemapsModule.Data.Models.Xml
 {
     [Serializable]
-    public class SitemapItemXmlRecord
+    public class SitemapItemRecord
     {
         [XmlElement("loc")]
         public string Url { get; set; }

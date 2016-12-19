@@ -2,8 +2,8 @@
 {
     public class SitemapItemOptions
     {
-        public string PageUpdateFrequency { get; set; }
+        public string UpdateFrequency { get; set; }
 
-        public decimal PagePriority { get; set; }
+        public decimal Priority { get; set; }
     }
 }

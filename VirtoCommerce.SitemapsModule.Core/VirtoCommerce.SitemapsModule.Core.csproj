@@ -57,22 +57,15 @@
     <Compile Include="Models\SitemapItemTypes.cs" />
     <Compile Include="Models\PageUpdateFrequency.cs" />
     <Compile Include="Models\Sitemap.cs" />
-    <Compile Include="Models\SitemapItemMapping.cs" />
     <Compile Include="Models\SitemapItemOptions.cs" />
-    <Compile Include="Models\SitemapMapping.cs" />
     <Compile Include="Models\SitemapOptions.cs" />
     <Compile Include="Models\UrlTemplatePatterns.cs" />
-    <Compile Include="Models\Xml\SitemapIndexItemXmlRecord.cs" />
-    <Compile Include="Models\Xml\SitemapIndexXmlRecord.cs" />
     <Compile Include="Models\SitemapItem.cs" />
     <Compile Include="Models\SitemapItemSearchCriteria.cs" />
-    <Compile Include="Models\Xml\SitemapItemXmlRecord.cs" />
     <Compile Include="Models\SitemapSearchCriteria.cs" />
-    <Compile Include="Models\Xml\SitemapXmlRecord.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ISitemapItemService.cs" />
     <Compile Include="Services\ISitemapService.cs" />
-    <Compile Include="Services\ISitemapXmlGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

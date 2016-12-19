@@ -6,7 +6,7 @@
 
         public string FilenameSeparator { get; set; }
 
-        public int CatalogSearchBunchSize { get; set; }
+        public int SearchBunchSize { get; set; }
 
         public SitemapItemOptions CategoryOptions { get; set; }
 

@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace VirtoCommerce.SitemapsModule.Core.Models.Xml
+namespace VirtoCommerce.SitemapsModule.Data.Models.Xml
 {
     [Serializable]
     [XmlRoot("urlset", Namespace = "http://www.sitemaps.org/schemas/sitemap/0.9")]
-    public class SitemapXmlRecord
+    public class SitemapRecord
     {
-        public SitemapXmlRecord()
+        public SitemapRecord()
         {
-            Items = new List<SitemapItemXmlRecord>();
+            Items = new List<SitemapItemRecord>();
         }
 
         [XmlElement("url")]
-        public List<SitemapItemXmlRecord> Items { get; set; }
+        public List<SitemapItemRecord> Items { get; set; }
     }
 }

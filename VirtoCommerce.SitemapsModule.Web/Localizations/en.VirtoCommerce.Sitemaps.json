@@ -64,7 +64,8 @@
           "save": "Save"
         },
         "formCustomSitemapItem": {
-          "labelUrlTemplate": "URL template"
+          "labelUrlTemplate": "URL template",
+          "descriptionUrlTemplate": "The URL template for custom items should be an absolute URL, i.e.: http://mystore.com/about-us"
         }
       }
     },

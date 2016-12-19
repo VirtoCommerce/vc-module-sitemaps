@@ -5,7 +5,6 @@ using System.Xml.Serialization;
 using VirtoCommerce.Domain.Catalog.Services;
 using VirtoCommerce.Domain.Store.Services;
 using VirtoCommerce.Platform.Core.Settings;
-using VirtoCommerce.SitemapsModule.Core.Models.Xml;
 using VirtoCommerce.SitemapsModule.Core.Services;
 using VirtoCommerce.Domain.Store.Model;
 using VirtoCommerce.Platform.Core.Common;
@@ -17,6 +16,7 @@ using System.Collections.Concurrent;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Domain.Customer.Services;
 using VirtoCommerce.Domain.Customer.Model;
+using VirtoCommerce.SitemapsModule.Data.Models.Xml;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services
 {
@@ -29,7 +29,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             IItemService itemService,
             ICategoryService categoryService,
             ICatalogSearchService catalogSearchService,
-            IMemberSearchService memberSearchService,
+            IMemberService memberService,
             ISettingsManager settingsManager)
         {
             SitemapService = sitemapService;
@@ -38,7 +38,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             ItemService = itemService;
             CategoryService = categoryService;
             CatalogSearchService = catalogSearchService;
-            MemberSearchService = memberSearchService;
+            MemberService = memberService;
             SettingsManager = settingsManager;
 
             _sitemapOptions = GetSitemapOptions();
@@ -52,17 +52,17 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
         protected IItemService ItemService { get; private set; }
         protected ICategoryService CategoryService { get; private set; }
         protected ICatalogSearchService CatalogSearchService { get; private set; }
-        protected IMemberSearchService MemberSearchService { get; private set; }
+        protected IMemberService MemberService { get; private set; }
         protected ISettingsManager SettingsManager { get; private set; }
 
-        public virtual ICollection<SitemapMapping> GetSitemapSchema(string storeId, bool withItems = false)
+        public virtual SitemapIndexRecord GetSitemapSchema(string storeId)
         {
             if (string.IsNullOrEmpty(storeId))
             {
                 throw new ArgumentException("storeId");
             }
 
-            var sitemapMappings = new List<SitemapMapping>();
+            var sitemapSchema = new SitemapIndexRecord();
 
             var store = StoreService.GetById(storeId);
             if (store != null)
@@ -70,84 +70,65 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 var sitemaps = GetSitemaps(store);
                 foreach (var sitemap in sitemaps)
                 {
-                    sitemapMappings.AddRange(GetSitemapMappings(store, sitemap, withItems));
+                    sitemap.Items = GetFormalSitemapItems(sitemap.Id);
+
+                    var sitemapIndexItemRecords = GetSitemapIndexItemRecords(store, sitemap);
+                    sitemapSchema.Sitemaps.AddRange(sitemapIndexItemRecords);
                 }
             }
 
-            return sitemapMappings;
+            return sitemapSchema;
         }
 
-        public virtual Stream GenerateSitemapXml(ICollection<SitemapMapping> sitemapMappings, string sitemapUrl)
+        public virtual Stream GenerateSitemapXml(string storeId, SitemapIndexRecord sitemapSchema, string sitemapFilename)
         {
-            if (sitemapMappings == null)
-            {
-                throw new ArgumentNullException("sitemapMappings");
-            }
-
-            var sitemapUrlParts = sitemapUrl.Split('/');
-            var sitemapFilename = sitemapUrlParts.LastOrDefault();
-            if (string.IsNullOrEmpty(sitemapFilename))
-            {
-                sitemapFilename = "sitemap.xml";
-            }
+            var stream = new MemoryStream();
 
             XmlSerializer xmlSerializer = null;
             var xmlNamespaces = new XmlSerializerNamespaces();
             xmlNamespaces.Add("", "http://www.sitemaps.org/schemas/sitemap/0.9");
 
-            var stream = new MemoryStream();
-            if (sitemapFilename.EqualsInvariant("sitemap.xml"))
+            var store = StoreService.GetById(storeId);
+            if (store != null)
             {
-                var sitemapIndexXmlRecord = GetSitemapIndexXmlRecord(sitemapMappings);
-                xmlSerializer = new XmlSerializer(sitemapIndexXmlRecord.GetType());
-                xmlSerializer.Serialize(stream, sitemapIndexXmlRecord, xmlNamespaces);
-            }
-            else
-            {
-                var sitemapMapping = sitemapMappings.FirstOrDefault(sm => sm.Filename.EqualsInvariant(sitemapFilename));
-                if (sitemapMapping != null)
+                if (sitemapFilename.EqualsInvariant("sitemap.xml"))
                 {
-                    var sitemapXmlRecord = GetSitemapXmlRecord(sitemapMapping);
-                    xmlSerializer = new XmlSerializer(sitemapXmlRecord.GetType());
-                    xmlSerializer.Serialize(stream, sitemapXmlRecord, xmlNamespaces);
+                    xmlSerializer = new XmlSerializer(sitemapSchema.GetType());
+                    xmlSerializer.Serialize(stream, sitemapSchema, xmlNamespaces);
+                }
+                else
+                {
+                    int partNumber = 0;
+                    var sitemapPart = sitemapFilename.Replace(".xml", "").Split(new[] { _sitemapOptions.FilenameSeparator }, StringSplitOptions.None).LastOrDefault();
+                    int.TryParse(sitemapPart, out partNumber);
+                    var sitemapIndexItemRecord = sitemapSchema.Sitemaps.FirstOrDefault(s => s.Filename == sitemapFilename);
+                    if (sitemapIndexItemRecord != null)
+                    {
+                        var sitemap = SitemapService.GetById(sitemapIndexItemRecord.SitemapId);
+                        if (sitemap != null)
+                        {
+                            sitemap.Items = GetFormalSitemapItems(sitemapIndexItemRecord.SitemapId);
+                            var sitemapItemRecords = GetSitemapItemRecords(store, sitemap);
+                            var sitemapRecord = new SitemapRecord();
+                            if (partNumber == 0)
+                            {
+                                sitemapRecord.Items = sitemapItemRecords.ToList();
+                            }
+                            else
+                            {
+                                sitemapRecord.Items = sitemapItemRecords.Skip((partNumber - 1) * _sitemapOptions.RecordsLimitPerFile).Take(_sitemapOptions.RecordsLimitPerFile).ToList();
+                            }
+
+                            xmlSerializer = new XmlSerializer(sitemapRecord.GetType());
+                            xmlSerializer.Serialize(stream, sitemapRecord, xmlNamespaces);
+                        }
+                    }
                 }
             }
 
             stream.Position = 0;
 
             return stream;
-        }
-
-        private SitemapIndexXmlRecord GetSitemapIndexXmlRecord(ICollection<SitemapMapping> sitemapMappings)
-        {
-            var sitemapIndexXmlRecord = new SitemapIndexXmlRecord();
-
-            sitemapIndexXmlRecord.Sitemaps = sitemapMappings.Select(sm => new SitemapIndexItemXmlRecord
-            {
-                ModifiedDate = DateTime.UtcNow,
-                Url = sm.Url
-            }).ToList();
-
-            return sitemapIndexXmlRecord;
-        }
-
-        private SitemapXmlRecord GetSitemapXmlRecord(SitemapMapping sitemapMapping)
-        {
-            var sitemapXmlRecord = new SitemapXmlRecord();
-
-            foreach (var sitemapItemMapping in sitemapMapping.Items)
-            {
-                var options = GetSitemapItemMappingOptions(sitemapItemMapping);
-                sitemapXmlRecord.Items.Add(new SitemapItemXmlRecord
-                {
-                    ModifiedDate = DateTime.UtcNow,
-                    Priority = options.PagePriority,
-                    UpdateFrequency = options.PageUpdateFrequency,
-                    Url = sitemapItemMapping.Url
-                });
-            }
-
-            return sitemapXmlRecord;
         }
 
         private ICollection<Sitemap> GetSitemaps(Store store)
@@ -161,7 +142,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 Take = _sitemapOptions.RecordsLimitPerFile
             };
             var sitemapSearchResult = SitemapService.Search(sitemapSearchCriteria);
-            var partsCount = (int)Math.Ceiling((double)sitemapSearchResult.TotalCount / _sitemapOptions.RecordsLimitPerFile);
+            var partsCount = sitemapSearchResult.TotalCount / _sitemapOptions.RecordsLimitPerFile + 1;
             for (var i = 1; i <= partsCount; i++)
             {
                 sitemaps.AddRange(sitemapSearchResult.Results);
@@ -175,27 +156,20 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             return sitemaps;
         }
 
-        private ICollection<SitemapItem> GetFormalSitemapItems(Sitemap sitemap)
+        private ICollection<SitemapItem> GetFormalSitemapItems(string sitemapId)
         {
             var formalSitemapItems = new List<SitemapItem>();
 
             var sitemapItemSearchCriteria = new SitemapItemSearchCriteria
             {
-                SitemapId = sitemap.Id,
+                SitemapId = sitemapId,
                 Skip = 0,
                 Take = _sitemapOptions.RecordsLimitPerFile
             };
             var sitemapItemSearchResult = SitemapItemService.Search(sitemapItemSearchCriteria);
-            var partsCount = (int)Math.Ceiling((double)sitemapItemSearchResult.TotalCount / _sitemapOptions.RecordsLimitPerFile);
+            var partsCount = sitemapItemSearchResult.TotalCount / _sitemapOptions.RecordsLimitPerFile + 1;
             for (var i = 1; i <= partsCount; i++)
             {
-                foreach (var sitemapItem in sitemapItemSearchResult.Results)
-                {
-                    if (string.IsNullOrEmpty(sitemapItem.UrlTemplate))
-                    {
-                        sitemapItem.UrlTemplate = sitemap.UrlTemplate;
-                    }
-                }
                 formalSitemapItems.AddRange(sitemapItemSearchResult.Results);
                 if (partsCount > 1)
                 {
@@ -207,66 +181,71 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             return formalSitemapItems;
         }
 
-        private ICollection<SitemapMapping> GetSitemapMappings(Store store, Sitemap sitemap, bool withItems = false)
+        private ICollection<SitemapIndexItemRecord> GetSitemapIndexItemRecords(Store store, Sitemap sitemap)
         {
-            var sitemapMappings = new List<SitemapMapping>();
+            var sitemapRecords = new List<SitemapIndexItemRecord>();
 
-            sitemap.Items = GetFormalSitemapItems(sitemap);
-            var sitemapItemMappings = GetSitemapItemMappings(store, sitemap);
-
-            int partsCount = (int)Math.Ceiling((double)sitemapItemMappings.Count() / _sitemapOptions.RecordsLimitPerFile);
+            var sitemapItemRecords = GetSitemapItemRecords(store, sitemap);
+            var partsCount = sitemapItemRecords.Count() / _sitemapOptions.RecordsLimitPerFile + 1;
             for (var i = 1; i <= partsCount; i++)
             {
                 var filename = partsCount > 1 ?
-                    string.Format("{0}{1}{2}.xml", sitemap.Filename.Replace(".xml", string.Empty), _sitemapOptions.FilenameSeparator, i) :
+                    string.Format("{0}{1}{2}.xml", sitemap.Filename.Replace(".xml", ""), _sitemapOptions.FilenameSeparator, i) :
                     sitemap.Filename;
-                var sitemapMapping = new SitemapMapping
+                sitemapRecords.Add(new SitemapIndexItemRecord
                 {
                     Filename = filename,
+                    ModifiedDate = DateTime.UtcNow,
                     SitemapId = sitemap.Id,
-                    Url = GetAbsoluteUrl(store, sitemap.UrlTemplate, new SeoInfo { SemanticUrl = filename })
-                };
-                if (withItems)
-                {
-                    sitemapMapping.Items = sitemapItemMappings.Skip((i - 1) * _sitemapOptions.RecordsLimitPerFile).Take(_sitemapOptions.RecordsLimitPerFile);
-                }
-                sitemapMappings.Add(sitemapMapping);
+                    Url = GetAbsoluteUrl(store, sitemap.UrlTemplate, null, filename)
+                });
             }
 
-            return sitemapMappings;
+            return sitemapRecords;
         }
 
-        private IEnumerable<SitemapItemMapping> GetSitemapItemMappings(Store store, Sitemap sitemap)
+        private IEnumerable<SitemapItemRecord> GetSitemapItemRecords(Store store, Sitemap sitemap)
         {
-            var sitemapItemMappings = new List<SitemapItemMapping>();
+            var sitemapItemRecords = new List<SitemapItemRecord>();
 
-            var catalogSitemapItemMappings = GetCatalogSitemapItemMappings(store, sitemap);
-            sitemapItemMappings.AddRange(catalogSitemapItemMappings);
+            var catalogSitemapItems = sitemap.Items.Where(si =>
+                si.ObjectType.EqualsInvariant(SitemapItemTypes.Category) || si.ObjectType.EqualsInvariant(SitemapItemTypes.Product));
+            if (catalogSitemapItems.Any())
+            {
+                var catalogSitemapItemRecords = GetCatalogSitemapItemRecords(store, sitemap);
+                sitemapItemRecords.AddRange(catalogSitemapItemRecords);
+            }
 
-            var customSitemapItemMappings = GetCustomSitemapItemMappings(store, sitemap);
-            sitemapItemMappings.AddRange(customSitemapItemMappings);
+            var vendorSitemapItemRecords = GetVendorSitemapItemRecords(store, sitemap);
+            sitemapItemRecords.AddRange(vendorSitemapItemRecords);
 
-            var vendorSitemapItemMappings = GetVendorSitemapItemMappings(store, sitemap);
-            sitemapItemMappings.AddRange(vendorSitemapItemMappings);
+            var customSitemapItemRecords = GetCustomSitemapItemRecords(store, sitemap);
+            sitemapItemRecords.AddRange(customSitemapItemRecords);
 
-            // TODO: Add static content sitemap items
-
-            return sitemapItemMappings.GroupBy(m => m.Url).Select(i => i.First());
+            return sitemapItemRecords.GroupBy(m => m.Url).Select(i => i.First());
         }
 
-        private ICollection<SitemapItemMapping> GetCatalogSitemapItemMappings(Store store, Sitemap sitemap)
+        private ICollection<SitemapItemRecord> GetCatalogSitemapItemRecords(Store store, Sitemap sitemap)
         {
-            var catalogSitemapItemMappings = new List<SitemapItemMapping>();
+            var sitemapItemRecords = new List<SitemapItemRecord>();
 
-            var categorySitemapItems = sitemap.Items.Where(i => i.ObjectType.EqualsInvariant(SitemapItemTypes.Category));
-            var categoryIds = categorySitemapItems.Select(i => i.ObjectId).ToArray();
+            var categorySitemapItems = sitemap.Items.Where(si => si.ObjectType.EqualsInvariant(SitemapItemTypes.Category));
+            var categoryIds = categorySitemapItems.Select(si => si.ObjectId).ToArray();
             var categories = CategoryService.GetByIds(categoryIds, CategoryResponseGroup.WithSeo);
-            catalogSitemapItemMappings.AddRange(BuildSitemapItemMappings(categories, store, SitemapItemTypes.Category, sitemap.UrlTemplate));
+            foreach (var category in categories)
+            {
+                var categorySitemapItemRecords = CreateSitemapItemRecords(store, sitemap.UrlTemplate, SitemapItemTypes.Category, category);
+                sitemapItemRecords.AddRange(categorySitemapItemRecords);
+            }
 
-            var productSitemapItems = sitemap.Items.Where(i => i.ObjectType.EqualsInvariant(SitemapItemTypes.Product));
-            var productIds = productSitemapItems.Select(i => i.ObjectId).ToArray();
+            var productSitemapItems = sitemap.Items.Where(si => si.ObjectType.EqualsInvariant(SitemapItemTypes.Product));
+            var productIds = productSitemapItems.Select(si => si.ObjectId).ToArray();
             var products = ItemService.GetByIds(productIds, ItemResponseGroup.Seo);
-            catalogSitemapItemMappings.AddRange(BuildSitemapItemMappings(products, store, SitemapItemTypes.Product, sitemap.UrlTemplate));
+            foreach (var product in products)
+            {
+                var productSitemapItemRecords = CreateSitemapItemRecords(store, sitemap.UrlTemplate, SitemapItemTypes.Product, product);
+                sitemapItemRecords.AddRange(productSitemapItemRecords);
+            }
 
             var catalogSearchCriteria = new Domain.Catalog.Model.SearchCriteria
             {
@@ -274,177 +253,152 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 CategoryIds = categoryIds,
                 ResponseGroup = SearchResponseGroup.WithCategories | SearchResponseGroup.WithProducts,
                 Skip = 0,
-                Take = _sitemapOptions.CatalogSearchBunchSize
+                Take = _sitemapOptions.SearchBunchSize
             };
             var catalogSearchResult = CatalogSearchService.Search(catalogSearchCriteria);
             foreach (var category in catalogSearchResult.Categories)
             {
-                catalogSitemapItemMappings.AddRange(BuildSitemapItemMappings(new[] { category }, store, SitemapItemTypes.Category, sitemap.UrlTemplate));
+                var categorySitemapItemRecords = CreateSitemapItemRecords(store, sitemap.UrlTemplate, SitemapItemTypes.Category, category);
+                sitemapItemRecords.AddRange(categorySitemapItemRecords);
             }
 
-            var productPartsCount = (int)Math.Ceiling((double)catalogSearchResult.ProductsTotalCount / _sitemapOptions.CatalogSearchBunchSize);
+            var partsCount = catalogSearchResult.ProductsTotalCount / _sitemapOptions.SearchBunchSize + 1;
             var cbProducts = new ConcurrentBag<CatalogProduct>();
-            Parallel.For(1, productPartsCount + 1, new ParallelOptions { MaxDegreeOfParallelism = 5 }, i =>
+            Parallel.For(1, partsCount + 1, new ParallelOptions { MaxDegreeOfParallelism = 5 }, i =>
             {
                 foreach (var product in catalogSearchResult.Products)
                 {
                     cbProducts.Add(product);
                 }
-                if (productPartsCount > 1)
+                if (partsCount > 1)
                 {
-                    catalogSearchCriteria.Skip = _sitemapOptions.CatalogSearchBunchSize * i;
+                    catalogSearchCriteria.Skip = _sitemapOptions.SearchBunchSize * i;
                     catalogSearchResult = CatalogSearchService.Search(catalogSearchCriteria);
                 }
             });
             foreach (var product in cbProducts)
             {
-                catalogSitemapItemMappings.AddRange(BuildSitemapItemMappings(new[] { product }, store, SitemapItemTypes.Product, sitemap.UrlTemplate));
+                var productSitemapItemRecords = CreateSitemapItemRecords(store, sitemap.UrlTemplate, SitemapItemTypes.Product, product);
+                sitemapItemRecords.AddRange(productSitemapItemRecords);
             }
 
-            return catalogSitemapItemMappings;
+            return sitemapItemRecords;
         }
 
-        private ICollection<SitemapItemMapping> GetCustomSitemapItemMappings(Store store, Sitemap sitemap)
+        private ICollection<SitemapItemRecord> GetVendorSitemapItemRecords(Store store, Sitemap sitemap)
         {
-            var customSitemapItemMappings = new List<SitemapItemMapping>();
+            var sitemapItemRecords = new List<SitemapItemRecord>();
 
-            var customSitemapItems = sitemap.Items.Where(i => i.ObjectType.EqualsInvariant(SitemapItemTypes.Custom));
-            customSitemapItemMappings.AddRange(BuildSitemapItemMappings(customSitemapItems, store));
-
-            return customSitemapItemMappings;
-        }
-
-        private ICollection<SitemapItemMapping> GetVendorSitemapItemMappings(Store store, Sitemap sitemap)
-        {
-            var vendorSitemapItemMappings = new List<SitemapItemMapping>();
-
-            var memberSearchCriteria = new MembersSearchCriteria
+            var vendorSitemapItems = sitemap.Items.Where(si => si.ObjectType.EqualsInvariant(SitemapItemTypes.Custom));
+            var vendorIds = vendorSitemapItems.Select(si => si.ObjectId).ToArray();
+            var members = MemberService.GetByIds(vendorIds);
+            foreach (var member in members)
             {
-                MemberType = SitemapItemTypes.Vendor,
-                Skip = 0,
-                Take = _sitemapOptions.RecordsLimitPerFile
+                var vendor = member as Vendor;
+                if (vendor != null)
+                {
+                    var vendorSitemapItemRecords = CreateSitemapItemRecords(store, sitemap.UrlTemplate, SitemapItemTypes.Vendor, vendor);
+                    sitemapItemRecords.AddRange(vendorSitemapItemRecords);
+                }
+            }
+
+            return sitemapItemRecords;
+        }
+
+        private ICollection<SitemapItemRecord> GetCustomSitemapItemRecords(Store store, Sitemap sitemap)
+        {
+            var sitemapItemRecords = new List<SitemapItemRecord>();
+
+            var customSitemapItems = sitemap.Items.Where(si => si.ObjectType.EqualsInvariant(SitemapItemTypes.Custom));
+            foreach (var customSitemapItem in customSitemapItems)
+            {
+                var sitemapItemRecord = CreateSitemapItemRecords(store, customSitemapItem.UrlTemplate, SitemapItemTypes.Custom).FirstOrDefault();
+                sitemapItemRecords.Add(sitemapItemRecord);
+            }
+
+            return sitemapItemRecords;
+        }
+
+        private ICollection<SitemapItemRecord> CreateSitemapItemRecords(Store store, string urlTemplate, string sitemapItemType, ISeoSupport seoSupportItem = null)
+        {
+            var sitemapItemRecords = new List<SitemapItemRecord>();
+
+            var sitemapItemOptions = GetSitemapItemOptions(sitemapItemType);
+            var sitemapItemRecord = new SitemapItemRecord
+            {
+                ModifiedDate = DateTime.UtcNow,
+                Priority = sitemapItemOptions.Priority,
+                UpdateFrequency = sitemapItemOptions.UpdateFrequency,
+                Url = GetAbsoluteUrl(store, urlTemplate, store.DefaultLanguage, seoSupportItem != null ? seoSupportItem.Id : null)
             };
-            var memberSearchResult = MemberSearchService.SearchMembers(memberSearchCriteria);
-            var partsCount = (int)Math.Ceiling((double)memberSearchResult.TotalCount / _sitemapOptions.RecordsLimitPerFile);
-            for (var i = 1; i <= partsCount; i++)
+
+            if (seoSupportItem != null && !seoSupportItem.SeoInfos.IsNullOrEmpty())
             {
-                foreach (var member in memberSearchResult.Results)
-                {
-                    var vendor = member as Vendor;
-                    if (vendor != null)
-                    {
-                        vendorSitemapItemMappings.AddRange(BuildSitemapItemMappings(new[] { vendor }, store, SitemapItemTypes.Vendor, sitemap.UrlTemplate));
-                    }
-                }
-                if (partsCount > 1)
-                {
-                    memberSearchCriteria.Skip = _sitemapOptions.RecordsLimitPerFile * i;
-                    memberSearchResult = MemberSearchService.SearchMembers(memberSearchCriteria);
-                }
-            }
-
-            return vendorSitemapItemMappings;
-        }
-
-        private ICollection<SitemapItemMapping> BuildSitemapItemMappings(IEnumerable<SitemapItem> sitemapItems, Store store)
-        {
-            var sitemapItemMappings = new List<SitemapItemMapping>();
-
-            foreach (var sitemapItem in sitemapItems)
-            {
-                sitemapItemMappings.Add(new SitemapItemMapping
-                {
-                    ObjectId = sitemapItem.ObjectId,
-                    ObjectType = sitemapItem.ObjectType,
-                    Url = GetAbsoluteUrl(store, sitemapItem.UrlTemplate)
-                });
-            }
-
-            return sitemapItemMappings;
-        }
-
-        private ICollection<SitemapItemMapping> BuildSitemapItemMappings(ICollection<ISeoSupport> seoSupportItems, Store store, string objectType, string urlTemplate)
-        {
-            var sitemapItemMappings = new List<SitemapItemMapping>();
-
-            foreach (var seoSupportItem in seoSupportItems)
-            {
-                if (seoSupportItem.SeoInfos == null)
-                {
-                    seoSupportItem.SeoInfos = new List<SeoInfo>();
-                }
                 var seoInfos = seoSupportItem.SeoInfos.Where(si => si.IsActive && store.Languages.Contains(si.LanguageCode)).ToList();
-                if (!seoInfos.Any())
-                {
-                    seoInfos.Add(new SeoInfo
-                    {
-                        IsActive = true,
-                        LanguageCode = store.DefaultLanguage,
-                        ObjectId = seoSupportItem.Id,
-                        ObjectType = objectType,
-                        SemanticUrl = seoSupportItem.Id,
-                        StoreId = store.Id
-                    });
-                }
                 foreach (var seoInfo in seoInfos)
                 {
-                    sitemapItemMappings.Add(new SitemapItemMapping
-                    {
-                        ObjectId = seoSupportItem.Id,
-                        ObjectType = objectType,
-                        Url = GetAbsoluteUrl(store, urlTemplate, seoInfo)
-                    });
+                    sitemapItemRecord.Url = GetAbsoluteUrl(store, urlTemplate, seoInfo.LanguageCode, seoInfo.SemanticUrl);
+                    sitemapItemRecords.Add(sitemapItemRecord);
                 }
             }
+            else
+            {
+                sitemapItemRecords.Add(sitemapItemRecord);
+            }
 
-            return sitemapItemMappings;
+            return sitemapItemRecords;
         }
 
-        private string GetAbsoluteUrl(Store store, string urlTemplate, SeoInfo seoInfo = null)
+        private string GetAbsoluteUrl(Store store, string urlTemplate, string language = null, string semanticUrl = null)
         {
-            string relativeUrl = null;
+            string relativeUrl = urlTemplate;
+            if (urlTemplate.IsAbsoluteUrl())
+            {
+                return urlTemplate;
+            }
 
             if (!string.IsNullOrEmpty(store.Url))
             {
-                relativeUrl = urlTemplate.Replace(UrlTemplatePatterns.StoreUrl, store.Url);
+                relativeUrl = relativeUrl.Replace(UrlTemplatePatterns.StoreUrl, store.Url);
             }
 
             if (!string.IsNullOrEmpty(store.SecureUrl))
             {
-                relativeUrl = urlTemplate.Replace(UrlTemplatePatterns.StoreSecureUrl, store.SecureUrl);
+                relativeUrl = relativeUrl.Replace(UrlTemplatePatterns.StoreSecureUrl, store.SecureUrl);
             }
 
-            if (seoInfo != null)
+            if (!string.IsNullOrEmpty(language))
             {
-                if (!string.IsNullOrEmpty(seoInfo.LanguageCode))
-                {
-                    relativeUrl = relativeUrl.Replace(UrlTemplatePatterns.Language, seoInfo.LanguageCode);
-                }
-                if (!string.IsNullOrEmpty(seoInfo.SemanticUrl))
-                {
-                    relativeUrl = relativeUrl.Replace(UrlTemplatePatterns.Slug, seoInfo.SemanticUrl);
-                }
+                relativeUrl = relativeUrl.Replace(UrlTemplatePatterns.Language, language);
+            }
+
+            if (!string.IsNullOrEmpty(semanticUrl))
+            {
+                relativeUrl = relativeUrl.Replace(UrlTemplatePatterns.Slug, semanticUrl);
             }
 
             Uri uri = null;
-            Uri.TryCreate(relativeUrl, UriKind.Absolute, out uri);
+            if (relativeUrl != urlTemplate)
+            {
+                Uri.TryCreate(relativeUrl, UriKind.Absolute, out uri);
+            }
 
             return uri != null ? Uri.UnescapeDataString(uri.AbsoluteUri) : null;
         }
 
-        private SitemapItemOptions GetSitemapItemMappingOptions(SitemapItemMapping sitemapItemMapping)
+        private SitemapItemOptions GetSitemapItemOptions(string sitemapItemType)
         {
             var sitemapItemOptions = new SitemapItemOptions
             {
-                PagePriority = .5M,
-                PageUpdateFrequency = PageUpdateFrequency.Weekly
+                Priority = .5M,
+                UpdateFrequency = PageUpdateFrequency.Weekly
             };
 
-            if (sitemapItemMapping.ObjectType.EqualsInvariant("category"))
+            if (sitemapItemType.EqualsInvariant("category"))
             {
                 sitemapItemOptions = _sitemapOptions.CategoryOptions;
             }
-            else if (sitemapItemMapping.ObjectType.EqualsInvariant("product"))
+            else if (sitemapItemType.EqualsInvariant("product"))
             {
                 sitemapItemOptions = _sitemapOptions.ProductOptions;
             }
@@ -458,15 +412,15 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             {
                 CategoryOptions = new SitemapItemOptions
                 {
-                    PagePriority = SettingsManager.GetValue("Sitemap.CategoryPagePriority", .7M),
-                    PageUpdateFrequency = SettingsManager.GetValue("Sitemap.CategoryPageUpdateFrequency", PageUpdateFrequency.Weekly)
+                    Priority = SettingsManager.GetValue("Sitemap.CategoryPagePriority", .7M),
+                    UpdateFrequency = SettingsManager.GetValue("Sitemap.CategoryPageUpdateFrequency", PageUpdateFrequency.Weekly)
                 },
                 ProductOptions = new SitemapItemOptions
                 {
-                    PagePriority = SettingsManager.GetValue("Sitemap.ProductPagePriority", 1.0M),
-                    PageUpdateFrequency = SettingsManager.GetValue("Sitemap.ProductPageUpdateFrequency", PageUpdateFrequency.Daily)
+                    Priority = SettingsManager.GetValue("Sitemap.ProductPagePriority", 1.0M),
+                    UpdateFrequency = SettingsManager.GetValue("Sitemap.ProductPageUpdateFrequency", PageUpdateFrequency.Daily)
                 },
-                CatalogSearchBunchSize = SettingsManager.GetValue("Sitemap.CatalogSearchBunchSize", 10000),
+                SearchBunchSize = SettingsManager.GetValue("Sitemap.CatalogSearchBunchSize", 1000),
                 FilenameSeparator = SettingsManager.GetValue("Sitemap.FilenameSeparator", "--"),
                 RecordsLimitPerFile = SettingsManager.GetValue("Sitemap.RecordsLimitPerFile", 10000)
             };
