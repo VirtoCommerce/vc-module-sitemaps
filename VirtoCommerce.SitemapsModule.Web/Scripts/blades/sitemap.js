@@ -5,7 +5,7 @@
     blade.headIcon = 'fa fa-sitemap';
     blade.isLoading = false;
     blade.toolbarCommands = getBladeToolbarCommands();
-    blade.currentEntity.urlTemplate = '{storeUrl}/{slug}';
+    blade.currentEntity.urlTemplate = '{storeUrl}/{language}/{slug}';
     blade.refresh = function () {
         if (!blade.currentEntity.isNew) {
             getSitemapById(blade.currentEntity.id);
@@ -52,10 +52,26 @@
                 return $scope.formScope && $scope.formScope.$valid && !angular.equals(blade.originalEntity, blade.currentEntity);
             },
             executeMethod: function () {
+                $scope.errorMessage = null;
                 blade.isLoading = true;
                 saveChanges(blade.currentEntity);
             }
         }];
+    }
+
+    function searchSitemaps(storeId, filename) {
+        blade.isLoading = true;
+        sitemapsResource.searchSitemaps({}, {
+            storeId: storeId,
+            filename: filename,
+        }, function (response) {
+            $scope.pageSettings.totalItems = response.totalCount;
+            $scope.listEntries = response.results;
+            blade.isLoading = false;
+        }, function (error) {
+            bladeNavigationService.setError('Error ' + error.status, blade);
+            blade.isLoading = false;
+        });
     }
 
     function showAddItemsBlade(selectedItems) {
@@ -71,11 +87,36 @@
     }
 
     function saveChanges(sitemap) {
-        if (sitemap.isNew) {
-            addSitemap(sitemap);
-        } else {
-            updateSitemap(sitemap);
+        blade.isLoading = true;
+        if (sitemap.filename.toLowerCase() === 'sitemap.xml') {
+            $scope.errorMessage = 'sitemapsModule.blades.sitemap.formSitemap.sitemapIndexErrorMessage';
+            blade.isLoading = false;
         }
+        sitemapsResource.searchSitemaps({}, {
+            storeId: sitemap.storeId,
+            filename: sitemap.filename,
+        }, function (response) {
+            if (blade.currentEntity.isNew) {
+                if (response.totalCount > 0) {
+                    $scope.errorMessage = 'sitemapsModule.blades.sitemap.formSitemap.sitemapFilenameExistErrorMessage';
+                    blade.isLoading = false;
+                }
+            } else {
+                var existingSitemap = _.find(response.results, function (s) { return s.filename === sitemap.filename });
+                if (existingSitemap) {
+                    $scope.errorMessage = 'sitemapsModule.blades.sitemap.formSitemap.sitemapFilenameExistErrorMessage';
+                    blade.isLoading = false;
+                }
+            }
+            if (!$scope.errorMessage) {
+                $scope.errorMessage = null;
+                if (sitemap.isNew) {
+                    addSitemap(sitemap);
+                } else {
+                    updateSitemap(sitemap);
+                }
+            }
+        });
     }
 
     function getSitemapById(sitemapId) {

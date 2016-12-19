@@ -31,6 +31,8 @@
         "formSitemap": {
           "labelFilename": "Filename",
           "descriptionFilename": "Filename is the unique sitemap identifier in context of index sitemap, i.e.: 'electronics.xml', 'products.xml', etc. Requirements for sitemap filename are the same to the file system. Please avoid of using 'sitemap.xml' as sitemap filename.",
+          "sitemapIndexErrorMessage": "Please avoid of using filename \"sitemap.xml\"",
+          "sitemapFilenameExistErrorMessage": "This filename is already used",
           "labelUrlTemplate": "URL template",
           "descriptionUrlTemplate": "To generate a sitemap URL can be used the next patterns: {storeUrl} - will be replaced with store URL value, {storeSecureUrl} - will be replaced with store secure URL, {language} - will be replaced with language code (i.e. en-US), {slug} - will be replaced with SEO semantic URL part",
           "labelSitemapItems": "Sitemap items"

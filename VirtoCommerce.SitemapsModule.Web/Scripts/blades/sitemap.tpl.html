@@ -7,6 +7,7 @@
                     <label class="form-label" for="filename" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.labelFilename' | translate"></label>
                     <div class="form-input">
                         <input id="filename" name="filename" required="required" type="text" ng-pattern="/^([a-z_\-\s0-9\.]+)+\.(xml)$/" ng-model="blade.currentEntity.filename" />
+                        <div class="error" ng-if="errorMessage" ng-bind="errorMessage | translate"></div>
                         <div class="description" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.descriptionFilename' | translate"></div>
                     </div>
                 </div>
