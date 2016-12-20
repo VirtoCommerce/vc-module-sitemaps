@@ -5,8 +5,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
 {
     public interface ISitemapXmlGenerator
     {
-        SitemapIndexRecord GetSitemapSchema(string storeId);
+        SitemapIndexXmlRecord GetSitemapSchema(string storeId);
 
-        Stream GenerateSitemapXml(string storeId, SitemapIndexRecord sitemapSchema, string sitemapFilename);
+        Stream GenerateSitemapXml(string storeId, SitemapIndexXmlRecord sitemapSchema, string sitemapFilename);
     }
 }

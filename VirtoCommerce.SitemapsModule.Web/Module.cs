@@ -6,6 +6,7 @@ using VirtoCommerce.Platform.Data.Infrastructure.Interceptors;
 using VirtoCommerce.SitemapsModule.Core.Services;
 using VirtoCommerce.SitemapsModule.Data.Repositories;
 using VirtoCommerce.SitemapsModule.Data.Services;
+using VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders;
 
 namespace VirtoCommerce.SitemapsModule.Web
 {
@@ -33,6 +34,11 @@ namespace VirtoCommerce.SitemapsModule.Web
             _container.RegisterType<ISitemapRepository>(new InjectionFactory(c => new SitemapRepository(_connectionStringName, new EntityPrimaryKeyGeneratorInterceptor(), _container.Resolve<AuditableInterceptor>())));
             _container.RegisterType<ISitemapItemService, SitemapItemService>();
             _container.RegisterType<ISitemapService, SitemapService>();
+            _container.RegisterType<ISitemapUrlBuilder, SitemapUrlBuilder>();
+            _container.RegisterType<ISitemapItemRecordBuilder, SitemapItemRecordBuilder>();
+            _container.RegisterType<ISitemapItemRecordProvider, CatalogSitemapItemRecordProvider>("CatalogSitemapItemRecordProvider");
+            _container.RegisterType<ISitemapItemRecordProvider, CustomSitemapItemRecordProvider>("CustomSitemapItemRecordProvider");
+            _container.RegisterType<ISitemapItemRecordProvider, VendorSitemapItemRecordProvider>("VendorSitemapItemRecordProvider");
             _container.RegisterType<ISitemapXmlGenerator, SitemapXmlGenerator>();
         }
 

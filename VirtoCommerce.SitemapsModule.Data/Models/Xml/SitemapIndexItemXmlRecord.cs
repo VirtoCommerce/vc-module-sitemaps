@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 namespace VirtoCommerce.SitemapsModule.Data.Models.Xml
 {
     [Serializable]
-    public class SitemapIndexItemRecord
+    public class SitemapIndexItemXmlRecord
     {
         [XmlElement("loc")]
         public string Url { get; set; }

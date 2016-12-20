@@ -6,14 +6,14 @@ namespace VirtoCommerce.SitemapsModule.Data.Models.Xml
 {
     [Serializable]
     [XmlRoot("urlset", Namespace = "http://www.sitemaps.org/schemas/sitemap/0.9")]
-    public class SitemapRecord
+    public class SitemapXmlRecord
     {
-        public SitemapRecord()
+        public SitemapXmlRecord()
         {
-            Items = new List<SitemapItemRecord>();
+            Items = new List<SitemapItemXmlRecord>();
         }
 
         [XmlElement("url")]
-        public List<SitemapItemRecord> Items { get; set; }
+        public List<SitemapItemXmlRecord> Items { get; set; }
     }
 }

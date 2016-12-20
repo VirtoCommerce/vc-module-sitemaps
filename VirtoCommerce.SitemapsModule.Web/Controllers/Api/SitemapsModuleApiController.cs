@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Packaging;
 using System.Net;
@@ -175,7 +174,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
         [HttpGet]
         [Route("schema")]
-        [ResponseType(typeof(SitemapIndexRecord))]
+        [ResponseType(typeof(SitemapIndexXmlRecord))]
         public IHttpActionResult GetSitemapsSchema(string storeId)
         {
             if (string.IsNullOrEmpty(storeId))
@@ -240,7 +239,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             return Ok(new SitemapPackage { Url = _blobUrlResolver.GetAbsoluteUrl(zipPackageRelativeUrl) });
         }
 
-        private void CreateSitemapPart(System.IO.Packaging.Package package, string storeId, SitemapIndexRecord sitemapSchema, string sitemapFilename)
+        private void CreateSitemapPart(System.IO.Packaging.Package package, string storeId, SitemapIndexXmlRecord sitemapSchema, string sitemapFilename)
         {
             var uri = PackUriHelper.CreatePartUri(new Uri(sitemapFilename, UriKind.Relative));
             var sitemapPart = package.CreatePart(uri, System.Net.Mime.MediaTypeNames.Text.Xml, CompressionOption.Normal);

@@ -111,16 +111,21 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\SitemapEntity.cs" />
     <Compile Include="Models\SitemapItemEntity.cs" />
-    <Compile Include="Models\Xml\SitemapIndexItemRecord.cs" />
-    <Compile Include="Models\Xml\SitemapIndexRecord.cs" />
-    <Compile Include="Models\Xml\SitemapItemRecord.cs" />
-    <Compile Include="Models\Xml\SitemapRecord.cs" />
+    <Compile Include="Models\Xml\SitemapIndexItemXmlRecord.cs" />
+    <Compile Include="Models\Xml\SitemapIndexXmlRecord.cs" />
+    <Compile Include="Models\Xml\SitemapItemXmlRecord.cs" />
+    <Compile Include="Models\Xml\SitemapXmlRecord.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\ISitemapRepository.cs" />
     <Compile Include="Repositories\SitemapRepository.cs" />
     <Compile Include="Services\ISitemapXmlGenerator.cs" />
+    <Compile Include="Services\SitemapItemRecordBuilder.cs" />
+    <Compile Include="Services\SitemapItemRecordProviders\CatalogSitemapItemRecordProvider.cs" />
+    <Compile Include="Services\SitemapItemRecordProviders\CustomSitemapItemRecordProvider.cs" />
+    <Compile Include="Services\SitemapItemRecordProviders\VendorSitemapItemRecordProvider.cs" />
     <Compile Include="Services\SitemapItemService.cs" />
     <Compile Include="Services\SitemapService.cs" />
+    <Compile Include="Services\SitemapUrlBuilder.cs" />
     <Compile Include="Services\SitemapXmlGenerator.cs" />
   </ItemGroup>
   <ItemGroup>

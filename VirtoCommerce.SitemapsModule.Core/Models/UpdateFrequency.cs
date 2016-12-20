@@ -1,6 +1,6 @@
 ﻿namespace VirtoCommerce.SitemapsModule.Core.Models
 {
-    public static class PageUpdateFrequency
+    public static class UpdateFrequency
     {
         public const string Always = "always",
                             Hourly = "hourly",
