@@ -64,6 +64,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
 
             pkMap.AddPair(sitemapItem, this);
 
+            Id = sitemapItem.Id;
             ImageUrl = sitemapItem.ImageUrl;
             ObjectId = sitemapItem.ObjectId;
             ObjectType = sitemapItem.ObjectType;

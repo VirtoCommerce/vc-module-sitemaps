@@ -1,4 +1,6 @@
 ﻿using Microsoft.Practices.Unity;
+using System;
+using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.Platform.Data.Infrastructure;
@@ -7,10 +9,11 @@ using VirtoCommerce.SitemapsModule.Core.Services;
 using VirtoCommerce.SitemapsModule.Data.Repositories;
 using VirtoCommerce.SitemapsModule.Data.Services;
 using VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders;
+using VirtoCommerce.SitemapsModule.Web.ExportImport;
 
 namespace VirtoCommerce.SitemapsModule.Web
 {
-    public class Module : ModuleBase
+    public class Module : ModuleBase, ISupportExportImportModule
     {
         private const string _connectionStringName = "VirtoCommerce";
         private readonly IUnityContainer _container;
@@ -48,6 +51,27 @@ namespace VirtoCommerce.SitemapsModule.Web
             var settingManager = _container.Resolve<ISettingsManager>();
             var sitemapSettings = settingManager.GetModuleSettings("VirtoCommerce.Sitemaps");
             settingManager.RegisterModuleSettings("VirtoCommerce.Sitemaps", sitemapSettings);
+        }
+
+        public void DoExport(System.IO.Stream outStream, PlatformExportManifest manifest, Action<ExportImportProgressInfo> progressCallback)
+        {
+            var job = _container.Resolve<SitemapExportImport>();
+            job.DoExport(outStream, progressCallback);
+        }
+
+        public void DoImport(System.IO.Stream inputStream, PlatformExportManifest manifest, Action<ExportImportProgressInfo> progressCallback)
+        {
+            var job = _container.Resolve<SitemapExportImport>();
+            job.DoImport(inputStream, progressCallback);
+        }
+
+        public string ExportDescription
+        {
+            get
+            {
+                var settingManager = _container.Resolve<ISettingsManager>();
+                return settingManager.GetValue("Order.ExportImport.Description", string.Empty);
+            }
         }
     }
 }
