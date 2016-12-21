@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Packaging;
+using System.Linq;
 using System.Net;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -174,7 +175,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
         [HttpGet]
         [Route("schema")]
-        [ResponseType(typeof(SitemapIndexXmlRecord))]
+        [ResponseType(typeof(string[]))]
         public IHttpActionResult GetSitemapsSchema(string storeId)
         {
             if (string.IsNullOrEmpty(storeId))
@@ -182,31 +183,26 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                 return BadRequest("storeId is empty");
             }
 
-            var sitemapSchema = _sitemapXmlGenerator.GetSitemapSchema(storeId);
+            var sitemapUrls = _sitemapXmlGenerator.GetSitemapUrls(storeId);
 
-            return Ok(sitemapSchema);
+            return Ok(sitemapUrls);
         }
 
         [HttpGet]
         [Route("generate")]
         [ResponseType(typeof(Stream))]
-        public IHttpActionResult GenerateSitemap(string storeId, string sitemapId, string sitemapFilename)
+        public IHttpActionResult GenerateSitemap(string storeId, string sitemapUrl)
         {
             if (string.IsNullOrEmpty(storeId))
             {
                 return BadRequest("storeId is empty");
             }
-            if (string.IsNullOrEmpty(sitemapId))
-            {
-                return BadRequest("sitemapId is empty");
-            }
-            if (string.IsNullOrEmpty(sitemapFilename))
+            if (string.IsNullOrEmpty(sitemapUrl))
             {
                 return BadRequest("sitemapUrl is empty");
             }
 
-            var sitemapSchema = _sitemapXmlGenerator.GetSitemapSchema(storeId);
-            var stream = _sitemapXmlGenerator.GenerateSitemapXml(storeId, sitemapSchema, sitemapFilename);
+            var stream = _sitemapXmlGenerator.GenerateSitemapXml(storeId, sitemapUrl);
 
             return Ok(stream);
         }
@@ -222,16 +218,20 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             }
 
             var zipPackageRelativeUrl = "tmp/sitemap.zip";
-            var sitemapSchema = _sitemapXmlGenerator.GetSitemapSchema(storeId);
 
             using (var targetStream = _blobStorageProvider.OpenWrite(zipPackageRelativeUrl))
             {
                 using (var zipPackage = ZipPackage.Open(targetStream, FileMode.Create))
                 {
-                    CreateSitemapPart(zipPackage, storeId, sitemapSchema, "sitemap.xml");
-                    foreach (var sitemap in sitemapSchema.Sitemaps)
+                    CreateSitemapPart(zipPackage, storeId, "sitemap.xml");
+                    var sitemapUrls = _sitemapXmlGenerator.GetSitemapUrls(storeId);
+                    foreach (var sitemapUrl in sitemapUrls)
                     {
-                        CreateSitemapPart(zipPackage, storeId, sitemapSchema, sitemap.Filename);
+                        var filename = sitemapUrl.Split('/').LastOrDefault();
+                        if (!string.IsNullOrEmpty(filename))
+                        {
+                            CreateSitemapPart(zipPackage, storeId, filename);
+                        }
                     }
                 }
             }
@@ -239,11 +239,11 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             return Ok(new SitemapPackage { Url = _blobUrlResolver.GetAbsoluteUrl(zipPackageRelativeUrl) });
         }
 
-        private void CreateSitemapPart(System.IO.Packaging.Package package, string storeId, SitemapIndexXmlRecord sitemapSchema, string sitemapFilename)
+        private void CreateSitemapPart(System.IO.Packaging.Package package, string storeId, string sitemapFilename)
         {
             var uri = PackUriHelper.CreatePartUri(new Uri(sitemapFilename, UriKind.Relative));
             var sitemapPart = package.CreatePart(uri, System.Net.Mime.MediaTypeNames.Text.Xml, CompressionOption.Normal);
-            var stream = _sitemapXmlGenerator.GenerateSitemapXml(storeId, sitemapSchema, sitemapFilename);
+            var stream = _sitemapXmlGenerator.GenerateSitemapXml(storeId, sitemapFilename);
             var sitemapPartStream = sitemapPart.GetStream();
             stream.CopyTo(sitemapPartStream);
         }

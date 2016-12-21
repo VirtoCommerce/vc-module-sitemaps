@@ -11,11 +11,5 @@ namespace VirtoCommerce.SitemapsModule.Data.Models.Xml
 
         [XmlElement("lastmod")]
         public DateTime? ModifiedDate { get; set; }
-
-        [XmlIgnore]
-        public string SitemapId { get; set; }
-
-        [XmlIgnore]
-        public string Filename { get; set; }
     }
 }

@@ -1,9 +1,8 @@
 ﻿angular.module('virtoCommerce.sitemapsModule')
-.controller('virtoCommerce.sitemapsModule.sitemapListController', ['$scope', 'platformWebApp.bladeUtils', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.uiGridHelper', 'virtoCommerce.sitemapsModule.sitemaps', function ($scope, bladeUtils, bladeNavigationService, dialogService, uiGridHelper, sitemapsResource) {
+.controller('virtoCommerce.sitemapsModule.sitemapListController', ['$window', '$scope', 'platformWebApp.bladeUtils', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.uiGridHelper', 'virtoCommerce.sitemapsModule.sitemaps', function ($window, $scope, bladeUtils, bladeNavigationService, dialogService, uiGridHelper, sitemapsResource) {
     bladeUtils.initializePagination($scope);
     var blade = $scope.blade;
     blade.headIcon = 'fa fa-sitemap';
-    blade.storeId = blade.parentBlade.currentEntity.id;
     blade.isLoading = false;
     blade.toolbarCommands = getBladeToolbarCommands();
     blade.refresh = function () {
@@ -29,7 +28,7 @@
             name: 'sitemapsModule.blades.sitemapList.toolbar.addSitemap',
             icon: 'fa fa-plus',
             canExecuteMethod: function () {
-                return blade.parentBlade.currentEntity.url || blade.parentBlade.currentEntity.secureUrl;
+                return true;
             },
             executeMethod: function () {
                 showSitemapBlade();
@@ -122,22 +121,11 @@
     function downloadSitemaps(storeId) {
         blade.isLoading = true;
         sitemapsResource.downloadSitemaps({ storeId: storeId }, function (response) {
-            showSitemapGenerationCompleteDialog(response.url);
+            $window.open(response.url);
             blade.isLoading = false;
         }, function (error) {
             bladeNavigationService.setError('Error ' + error.status, blade);
             blade.isLoading = false;
         });
-    }
-
-    function showSitemapGenerationCompleteDialog(zipUrl) {
-        var dialog = {
-            id: 'sitemapGenerationComplete',
-            title: 'sitemapsModule.dialogs.sitemapGenerationComplete.title',
-            message: zipUrl,
-            callback: function (confirm) {
-            }
-        }
-        dialogService.showNotificationDialog(dialog);
     }
 }]);

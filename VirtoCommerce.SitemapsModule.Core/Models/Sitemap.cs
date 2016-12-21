@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using VirtoCommerce.Domain.Store.Model;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.SitemapsModule.Core.Models
@@ -13,6 +14,8 @@ namespace VirtoCommerce.SitemapsModule.Core.Models
         public string Filename { get; set; }
 
         public string StoreId { get; set; }
+
+        public Store Store { get; set; }
 
         public ICollection<SitemapItem> Items { get; set; }
 

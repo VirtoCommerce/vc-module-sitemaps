@@ -23,14 +23,12 @@
     }
 
     function saveCustomSitemapItem() {
-        if (!blade.currentEntity.sitemap.items) {
-            blade.currentEntity.sitemap.items = [];
-        }
-        blade.currentEntity.sitemap.items.push({
+        blade.parentBlade.addItems([{
             title: blade.currentEntity.urlTemplate,
             objectType: 'Custom',
-            urlTemplate: blade.currentEntity.urlTemplate
-        });
+            urlTemplate: blade.currentEntity.urlTemplate,
+            sitemapId: blade.currentEntity.sitemap.id
+        }]);
         bladeNavigationService.closeBlade(blade);
     }
 }]);

@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using VirtoCommerce.Domain.Commerce.Model;
-using VirtoCommerce.Domain.Store.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
 
-namespace VirtoCommerce.SitemapsModule.Data.Services
+namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 {
-    public class SitemapItemRecordBuilder : ISitemapItemRecordBuilder
+    public abstract class SitemapItemRecordProviderBase
     {
-        public SitemapItemRecordBuilder(ISettingsManager settingsManager, ISitemapUrlBuilder sitemapUrlBuilder)
+        public SitemapItemRecordProviderBase(ISettingsManager settingsManager, ISitemapUrlBuilder sitemapUrlBuilder)
         {
             SettingsManager = settingsManager;
             SitemapUrlBuilder = sitemapUrlBuilder;
@@ -21,7 +20,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
         protected ISettingsManager SettingsManager { get; private set; }
         protected ISitemapUrlBuilder SitemapUrlBuilder { get; private set; }
 
-        public virtual ICollection<SitemapItemRecord> CreateSitemapItemRecords(Store store, string urlTemplate, string sitemapItemType, ISeoSupport seoSupportItem = null)
+        public ICollection<SitemapItemRecord> CreateSitemapItemRecords(Sitemap sitemap, string urlTemplate, string sitemapItemType, ISeoSupport seoSupportItem = null)
         {
             var sitemapItemRecords = new List<SitemapItemRecord>();
 
@@ -31,15 +30,15 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 ModifiedDate = DateTime.UtcNow,
                 Priority = sitemapItemOptions.Priority,
                 UpdateFrequency = sitemapItemOptions.UpdateFrequency,
-                Url = SitemapUrlBuilder.CreateAbsoluteUrl(store, urlTemplate, store.DefaultLanguage, seoSupportItem != null ? seoSupportItem.Id : null)
+                Url = SitemapUrlBuilder.CreateAbsoluteUrl(sitemap.Store, urlTemplate, sitemap.Store.DefaultLanguage, seoSupportItem != null ? seoSupportItem.Id : null)
             };
 
             if (seoSupportItem != null && !seoSupportItem.SeoInfos.IsNullOrEmpty())
             {
-                var seoInfos = seoSupportItem.SeoInfos.Where(si => si.IsActive && store.Languages.Contains(si.LanguageCode)).ToList();
+                var seoInfos = seoSupportItem.SeoInfos.Where(si => si.IsActive && sitemap.Store.Languages.Contains(si.LanguageCode)).ToList();
                 foreach (var seoInfo in seoInfos)
                 {
-                    sitemapItemRecord.Url = SitemapUrlBuilder.CreateAbsoluteUrl(store, urlTemplate, seoInfo.LanguageCode, seoInfo.SemanticUrl);
+                    sitemapItemRecord.Url = SitemapUrlBuilder.CreateAbsoluteUrl(sitemap.Store, sitemap.UrlTemplate, seoInfo.LanguageCode, seoInfo.SemanticUrl);
                     sitemapItemRecords.Add(sitemapItemRecord);
                 }
             }

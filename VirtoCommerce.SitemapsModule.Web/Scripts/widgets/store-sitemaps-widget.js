@@ -7,7 +7,8 @@
             id: 'storeSitemapsList',
             title: 'sitemapsModule.blades.sitemapList.title',
             controller: 'virtoCommerce.sitemapsModule.sitemapListController',
-            template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/sitemap-list.tpl.html'
+            template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/sitemap-list.tpl.html',
+            storeId: blade.currentEntity.id
         };
         bladeNavigationService.showBlade(newBlade, blade);
     }

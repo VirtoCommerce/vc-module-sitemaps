@@ -35,7 +35,6 @@ namespace VirtoCommerce.SitemapsModule.Web
             _container.RegisterType<ISitemapItemService, SitemapItemService>();
             _container.RegisterType<ISitemapService, SitemapService>();
             _container.RegisterType<ISitemapUrlBuilder, SitemapUrlBuilder>();
-            _container.RegisterType<ISitemapItemRecordBuilder, SitemapItemRecordBuilder>();
             _container.RegisterType<ISitemapItemRecordProvider, CatalogSitemapItemRecordProvider>("CatalogSitemapItemRecordProvider");
             _container.RegisterType<ISitemapItemRecordProvider, CustomSitemapItemRecordProvider>("CustomSitemapItemRecordProvider");
             _container.RegisterType<ISitemapItemRecordProvider, VendorSitemapItemRecordProvider>("VendorSitemapItemRecordProvider");
