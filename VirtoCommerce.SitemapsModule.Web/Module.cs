@@ -70,7 +70,7 @@ namespace VirtoCommerce.SitemapsModule.Web
             get
             {
                 var settingManager = _container.Resolve<ISettingsManager>();
-                return settingManager.GetValue("Order.ExportImport.Description", string.Empty);
+                return settingManager.GetValue("Sitemap.ExportImport.Description", string.Empty);
             }
         }
     }
