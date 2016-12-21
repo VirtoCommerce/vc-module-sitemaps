@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Domain.Catalog.Services;
-using VirtoCommerce.Domain.Store.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SitemapsModule.Core.Models;
@@ -12,32 +11,26 @@ using VirtoCommerce.SitemapsModule.Core.Services;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 {
-    public class CatalogSitemapItemRecordProvider : ISitemapItemRecordProvider
+    public class CatalogSitemapItemRecordProvider : SitemapItemRecordProviderBase, ISitemapItemRecordProvider
     {
         public CatalogSitemapItemRecordProvider(
             ICategoryService categoryService,
             IItemService itemService,
             ICatalogSearchService catalogSearchService,
             ISitemapUrlBuilder sitemapUrlBuilder,
-            ISitemapItemRecordBuilder sitemapItemRecordBuilder,
             ISettingsManager settingsManager)
+            : base(settingsManager, sitemapUrlBuilder)
         {
             CategoryService = categoryService;
             ItemService = itemService;
             CatalogSearchService = catalogSearchService;
-            SitemapUrlBuilder = sitemapUrlBuilder;
-            SitemapItemRecordBuilder = sitemapItemRecordBuilder;
-            SettingsManager = settingsManager;
         }
 
         protected ICategoryService CategoryService { get; private set; }
         protected IItemService ItemService { get; private set; }
         protected ICatalogSearchService CatalogSearchService { get; private set; }
-        protected ISitemapUrlBuilder SitemapUrlBuilder { get; private set; }
-        protected ISitemapItemRecordBuilder SitemapItemRecordBuilder { get; private set; }
-        protected ISettingsManager SettingsManager { get; private set; }
 
-        public virtual ICollection<SitemapItemRecord> GetSitemapItemRecords(Store store, Sitemap sitemap)
+        public virtual ICollection<SitemapItemRecord> GetSitemapItemRecords(Sitemap sitemap)
         {
             var sitemapItemRecords = new List<SitemapItemRecord>();
 
@@ -48,7 +41,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             var categories = CategoryService.GetByIds(categoryIds, CategoryResponseGroup.WithSeo);
             foreach (var category in categories)
             {
-                var categorySitemapItemRecords = SitemapItemRecordBuilder.CreateSitemapItemRecords(store, sitemap.UrlTemplate, SitemapItemTypes.Category, category);
+                var categorySitemapItemRecords = CreateSitemapItemRecords(sitemap, sitemap.UrlTemplate, SitemapItemTypes.Category, category);
                 sitemapItemRecords.AddRange(categorySitemapItemRecords);
             }
 
@@ -57,7 +50,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             var products = ItemService.GetByIds(productIds, ItemResponseGroup.Seo);
             foreach (var product in products)
             {
-                var productSitemapItemRecords = SitemapItemRecordBuilder.CreateSitemapItemRecords(store, sitemap.UrlTemplate, SitemapItemTypes.Product, product);
+                var productSitemapItemRecords = CreateSitemapItemRecords(sitemap, sitemap.UrlTemplate, SitemapItemTypes.Product, product);
                 sitemapItemRecords.AddRange(productSitemapItemRecords);
             }
 
@@ -65,7 +58,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             {
                 var catalogSearchCriteria = new Domain.Catalog.Model.SearchCriteria
                 {
-                    CatalogId = store.Catalog,
+                    CatalogId = sitemap.Store.Catalog,
                     CategoryIds = categoryIds,
                     ResponseGroup = SearchResponseGroup.WithCategories | SearchResponseGroup.WithProducts,
                     Skip = 0,
@@ -74,7 +67,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 var catalogSearchResult = CatalogSearchService.Search(catalogSearchCriteria);
                 foreach (var category in catalogSearchResult.Categories)
                 {
-                    var categorySitemapItemRecords = SitemapItemRecordBuilder.CreateSitemapItemRecords(store, sitemap.UrlTemplate, SitemapItemTypes.Category, category);
+                    var categorySitemapItemRecords = CreateSitemapItemRecords(sitemap, sitemap.UrlTemplate, SitemapItemTypes.Category, category);
                     sitemapItemRecords.AddRange(categorySitemapItemRecords);
                 }
 
@@ -94,7 +87,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 });
                 foreach (var product in cbProducts)
                 {
-                    var productSitemapItemRecords = SitemapItemRecordBuilder.CreateSitemapItemRecords(store, sitemap.UrlTemplate, SitemapItemTypes.Product, product);
+                    var productSitemapItemRecords = CreateSitemapItemRecords(sitemap, sitemap.UrlTemplate, SitemapItemTypes.Product, product);
                     sitemapItemRecords.AddRange(productSitemapItemRecords);
                 }
             }

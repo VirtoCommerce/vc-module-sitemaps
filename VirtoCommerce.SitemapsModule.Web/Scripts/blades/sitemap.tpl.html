@@ -22,8 +22,8 @@
             <div class="form-group">
                 <label class="form-label" for="urlTemplate" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.labelSitemapItems' | translate"></label>
             </div>
-            <div class="note" ng-show="pageSettings.totalItems === 0" ng-bind="'sitemapsModule.blades.sitemap.noSitemapsIemsMessage' | translate"></div>
-            <div class="table-wrapper" ng-show="pageSettings.totalItems > 0" ng-init="setGridOptions({
+            <div class="note" ng-show="blade.currentEntity.items.length === 0" ng-bind="'sitemapsModule.blades.sitemap.noSitemapsIemsMessage' | translate"></div>
+            <div class="table-wrapper" ng-show="blade.currentEntity.items.length > 0" ng-init="setGridOptions({
                 data: 'blade.currentEntity.items',
                 rowTemplate: 'sitemap-item-list-row.tpl.html',
                 columnDefs: [{

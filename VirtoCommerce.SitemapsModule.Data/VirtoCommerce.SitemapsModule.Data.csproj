@@ -119,9 +119,9 @@
     <Compile Include="Repositories\ISitemapRepository.cs" />
     <Compile Include="Repositories\SitemapRepository.cs" />
     <Compile Include="Services\ISitemapXmlGenerator.cs" />
-    <Compile Include="Services\SitemapItemRecordBuilder.cs" />
     <Compile Include="Services\SitemapItemRecordProviders\CatalogSitemapItemRecordProvider.cs" />
     <Compile Include="Services\SitemapItemRecordProviders\CustomSitemapItemRecordProvider.cs" />
+    <Compile Include="Services\SitemapItemRecordProviders\SitemapItemRecordProviderBase.cs" />
     <Compile Include="Services\SitemapItemRecordProviders\VendorSitemapItemRecordProvider.cs" />
     <Compile Include="Services\SitemapItemService.cs" />
     <Compile Include="Services\SitemapService.cs" />

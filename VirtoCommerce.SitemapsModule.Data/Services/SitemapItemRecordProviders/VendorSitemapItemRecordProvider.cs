@@ -2,25 +2,27 @@
 using System.Linq;
 using VirtoCommerce.Domain.Customer.Model;
 using VirtoCommerce.Domain.Customer.Services;
-using VirtoCommerce.Domain.Store.Model;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 {
-    public class VendorSitemapItemRecordProvider : ISitemapItemRecordProvider
+    public class VendorSitemapItemRecordProvider : SitemapItemRecordProviderBase, ISitemapItemRecordProvider
     {
-        public VendorSitemapItemRecordProvider(IMemberService memberService, ISitemapItemRecordBuilder sitemapItemRecordBuilder)
+        public VendorSitemapItemRecordProvider(
+            ISitemapUrlBuilder sitemapUrlBuilder,
+            ISettingsManager settingsManager,
+            IMemberService memberService)
+            : base(settingsManager, sitemapUrlBuilder)
         {
             MemberService = memberService;
-            SitemapItemRecordBuilder = sitemapItemRecordBuilder;
         }
 
         protected IMemberService MemberService { get; private set; }
-        protected ISitemapItemRecordBuilder SitemapItemRecordBuilder { get; private set; }
 
-        public virtual ICollection<SitemapItemRecord> GetSitemapItemRecords(Store store, Sitemap sitemap)
+        public virtual ICollection<SitemapItemRecord> GetSitemapItemRecords(Sitemap sitemap)
         {
             var sitemapItemRecords = new List<SitemapItemRecord>();
 
@@ -32,7 +34,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 var vendor = member as Vendor;
                 if (vendor != null)
                 {
-                    var vendorSitemapItemRecords = SitemapItemRecordBuilder.CreateSitemapItemRecords(store, sitemap.UrlTemplate, SitemapItemTypes.Vendor, vendor);
+                    var vendorSitemapItemRecords = CreateSitemapItemRecords(sitemap, sitemap.UrlTemplate, SitemapItemTypes.Vendor, vendor);
                     sitemapItemRecords.AddRange(vendorSitemapItemRecords);
                 }
             }

@@ -19,7 +19,7 @@
                     return selectedItems.length > 0;
                 },
                 executeMethod: function (catalogBlade) {
-                    addItemsToSitemap(selectedItems, blade.parentBlade);
+                    addItemsToSitemap(selectedItems);
                     bladeNavigationService.closeBlade(catalogBlade);
                 }
             }],
@@ -50,10 +50,12 @@
                 sitemap: blade.sitemap
             }
         }
-        bladeNavigationService.showBlade(addCustomItemBlade, blade);
+        bladeNavigationService.closeBlade(blade, function () {
+            bladeNavigationService.showBlade(addCustomItemBlade, blade.parentBlade);
+        });
     }
 
-    function addItemsToSitemap(items, blade) {
+    function addItemsToSitemap(items) {
         blade.isLoading = true;
         var sitemapItems = [];
         _.each(items, function (item) {
@@ -64,18 +66,7 @@
                 objectType: item.type
             });
         });
-        if (blade.currentEntity.isNew) {
-            blade.currentEntity.items = sitemapItems;
-            blade.isLoading = false;
-        } else {
-            sitemapsResource.addSitemapItems({
-                sitemapId: blade.currentEntity.id
-            }, sitemapItems, function (response) {
-                blade.refresh();
-            }, function (error) {
-                bladeNavigationService.setError('Error ' + error.status, blade);
-                blade.isLoading = false;
-            });
-        }
+        blade.parentBlade.addItems(sitemapItems);
+        blade.isLoading = false;
     }
 }]);
