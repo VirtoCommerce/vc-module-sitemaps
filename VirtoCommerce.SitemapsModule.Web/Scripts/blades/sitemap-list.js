@@ -146,13 +146,14 @@
     }
 
     function downloadSitemaps(storeId, baseUrl) {
-        blade.isLoading = true;
-        sitemapsResource.downloadSitemaps({ storeId: storeId, baseUrl: baseUrl }, function (response) {
-            $window.open(response.url);
-            blade.isLoading = false;
-        }, function (error) {
-            bladeNavigationService.setError('Error ' + error.status, blade);
-            blade.isLoading = false;
-        });
+        window.open('api/sitemaps/download?storeId=' + storeId + '&baseUrl=' + baseUrl, '_blank');
+        //blade.isLoading = true;
+        //sitemapsResource.downloadSitemaps({ storeId: storeId, baseUrl: baseUrl }, function (response) {
+        //    $window.open(response.url);
+        //    blade.isLoading = false;
+        //}, function (error) {
+        //    bladeNavigationService.setError('Error ' + error.status, blade);
+        //    blade.isLoading = false;
+        //});
     }
 }]);

@@ -3,6 +3,9 @@ using System.IO;
 using System.IO.Packaging;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 using VirtoCommerce.Domain.Commerce.Model.Search;
@@ -191,56 +194,45 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         [HttpGet]
         [Route("generate")]
         [ResponseType(typeof(Stream))]
-        public IHttpActionResult GenerateSitemap(string storeId, string baseUrl, string sitemapUrl)
+        public HttpResponseMessage GenerateSitemap(string storeId, string baseUrl, string sitemapUrl)
         {
-            if (string.IsNullOrEmpty(storeId))
-            {
-                return BadRequest("storeId is empty");
-            }
-            if (string.IsNullOrEmpty(baseUrl))
-            {
-                return BadRequest("baseUrl is empty");
-            }
-            if (string.IsNullOrEmpty(sitemapUrl))
-            {
-                return BadRequest("sitemapUrl is empty");
-            }
-
             var stream = _sitemapXmlGenerator.GenerateSitemapXml(storeId, baseUrl, sitemapUrl);
 
-            return Ok(stream);
+            var result = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(stream) };
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("text/xml");
+
+            return result;
         }
 
         [HttpGet]
         [Route("download")]
-        [ResponseType(typeof(SitemapPackage))]
-        public IHttpActionResult DownloadSitemaps(string storeId, string baseUrl)
+        [ResponseType(typeof(Stream))]
+        public HttpResponseMessage DownloadSitemapsZip(string storeId, string baseUrl)
         {
-            if (string.IsNullOrEmpty(storeId))
-            {
-                return BadRequest("storeId is empty");
-            }
-            if (string.IsNullOrEmpty(baseUrl))
-            {
-                return BadRequest("storbaseUrleId is empty");
-            }
+            var zipPackageName = "sitemap.zip";
 
-            var zipPackageRelativeUrl = "tmp/sitemap.zip";
+            var resultStream = new MemoryStream();
 
-            using (var targetStream = _blobStorageProvider.OpenWrite(zipPackageRelativeUrl))
+            using (var zipPackage = ZipPackage.Open(resultStream, FileMode.Create))
             {
-                using (var zipPackage = ZipPackage.Open(targetStream, FileMode.Create))
+                CreateSitemapPart(zipPackage, storeId, baseUrl, "sitemap.xml");
+
+                var sitemapUrls = _sitemapXmlGenerator.GetSitemapUrls(storeId);
+                foreach (var sitemapUrl in sitemapUrls)
                 {
-                    CreateSitemapPart(zipPackage, storeId, baseUrl, "sitemap.xml");
-                    var sitemapUrls = _sitemapXmlGenerator.GetSitemapUrls(storeId);
-                    foreach (var sitemapUrl in sitemapUrls)
+                    if (!string.IsNullOrEmpty(sitemapUrl))
                     {
                         CreateSitemapPart(zipPackage, storeId, baseUrl, sitemapUrl);
                     }
                 }
             }
 
-            return Ok(new SitemapPackage { Url = _blobUrlResolver.GetAbsoluteUrl(zipPackageRelativeUrl) });
+            resultStream.Seek(0, SeekOrigin.Begin);
+
+            var result = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(resultStream) };
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue(MimeMapping.GetMimeMapping(zipPackageName));
+
+            return result;
         }
 
         private void CreateSitemapPart(System.IO.Packaging.Package package, string storeId, string baseUrl, string sitemapUrl)
