@@ -119,13 +119,6 @@
     }
 
     function downloadSitemaps(storeId) {
-        blade.isLoading = true;
-        sitemapsResource.downloadSitemaps({ storeId: storeId }, function (response) {
-            $window.open(response.url);
-            blade.isLoading = false;
-        }, function (error) {
-            bladeNavigationService.setError('Error ' + error.status, blade);
-            blade.isLoading = false;
-        });
+        window.open('api/sitemaps/download?storeId=' + storeId, '_blank');
     }
 }]);
