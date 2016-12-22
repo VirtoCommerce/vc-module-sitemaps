@@ -107,11 +107,11 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 throw new ArgumentNullException("sitemaps");
             }
 
-            using (var repository = RepositoryFactory())
-            {
-                var pkMap = new PrimaryKeyResolvingMap();
-                var changeTracker = GetChangeTracker(repository);
+            var pkMap = new PrimaryKeyResolvingMap();
 
+            using (var repository = RepositoryFactory())
+            using (var changeTracker = GetChangeTracker(repository))
+            {
                 var sitemapIds = sitemaps.Where(s => !s.IsTransient()).Select(s => s.Id);
                 var sitemapExistEntities = repository.Sitemaps.Where(s => sitemapIds.Contains(s.Id));
                 foreach (var sitemap in sitemaps)

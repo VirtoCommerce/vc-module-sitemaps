@@ -10,6 +10,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using VirtoCommerce.Domain.Commerce.Model.Search;
 using VirtoCommerce.Platform.Core.Assets;
+using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Web.Security;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
@@ -148,7 +149,11 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                 return BadRequest("items is null");
             }
 
-            _sitemapItemService.Add(sitemapId, items);
+            foreach (var item in items)
+            {
+                item.SitemapId = sitemapId;
+            }
+            _sitemapItemService.SaveChanges(items);
 
             return Ok();
         }
@@ -185,7 +190,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
         [HttpGet]
         [Route("generate")]
-        [ResponseType(typeof(Stream))]
+        [SwaggerFileResponseAttribute]
         public HttpResponseMessage GenerateSitemap(string storeId, string sitemapUrl)
         {          
             var stream = _sitemapXmlGenerator.GenerateSitemapXml(storeId, sitemapUrl);
@@ -197,7 +202,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
         [HttpGet]
         [Route("download")]
-        [ResponseType(typeof(Stream))]
+        [SwaggerFileResponseAttribute]
         public HttpResponseMessage DownloadSitemapsZip(string storeId)
         {
             var zipPackageName = "sitemap.zip";

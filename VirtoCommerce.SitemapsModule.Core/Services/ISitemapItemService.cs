@@ -7,7 +7,7 @@ namespace VirtoCommerce.SitemapsModule.Core.Services
     {
         GenericSearchResult<SitemapItem> Search(SitemapItemSearchCriteria criteria);
 
-        void Add(string sitemapId, SitemapItem[] items);
+        void SaveChanges(SitemapItem[] items);
 
         void Remove(string[] itemIds);
     }
