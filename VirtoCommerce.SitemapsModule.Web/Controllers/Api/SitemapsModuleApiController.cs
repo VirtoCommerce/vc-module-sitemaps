@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.IO.Packaging;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -13,9 +12,7 @@ using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Web.Security;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
-using VirtoCommerce.SitemapsModule.Data.Models.Xml;
 using VirtoCommerce.SitemapsModule.Data.Services;
-using VirtoCommerce.SitemapsModule.Web.Model;
 using VirtoCommerce.SitemapsModule.Web.Security;
 
 namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
