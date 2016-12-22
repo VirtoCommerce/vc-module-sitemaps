@@ -65,7 +65,7 @@
             template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/sitemap.tpl.html',
             currentEntity: {
                 isNew: true,
-                filename: 'sitemap/{slug}',
+                filename: 'sitemap/',
                 urlTemplate: '{language}/{slug}',
                 storeId: blade.store.id,
                 items: []
@@ -147,13 +147,5 @@
 
     function downloadSitemaps(storeId, baseUrl) {
         window.open('api/sitemaps/download?storeId=' + storeId + '&baseUrl=' + baseUrl, '_blank');
-        //blade.isLoading = true;
-        //sitemapsResource.downloadSitemaps({ storeId: storeId, baseUrl: baseUrl }, function (response) {
-        //    $window.open(response.url);
-        //    blade.isLoading = false;
-        //}, function (error) {
-        //    bladeNavigationService.setError('Error ' + error.status, blade);
-        //    blade.isLoading = false;
-        //});
     }
 }]);

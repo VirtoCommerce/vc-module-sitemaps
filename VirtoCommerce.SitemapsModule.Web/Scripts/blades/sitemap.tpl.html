@@ -6,8 +6,7 @@
                 <div class="form-group" ng-init="setForm(formSitemap)">
                     <label class="form-label" for="sitemapPath" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.labelSitemapLocation' | translate"></label>
                     <div class="form-input">
-                        <!--<input id="sitemapPath" name="sitemapPath" required="required" type="text" ng-pattern="/^([a-z_\-\s0-9\.]+)+\.(xml)$/" ng-model="blade.currentEntity.sitemapLocation" />-->
-                        <input id="sitemapPath" name="sitemapPath" required="required" type="text" ng-model="blade.currentEntity.filename" />
+                        <input id="sitemapPath" name="sitemapPath" required="required" type="text" ng-pattern="/^([\/{}a-z_\-\s0-9\.]+)+\.(xml)$/" ng-model="blade.currentEntity.filename" />
                         <div class="error" ng-if="errorMessage" ng-bind="errorMessage | translate"></div>
                         <div class="description" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.descriptionSitemapLocation' | translate"></div>
                     </div>
@@ -15,7 +14,7 @@
                 <div class="form-group">
                     <label class="form-label" for="urlTemplate" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.labelSitemapItemsLocation' | translate"></label>
                     <div class="form-input">
-                        <input id="urlTemplate" name="urlTemplate" required="required" type="text" ng-model="blade.currentEntity.urlTemplate" />
+                        <input id="urlTemplate" name="urlTemplate" required="required" type="text" ng-pattern="/^([\/{}a-z_\-\s0-9\.]+)$/" ng-model="blade.currentEntity.urlTemplate" />
                         <div class="description" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.descriptionSitemapItemsLocation' | translate"></div>
                     </div>
                 </div>

@@ -30,8 +30,8 @@
         },
         "formSitemap": {
           "labelSitemapLocation": "Sitemap location",
-          "descriptionSitemapLocation": "Sitemap location is the unique relative sitemap URL in context of index sitemap, i.e.: 'categories/electronics.xml', 'products.xml', etc. Requirements for sitemap path are the same to any URL. Please avoid of using 'sitemap.xml' in sitemap path. To generate a sitemap URL can be used the next patterns: {language} - will be replaced with language code (i.e. en-US), {slug} - will be replaced with sitemap filename URL part",
-          "sitemapIndexErrorMessage": "Please avoid of using \"sitemap.xml\" in sitemap path",
+          "descriptionSitemapLocation": "Sitemap location is the unique relative sitemap URL in context of index sitemap, i.e.: 'categories/electronics.xml', 'products.xml', etc. Requirements for sitemap path are the same to any URL. Please avoid of using 'sitemap.xml' in sitemap path. To generate a sitemap URL can be used the next patterns: {language} - will be replaced with language code (i.e. en-US)",
+          "sitemapIndexErrorMessage": "Please avoid of using \"sitemap.xml\" as sitemap location",
           "sitemapSitemapLocationExistErrorMessage": "This sitemap location is already used",
           "labelSitemapItemsLocation": "Sitemap items location",
           "descriptionSitemapItemsLocation": "To generate a sitemap item URL can be used the next patterns: {language} - will be replaced with language code (i.e. en-US), {slug} - will be replaced with SEO semantic URL part",
