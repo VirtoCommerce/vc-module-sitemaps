@@ -30,6 +30,13 @@
     <settings>
         <group name="Sitemap|General">
             <setting>
+                <name>Sitemap.ExportImport.Description</name>
+                <title>Export/Import description</title>
+                <description>Module description in platform export/import wizard</description>
+                <valueType>string</valueType>
+                <defaultValue>Export/Import sitemaps with all sitemap items</defaultValue>
+            </setting>
+            <setting>
                 <name>Sitemap.RecordsLimitPerFile</name>
                 <title>Records limit</title>
                 <description>Records limit per each sitemap file. Note that search engine crawlers are accept sitemap files which contain less than 50000 URL records and filesize is less than 10 Mb</description>
