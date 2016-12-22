@@ -189,7 +189,6 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
         [HttpGet]
         [Route("generate")]
-        [ResponseType(typeof(Stream))]
         [SwaggerFileResponseAttribute]
         public HttpResponseMessage GenerateSitemap(string storeId, string baseUrl, string sitemapUrl)
         {

@@ -16,8 +16,8 @@
           "download": "Download sitemaps"
         },
         "gridHeaders": {
-          "filename": "Filename",
-          "itemsCount": "Items count"
+            "location": "Location",
+            "itemsCount": "Items count"
         },
         "noSitemapsMessage": "There are no sitemaps yet"
       },
