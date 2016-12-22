@@ -44,15 +44,7 @@ namespace VirtoCommerce.SitemapsModule.Web
             _container.RegisterType<ISitemapXmlGenerator, SitemapXmlGenerator>();
         }
 
-        public override void PostInitialize()
-        {
-            base.PostInitialize();
-
-            var settingManager = _container.Resolve<ISettingsManager>();
-            var sitemapSettings = settingManager.GetModuleSettings("VirtoCommerce.Sitemaps");
-            settingManager.RegisterModuleSettings("VirtoCommerce.Sitemaps", sitemapSettings);
-        }
-
+     
         public void DoExport(System.IO.Stream outStream, PlatformExportManifest manifest, Action<ExportImportProgressInfo> progressCallback)
         {
             var job = _container.Resolve<SitemapExportImport>();
