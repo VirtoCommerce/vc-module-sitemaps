@@ -31,9 +31,9 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             }
 
             Uri uri;
-            Uri.TryCreate(url, UriKind.Absolute, out uri);
+            Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out uri);
 
-            return uri != null ? uri.AbsoluteUri : null;
+            return uri != null ? uri.ToString() : null;
         }
     }
 }

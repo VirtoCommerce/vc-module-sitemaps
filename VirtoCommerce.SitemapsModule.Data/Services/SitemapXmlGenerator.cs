@@ -79,12 +79,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             var xmlNamespaces = new XmlSerializerNamespaces();
             xmlNamespaces.Add("", "http://www.sitemaps.org/schemas/sitemap/0.9");
 
-            var sitemapFilename = sitemapUrl;
-            if (sitemapUrl.IsAbsoluteUrl())
-            {
-                sitemapFilename = GetSitemapFilenameFromUrl(sitemapUrl, filenameSeparator);
-            }
-
+            var sitemapFilename = GetSitemapFilenameFromUrl(sitemapUrl, filenameSeparator);
             if (sitemapFilename.EqualsInvariant("sitemap.xml"))
             {
                 var sitemapUrls = GetSitemapUrls(storeId);
@@ -140,18 +135,21 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
         {
             string filename = null;
 
-            var urlLastPart = url.Split('/').LastOrDefault();
+            var urlParts = url.Split('/').ToList();
+            var urlLastPart = urlParts.LastOrDefault();
+            urlParts.Remove(urlLastPart);
             if (!string.IsNullOrEmpty(urlLastPart))
             {
                 var filenameParts = urlLastPart.Split(new[] { filenameSeparator }, StringSplitOptions.None);
                 filename = filenameParts.FirstOrDefault();
                 if (filenameParts.Length > 0)
                 {
-                    filename = string.Format("{0}.xml", filenameParts.FirstOrDefault());
+                    filename = string.Format("{0}.xml", filenameParts.First().Replace(".xml", ""));
                 }
             }
+            urlParts.Add(filename);
 
-            return filename;
+            return string.Join("/", urlParts);
         }
 
         private ICollection<string> GetSitemapPartialUrls(Sitemap sitemap, int actualSitemapItemsCount, int recordsLimitPerFile, string filenameSeparator)
