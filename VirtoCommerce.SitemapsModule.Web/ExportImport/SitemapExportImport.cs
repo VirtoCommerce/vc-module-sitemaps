@@ -42,18 +42,24 @@ namespace VirtoCommerce.SitemapsModule.Web.ExportImport
             var progressInfo = new ExportImportProgressInfo();
 
             var pageSize = 20;
-            var totalCount = backupObject.Sitemaps.Count;
-            var partsCount = totalCount / pageSize + 1;
+            var sitemaps = backupObject.Sitemaps.Skip(0).Take(pageSize);
+            var partsCount = backupObject.Sitemaps.Count / pageSize + 1;
+
             for (var i = 1; i <= partsCount; i++)
             {
-                _sitemapService.SaveChanges(backupObject.Sitemaps.ToArray());
-                foreach (var sitemap in backupObject.Sitemaps)
+                _sitemapService.SaveChanges(sitemaps.ToArray());
+                foreach (var sitemap in sitemaps)
                 {
                     _sitemapItemService.Add(sitemap.Id, sitemap.Items.ToArray());
                 }
 
-                progressInfo.Description = string.Format("{0} of {1} sitemaps are exported", Math.Min((i - 1) * pageSize + pageSize, totalCount), totalCount);
+                progressInfo.Description = string.Format("{0} of {1} sitemaps are exported", Math.Min((i - 1) * pageSize + pageSize, backupObject.Sitemaps.Count), backupObject.Sitemaps.Count);
                 progressCallback(progressInfo);
+
+                if (partsCount > 1)
+                {
+                    sitemaps = backupObject.Sitemaps.Skip(pageSize * i).Take(pageSize);
+                }
             }
         }
 
