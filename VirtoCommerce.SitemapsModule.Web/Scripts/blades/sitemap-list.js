@@ -1,18 +1,21 @@
 ﻿angular.module('virtoCommerce.sitemapsModule')
-.controller('virtoCommerce.sitemapsModule.sitemapListController', ['$window', '$scope', 'platformWebApp.bladeUtils', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.uiGridHelper', 'virtoCommerce.sitemapsModule.sitemaps', function ($window, $scope, bladeUtils, bladeNavigationService, dialogService, uiGridHelper, sitemapsResource) {
+.controller('virtoCommerce.sitemapsModule.sitemapListController', ['$window', '$scope', '$modal', 'platformWebApp.bladeUtils', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.uiGridHelper', 'virtoCommerce.sitemapsModule.sitemaps', function ($window, $scope, $modal, bladeUtils, bladeNavigationService, dialogService, uiGridHelper, sitemapsResource) {
     bladeUtils.initializePagination($scope);
     var blade = $scope.blade;
     blade.headIcon = 'fa fa-sitemap';
     blade.isLoading = false;
     blade.toolbarCommands = getBladeToolbarCommands();
     blade.refresh = function () {
-        searchSitemaps(blade.storeId, ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount, $scope.pageSettings.itemsPerPageCount);
+        searchSitemaps(blade.store.id, ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount, $scope.pageSettings.itemsPerPageCount);
     }
     blade.selectSitemap = function (sitemap) {
         showSitemapBlade(sitemap);
     }
     blade.removeSitemap = function (sitemap) {
         showSitemapRemoveConfirmationDialog(sitemap.id);
+    }
+    blade.downloadSitemaps = function () {
+        showBaseUrlDialog(blade.store.id, blade.store.url || blade.store.secureUrl);
     }
 
     blade.refresh();
@@ -49,7 +52,7 @@
                 return $scope.pageSettings.totalItems > 0;
             },
             executeMethod: function () {
-                downloadSitemaps(blade.storeId);
+                blade.downloadSitemaps();
             }
         }];
     }
@@ -62,13 +65,16 @@
             template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/sitemap.tpl.html',
             currentEntity: {
                 isNew: true,
-                storeId: blade.storeId
+                filename: 'sitemap/',
+                urlTemplate: '{language}/{slug}',
+                storeId: blade.store.id,
+                items: []
             }
         }
         if (sitemap) {
             sitemapBlade.title = sitemap.filename;
             sitemapBlade.currentEntity = angular.copy(sitemap);
-            sitemapBlade.isNew = false;
+            sitemapBlade.currentEntity.isNew = false;
         }
         sitemapBlade.originalEntity = angular.copy(sitemapBlade.currentEntity);
         bladeNavigationService.showBlade(sitemapBlade, blade);
@@ -86,6 +92,27 @@
             }
         }
         dialogService.showConfirmationDialog(confirmDialog);
+    }
+
+    function showBaseUrlDialog(storeId, baseUrl) {
+        var confirmDialog = {
+            id: 'confirmBaseUrl',
+            originalBaseUrl: angular.copy(baseUrl),
+            baseUrl: baseUrl,
+            templateUrl: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/dialogs/confirm-base-url-dialog.tpl.html',
+            controller: 'virtoCommerce.sitemapsModule.baseUrlDialogController',
+            resolve: {
+                dialog: function () {
+                    return confirmDialog;
+                }
+            }
+        }
+        var dialogInstance = $modal.open(confirmDialog);
+        dialogInstance.result.then(function (baseUrl) {
+            if (baseUrl) {
+                downloadSitemaps(storeId, baseUrl);
+            }
+        });
     }
 
     function searchSitemaps(storeId, skip, take) {
@@ -118,7 +145,7 @@
         });
     }
 
-    function downloadSitemaps(storeId) {
-        window.open('api/sitemaps/download?storeId=' + storeId, '_blank');
+    function downloadSitemaps(storeId, baseUrl) {
+        window.open('api/sitemaps/download?storeId=' + storeId + '&baseUrl=' + baseUrl, '_blank');
     }
 }]);

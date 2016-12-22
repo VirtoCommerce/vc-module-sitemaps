@@ -7,6 +7,6 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
     {
         ICollection<string> GetSitemapUrls(string storeId);
 
-        Stream GenerateSitemapXml(string storeId, string sitemapUrl);
+        Stream GenerateSitemapXml(string storeId, string baseUrl, string sitemapUrl);
     }
 }

@@ -30,7 +30,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 ModifiedDate = DateTime.UtcNow,
                 Priority = sitemapItemOptions.Priority,
                 UpdateFrequency = sitemapItemOptions.UpdateFrequency,
-                Url = SitemapUrlBuilder.CreateAbsoluteUrl(sitemap.Store, urlTemplate, sitemap.Store.DefaultLanguage, seoSupportItem != null ? seoSupportItem.Id : null)
+                Url = SitemapUrlBuilder.CreateAbsoluteUrl(urlTemplate, sitemap.BaseUrl, sitemap.Store.DefaultLanguage, seoSupportItem != null ? seoSupportItem.Id : null)
             };
 
             if (seoSupportItem != null && !seoSupportItem.SeoInfos.IsNullOrEmpty())
@@ -38,7 +38,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 var seoInfos = seoSupportItem.SeoInfos.Where(si => si.IsActive && sitemap.Store.Languages.Contains(si.LanguageCode)).ToList();
                 foreach (var seoInfo in seoInfos)
                 {
-                    sitemapItemRecord.Url = SitemapUrlBuilder.CreateAbsoluteUrl(sitemap.Store, sitemap.UrlTemplate, seoInfo.LanguageCode, seoInfo.SemanticUrl);
+                    sitemapItemRecord.Url = SitemapUrlBuilder.CreateAbsoluteUrl(sitemap.UrlTemplate, sitemap.BaseUrl, seoInfo.LanguageCode, seoInfo.SemanticUrl);
                     sitemapItemRecords.Add(sitemapItemRecord);
                 }
             }

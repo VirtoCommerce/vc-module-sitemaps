@@ -4,18 +4,18 @@
         <div class="inner-block">
             <form class="form" name="formSitemap">
                 <div class="form-group" ng-init="setForm(formSitemap)">
-                    <label class="form-label" for="filename" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.labelFilename' | translate"></label>
+                    <label class="form-label" for="sitemapPath" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.labelSitemapLocation' | translate"></label>
                     <div class="form-input">
-                        <input id="filename" name="filename" required="required" type="text" ng-pattern="/^([a-z_\-\s0-9\.]+)+\.(xml)$/" ng-model="blade.currentEntity.filename" />
+                        <input id="sitemapPath" name="sitemapPath" required="required" type="text" ng-pattern="/^([\/{}a-z_\-\s0-9\.]+)+\.(xml)$/" ng-model="blade.currentEntity.filename" />
                         <div class="error" ng-if="errorMessage" ng-bind="errorMessage | translate"></div>
-                        <div class="description" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.descriptionFilename' | translate"></div>
+                        <div class="description" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.descriptionSitemapLocation' | translate"></div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="urlTemplate" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.labelUrlTemplate' | translate"></label>
+                    <label class="form-label" for="urlTemplate" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.labelSitemapItemsLocation' | translate"></label>
                     <div class="form-input">
-                        <input id="urlTemplate" name="urlTemplate" required="required" type="text" ng-model="blade.currentEntity.urlTemplate" />
-                        <div class="description" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.descriptionUrlTemplate' | translate"></div>
+                        <input id="urlTemplate" name="urlTemplate" required="required" type="text" ng-pattern="/^([\/{}a-z_\-\s0-9\.]+)$/" ng-model="blade.currentEntity.urlTemplate" />
+                        <div class="description" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.descriptionSitemapItemsLocation' | translate"></div>
                     </div>
                 </div>
             </form>
@@ -55,7 +55,7 @@
                      ui-grid-pinning
                      ui-grid-height></div>
                 <ul class="menu __context" id="sitemap_item_menu">
-                    <li class="menu-item" ng-click="blade.removeSitemapItems([ contextMenuEntity ])">
+                    <li class="menu-item" ng-click="blade.removeItems([ contextMenuEntity ])">
                         <i class="menu-ico fa fa-trash-o"></i> {{ 'sitemapsModule.contextMenu.remove' | translate }}
                     </li>
                 </ul>

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.IO.Packaging;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -190,48 +189,54 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
         [HttpGet]
         [Route("generate")]
+        [ResponseType(typeof(Stream))]
         [SwaggerFileResponseAttribute]
-        public HttpResponseMessage GenerateSitemap(string storeId, string sitemapUrl)
-        {          
-            var stream = _sitemapXmlGenerator.GenerateSitemapXml(storeId, sitemapUrl);
+        public HttpResponseMessage GenerateSitemap(string storeId, string baseUrl, string sitemapUrl)
+        {
+            var stream = _sitemapXmlGenerator.GenerateSitemapXml(storeId, baseUrl, sitemapUrl);
 
             var result = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(stream) };
             result.Content.Headers.ContentType = new MediaTypeHeaderValue("text/xml");
+
             return result;
         }
 
         [HttpGet]
         [Route("download")]
         [SwaggerFileResponseAttribute]
-        public HttpResponseMessage DownloadSitemapsZip(string storeId)
+        public HttpResponseMessage DownloadSitemapsZip(string storeId, string baseUrl)
         {
             var zipPackageName = "sitemap.zip";
 
             var resultStream = new MemoryStream();
+
             using (var zipPackage = ZipPackage.Open(resultStream, FileMode.Create))
             {
-                CreateSitemapPart(zipPackage, storeId, "sitemap.xml");
+                CreateSitemapPart(zipPackage, storeId, baseUrl, "sitemap.xml");
+
                 var sitemapUrls = _sitemapXmlGenerator.GetSitemapUrls(storeId);
                 foreach (var sitemapUrl in sitemapUrls)
                 {
-                    var filename = sitemapUrl.Split('/').LastOrDefault();
-                    if (!string.IsNullOrEmpty(filename))
+                    if (!string.IsNullOrEmpty(sitemapUrl))
                     {
-                        CreateSitemapPart(zipPackage, storeId, filename);
+                        CreateSitemapPart(zipPackage, storeId, baseUrl, sitemapUrl);
                     }
                 }
             }
+
             resultStream.Seek(0, SeekOrigin.Begin);
+
             var result = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(resultStream) };
             result.Content.Headers.ContentType = new MediaTypeHeaderValue(MimeMapping.GetMimeMapping(zipPackageName));
+
             return result;
         }
 
-        private void CreateSitemapPart(System.IO.Packaging.Package package, string storeId, string sitemapFilename)
+        private void CreateSitemapPart(System.IO.Packaging.Package package, string storeId, string baseUrl, string sitemapUrl)
         {
-            var uri = PackUriHelper.CreatePartUri(new Uri(sitemapFilename, UriKind.Relative));
+            var uri = PackUriHelper.CreatePartUri(new Uri(sitemapUrl, UriKind.Relative));
             var sitemapPart = package.CreatePart(uri, System.Net.Mime.MediaTypeNames.Text.Xml, CompressionOption.Normal);
-            var stream = _sitemapXmlGenerator.GenerateSitemapXml(storeId, sitemapFilename);
+            var stream = _sitemapXmlGenerator.GenerateSitemapXml(storeId, baseUrl, sitemapUrl);
             var sitemapPartStream = sitemapPart.GetStream();
             stream.CopyTo(sitemapPartStream);
         }

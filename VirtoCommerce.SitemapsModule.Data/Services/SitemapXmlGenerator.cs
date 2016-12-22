@@ -68,7 +68,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             return sitemapUrls;
         }
 
-        public virtual Stream GenerateSitemapXml(string storeId, string sitemapUrl)
+        public virtual Stream GenerateSitemapXml(string storeId, string baseUrl, string sitemapUrl)
         {
             var stream = new MemoryStream();
 
@@ -79,12 +79,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             var xmlNamespaces = new XmlSerializerNamespaces();
             xmlNamespaces.Add("", "http://www.sitemaps.org/schemas/sitemap/0.9");
 
-            var sitemapFilename = sitemapUrl;
-            if (sitemapUrl.IsAbsoluteUrl())
-            {
-                sitemapFilename = GetSitemapFilenameFromUrl(sitemapUrl, filenameSeparator);
-            }
-
+            var sitemapFilename = GetSitemapFilenameFromUrl(sitemapUrl, filenameSeparator);
             if (sitemapFilename.EqualsInvariant("sitemap.xml"))
             {
                 var sitemapUrls = GetSitemapUrls(storeId);
@@ -93,7 +88,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                     Sitemaps = sitemapUrls.Select(u => new SitemapIndexItemXmlRecord
                     {
                         ModifiedDate = DateTime.UtcNow,
-                        Url = u
+                        Url = SitemapUrlBuilder.CreateAbsoluteUrl(u, baseUrl)
                     }).ToList()
                 };
 
@@ -111,6 +106,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 {
                     sitemap.Store = StoreService.GetById(storeId);
                     sitemap.Items = GetFormalSitemapItems(sitemap.Id, recordsLimitPerFile);
+                    sitemap.BaseUrl = baseUrl;
                     var sitemapItemRecords = GetSitemapItemRecords(sitemap);
                     if (partNumber > 0)
                     {
@@ -139,18 +135,21 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
         {
             string filename = null;
 
-            var urlLastPart = url.Split('/').LastOrDefault();
+            var urlParts = url.Split('/').ToList();
+            var urlLastPart = urlParts.LastOrDefault();
+            urlParts.Remove(urlLastPart);
             if (!string.IsNullOrEmpty(urlLastPart))
             {
                 var filenameParts = urlLastPart.Split(new[] { filenameSeparator }, StringSplitOptions.None);
                 filename = filenameParts.FirstOrDefault();
                 if (filenameParts.Length > 0)
                 {
-                    filename = string.Format("{0}.xml", filenameParts.FirstOrDefault());
+                    filename = string.Format("{0}.xml", filenameParts.First().Replace(".xml", ""));
                 }
             }
+            urlParts.Add(filename);
 
-            return filename;
+            return string.Join("/", urlParts);
         }
 
         private ICollection<string> GetSitemapPartialUrls(Sitemap sitemap, int actualSitemapItemsCount, int recordsLimitPerFile, string filenameSeparator)
@@ -160,8 +159,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             var partsCount = actualSitemapItemsCount / recordsLimitPerFile + 1;
             for (var i = 1; i <= partsCount; i++)
             {
-                var filename = partsCount > 1 ? string.Format("{0}{1}{2}.xml", sitemap.Filename.Replace(".xml", ""), filenameSeparator, i) : sitemap.Filename;
-                var url = SitemapUrlBuilder.CreateAbsoluteUrl(sitemap.Store, sitemap.UrlTemplate, sitemap.Store.DefaultLanguage, filename);
+                var url = partsCount > 1 ? string.Format("{0}{1}{2}.xml", sitemap.Filename.Replace(".xml", ""), filenameSeparator, i) : sitemap.Filename;
                 sitemapUrls.Add(url);
             }
 
