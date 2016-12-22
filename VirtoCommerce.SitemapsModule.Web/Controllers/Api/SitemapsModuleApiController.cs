@@ -191,18 +191,22 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         [HttpGet]
         [Route("generate")]
         [ResponseType(typeof(Stream))]
-        public IHttpActionResult GenerateSitemap(string storeId, string sitemapUrl)
+        public IHttpActionResult GenerateSitemap(string storeId, string baseUrl, string sitemapUrl)
         {
             if (string.IsNullOrEmpty(storeId))
             {
                 return BadRequest("storeId is empty");
+            }
+            if (string.IsNullOrEmpty(baseUrl))
+            {
+                return BadRequest("baseUrl is empty");
             }
             if (string.IsNullOrEmpty(sitemapUrl))
             {
                 return BadRequest("sitemapUrl is empty");
             }
 
-            var stream = _sitemapXmlGenerator.GenerateSitemapXml(storeId, sitemapUrl);
+            var stream = _sitemapXmlGenerator.GenerateSitemapXml(storeId, baseUrl, sitemapUrl);
 
             return Ok(stream);
         }
@@ -210,11 +214,15 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         [HttpGet]
         [Route("download")]
         [ResponseType(typeof(SitemapPackage))]
-        public IHttpActionResult DownloadSitemaps(string storeId)
+        public IHttpActionResult DownloadSitemaps(string storeId, string baseUrl)
         {
             if (string.IsNullOrEmpty(storeId))
             {
                 return BadRequest("storeId is empty");
+            }
+            if (string.IsNullOrEmpty(baseUrl))
+            {
+                return BadRequest("storbaseUrleId is empty");
             }
 
             var zipPackageRelativeUrl = "tmp/sitemap.zip";
@@ -223,15 +231,11 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             {
                 using (var zipPackage = ZipPackage.Open(targetStream, FileMode.Create))
                 {
-                    CreateSitemapPart(zipPackage, storeId, "sitemap.xml");
+                    CreateSitemapPart(zipPackage, storeId, baseUrl, "sitemap.xml");
                     var sitemapUrls = _sitemapXmlGenerator.GetSitemapUrls(storeId);
                     foreach (var sitemapUrl in sitemapUrls)
                     {
-                        var filename = sitemapUrl.Split('/').LastOrDefault();
-                        if (!string.IsNullOrEmpty(filename))
-                        {
-                            CreateSitemapPart(zipPackage, storeId, filename);
-                        }
+                        CreateSitemapPart(zipPackage, storeId, baseUrl, sitemapUrl);
                     }
                 }
             }
@@ -239,11 +243,11 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             return Ok(new SitemapPackage { Url = _blobUrlResolver.GetAbsoluteUrl(zipPackageRelativeUrl) });
         }
 
-        private void CreateSitemapPart(System.IO.Packaging.Package package, string storeId, string sitemapFilename)
+        private void CreateSitemapPart(System.IO.Packaging.Package package, string storeId, string baseUrl, string sitemapUrl)
         {
-            var uri = PackUriHelper.CreatePartUri(new Uri(sitemapFilename, UriKind.Relative));
+            var uri = PackUriHelper.CreatePartUri(new Uri(sitemapUrl, UriKind.Relative));
             var sitemapPart = package.CreatePart(uri, System.Net.Mime.MediaTypeNames.Text.Xml, CompressionOption.Normal);
-            var stream = _sitemapXmlGenerator.GenerateSitemapXml(storeId, sitemapFilename);
+            var stream = _sitemapXmlGenerator.GenerateSitemapXml(storeId, baseUrl, sitemapUrl);
             var sitemapPartStream = sitemapPart.GetStream();
             stream.CopyTo(sitemapPartStream);
         }

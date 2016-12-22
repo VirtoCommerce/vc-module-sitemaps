@@ -164,6 +164,7 @@
     <Content Include="Scripts\blades\sitemap.js" />
     <Content Include="Scripts\blades\sitemap.tpl.html" />
     <Content Include="Scripts\blades\sitemap-add-custom-item.js" />
+    <Content Include="Scripts\dialogs\confirm-base-url-dialog.js" />
     <Content Include="Scripts\resources\sitemaps.js" />
     <Content Include="Scripts\sitemapsModule.js" />
     <Content Include="Scripts\widgets\store-sitemaps-widget.js" />
@@ -176,6 +177,7 @@
     <Compile Include="Model\SitemapPackage.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Scripts\dialogs\confirm-base-url-dialog.tpl.html" />
     <Compile Include="Security\SitemapsPredefinedPermissions.cs" />
   </ItemGroup>
   <ItemGroup>

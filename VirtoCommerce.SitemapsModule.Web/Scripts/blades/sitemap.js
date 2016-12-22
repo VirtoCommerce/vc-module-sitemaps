@@ -4,9 +4,6 @@
     var blade = $scope.blade;
     blade.headIcon = 'fa fa-sitemap';
     blade.isLoading = false;
-    blade.currentEntity.isNew = !blade.currentEntity.id;
-    blade.currentEntity.items = blade.currentEntity.items || [];
-    blade.currentEntity.urlTemplate = '{storeUrl}/{language}/{slug}';
     blade.toolbarCommands = getBladeToolbarCommands();
     blade.addItems = function (sitemapItems) {
         blade.isLoading = true;
@@ -162,13 +159,13 @@
         }, function (response) {
             if (!blade.currentEntity.id) {
                 if (response.totalCount > 0) {
-                    $scope.errorMessage = 'sitemapsModule.blades.sitemap.formSitemap.sitemapFilenameExistErrorMessage';
+                    $scope.errorMessage = 'sitemapsModule.blades.sitemap.formSitemap.sitemapSitemapLocationExistErrorMessage';
                     blade.isLoading = false;
                 }
             } else {
                 var existingSitemap = _.find(response.results, function (s) { return s.filename === blade.currentEntity.filename && s.id !== blade.currentEntity.id });
                 if (existingSitemap) {
-                    $scope.errorMessage = 'sitemapsModule.blades.sitemap.formSitemap.sitemapFilenameExistErrorMessage';
+                    $scope.errorMessage = 'sitemapsModule.blades.sitemap.formSitemap.sitemapSitemapLocationExistErrorMessage';
                     blade.isLoading = false;
                 }
             }

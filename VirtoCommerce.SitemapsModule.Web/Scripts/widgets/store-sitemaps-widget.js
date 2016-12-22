@@ -6,9 +6,10 @@
         var newBlade = {
             id: 'storeSitemapsList',
             title: 'sitemapsModule.blades.sitemapList.title',
+            subtitle: 'sitemapsModule.blades.sitemapList.subtitle',
             controller: 'virtoCommerce.sitemapsModule.sitemapListController',
             template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/sitemap-list.tpl.html',
-            storeId: blade.currentEntity.id
+            store: blade.currentEntity
         };
         bladeNavigationService.showBlade(newBlade, blade);
     }

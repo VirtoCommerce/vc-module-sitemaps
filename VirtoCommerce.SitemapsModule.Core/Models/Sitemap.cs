@@ -21,6 +21,8 @@ namespace VirtoCommerce.SitemapsModule.Core.Models
 
         public string UrlTemplate { get; set; }
 
+        public string BaseUrl { get; set; }
+
         public int TotalItemsCount { get; set; }
     }
 }
