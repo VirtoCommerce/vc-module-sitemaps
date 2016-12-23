@@ -64,8 +64,7 @@
                 <title>Product page update frequency</title>
                 <description>How frequently the product page is likely to change. This value provides general information to search engines and may not correlate exactly to how often they crawl the page.</description>
                 <valueType>string</valueType>
-                <isArray>true</isArray>
-                <allowedValues>
+                 <allowedValues>
                     <value>always</value>
                     <value>hourly</value>
                     <value>daily</value>
@@ -90,7 +89,6 @@
                 <title>Category page update frequency</title>
                 <description>How frequently the category page is likely to change. This value provides general information to search engines and may not correlate exactly to how often they crawl the page.</description>
                 <valueType>string</valueType>
-                <isArray>true</isArray>
                 <allowedValues>
                     <value>always</value>
                     <value>hourly</value>
