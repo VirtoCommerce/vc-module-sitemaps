@@ -28,8 +28,6 @@ And after that:
 [GET] api/sitemaps/generate?storeId=...&baseUrl=...&sitemapUrl=...
 ```
 
-![sitemaps](https://cloud.githubusercontent.com/assets/10347112/21456466/f538e78a-c930-11e6-8dad-5bdddc3f9611.png)
-
 # Documentation
 User guide: [Sitemaps](http://virtocommerce.com/docs/vc2userguide/sitemaps)
 
