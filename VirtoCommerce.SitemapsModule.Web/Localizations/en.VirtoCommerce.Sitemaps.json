@@ -49,6 +49,10 @@
           "title": "Catalog items",
           "description": "Include product and categories"
         },
+        "addVendorItems": {
+          "title": "Vendor items",
+          "description": "Include vendors"
+        },
         "addCustomItem": {
           "title": "Custom item",
           "description": "Item with custom URL"
@@ -69,6 +73,12 @@
           "labelUrlTemplate": "URL template",
           "descriptionUrlTemplate": "The concrete relative URL  for custom items, i.e.: /about-us, /my-folder/my-page"
         }
+      },
+      "addVendorItems": {
+        "title": "Add vendor items",
+        "toolbar": {
+          "addSelected": "Add selected"
+        }
       }
     },
     "contextMenu": {
@@ -84,6 +94,10 @@
         "title": "Base URL",
         "messageNoBaseUrl": "Please enter a base URL for sitemaps",
         "messageConfirmBaseUrl": "Please confirm a base URL for sitemaps"
+      },
+      "discardChanges": {
+        "title": "Save changes",
+        "message": "The sitemap has been modified. Do you want to save changes?"
       }
     },
     "errorMessages": {

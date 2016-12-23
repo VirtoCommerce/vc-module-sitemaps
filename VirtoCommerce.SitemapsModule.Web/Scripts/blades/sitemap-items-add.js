@@ -26,14 +26,36 @@
             options: {
                 allowCheckingCategory: true,
                 checkItemFn: function (listItem, isSelected) {
-                    if (isSelected) {
-                        if (_.all(selectedItems, function (x) { return x.id != listItem.id; })) {
-                            selectedItems.push(listItem);
-                        }
-                    } else {
-                        selectedItems = _.reject(selectedItems, function (x) { return x.id == listItem.id; });
-                    }
-                    blade.error = undefined;
+                    selectedItems = checkSelectedItem(selectedItems, listItem, isSelected);
+                }
+            }
+        }
+        bladeNavigationService.showBlade(newBlade, blade.parentBlade);
+    }
+
+    $scope.addVendorItems = function () {
+        var selectedItems = [];
+        var newBlade = {
+            id: 'addSitemapVendorItems',
+            title: 'sitemapsModule.blades.addVendorItems.title',
+            controller: 'virtoCommerce.customerModule.memberItemSelectController',
+            template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/member-items-select.tpl.html',
+            breadcrumbs: [],
+            toolbarCommands: [{
+                name: 'sitemapsModule.blades.addVendorItems.toolbar.addSelected',
+                icon: 'fa fa-plus',
+                canExecuteMethod: function () {
+                    return selectedItems.length > 0;
+                },
+                executeMethod: function (vendorsBlade) {
+                    addItemsToSitemap(selectedItems);
+                    bladeNavigationService.closeBlade(vendorsBlade);
+                }
+            }],
+            options: {
+                memberTypes: ['vendor'],
+                checkItemFn: function (listItem, isSelected) {
+                    selectedItems = checkSelectedItem(selectedItems, listItem, isSelected);
                 }
             }
         }
@@ -55,6 +77,18 @@
         });
     }
 
+    function checkSelectedItem(selectedItems, listItem, isSelected) {
+        if (isSelected) {
+            if (_.all(selectedItems, function (x) { return x.id != listItem.id; })) {
+                selectedItems.push(listItem);
+            }
+        } else {
+            selectedItems = _.reject(selectedItems, function (x) { return x.id == listItem.id; });
+        }
+        blade.error = undefined;
+        return selectedItems;
+    }
+
     function addItemsToSitemap(items) {
         blade.isLoading = true;
         var sitemapItems = [];
@@ -63,7 +97,7 @@
                 title: item.name,
                 imageUrl: item.imageUrl,
                 objectId: item.id,
-                objectType: item.type
+                objectType: item.type || item.seoObjectType
             });
         });
         blade.parentBlade.addItems(sitemapItems);
