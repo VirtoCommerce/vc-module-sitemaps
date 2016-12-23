@@ -25,6 +25,7 @@
     function saveCustomSitemapItem() {
         blade.parentBlade.addItems([{
             title: blade.currentEntity.urlTemplate,
+            imageUrl: null,
             objectType: 'Custom',
             urlTemplate: blade.currentEntity.urlTemplate,
             sitemapId: blade.currentEntity.sitemap.id
