@@ -24,7 +24,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         public ICollection<SitemapItemRecord> GetSitemapItemRecords(SitemapItemOptions options, string urlTemplate, string baseUrl, ISeoSupport seoSupportObj = null)
         {
             var sitemapItemRecords = new List<SitemapItemRecord>();
-            if (seoSupportObj != null && !seoSupportObj.SeoInfos.IsNullOrEmpty())
+            if (seoSupportObj != null)
             {
                 var seoInfos = seoSupportObj.SeoInfos.Where(x => x.IsActive).ToList();
                 foreach (var seoInfo in seoInfos)

@@ -2,9 +2,12 @@
 <module>
     <id>VirtoCommerce.Sitemaps</id>
     <version>1.0.0</version>
-    <platformVersion>2.12.0</platformVersion>    
+    <platformVersion>2.12.4</platformVersion>    
     <dependencies>
         <dependency id="VirtoCommerce.Core" version="2.17.2" />
+        <dependency id="VirtoCommerce.Catalog" version="2.16.0" />
+        <dependency id="VirtoCommerce.Customer" version="2.13.0" />
+        <dependency id="VirtoCommerce.Store" version="2.13.0" />
     </dependencies>
     <title>Sitemaps module</title>
     <description>Sitemaps generation management for stores</description>
