@@ -58,7 +58,7 @@
                 <title>Search bunch size</title>
                 <description>The bunch size for search items (i.e. catalog search)</description>
                 <valueType>integer</valueType>
-                <defaultValue>1000</defaultValue>
+                <defaultValue>500</defaultValue>
             </setting>
         </group>
         <group name="Sitemap|Product Links">
