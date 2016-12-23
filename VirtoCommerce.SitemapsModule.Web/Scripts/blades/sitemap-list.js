@@ -65,14 +65,14 @@
             template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/sitemap.tpl.html',
             currentEntity: {
                 isNew: true,
-                filename: 'sitemap/',
+                location: 'sitemap/',
                 urlTemplate: '{language}/{slug}',
                 storeId: blade.store.id,
                 items: []
             }
         }
         if (sitemap) {
-            sitemapBlade.title = sitemap.filename;
+            sitemapBlade.title = sitemap.location;
             sitemapBlade.currentEntity = angular.copy(sitemap);
             sitemapBlade.currentEntity.isNew = false;
         }

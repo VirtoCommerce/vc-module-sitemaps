@@ -20,15 +20,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 url = string.Format("{0}/{1}", baseUrl.TrimEnd('/'), urlTemplate);
             }
 
-            if (!string.IsNullOrEmpty(language))
-            {
-                url = url.Replace(UrlTemplatePatterns.Language, language);
-            }
-
-            if (!string.IsNullOrEmpty(semanticUrl))
-            {
-                url = url.Replace(UrlTemplatePatterns.Slug, semanticUrl);
-            }
+            url = url.Replace(UrlTemplatePatterns.Language, language);
+            url = url.Replace(UrlTemplatePatterns.Slug, semanticUrl);
 
             Uri uri;
             Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out uri);

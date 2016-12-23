@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using VirtoCommerce.Domain.Commerce.Model;
+using VirtoCommerce.Domain.Store.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SitemapsModule.Core.Models;
@@ -20,52 +21,37 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         protected ISettingsManager SettingsManager { get; private set; }
         protected ISitemapUrlBuilder SitemapUrlBuilder { get; private set; }
 
-        public ICollection<SitemapItemRecord> CreateSitemapItemRecords(Sitemap sitemap, string urlTemplate, string sitemapItemType, ISeoSupport seoSupportItem = null)
+        public ICollection<SitemapItemRecord> GetSitemapItemRecords(SitemapItemOptions options, string urlTemplate, string baseUrl, ISeoSupport seoSupportObj = null)
         {
             var sitemapItemRecords = new List<SitemapItemRecord>();
-
-            var sitemapItemOptions = GetSitemapItemOptions(sitemapItemType);
-            var sitemapItemRecord = new SitemapItemRecord
+            if (seoSupportObj != null && !seoSupportObj.SeoInfos.IsNullOrEmpty())
             {
-                ModifiedDate = DateTime.UtcNow,
-                Priority = sitemapItemOptions.Priority,
-                UpdateFrequency = sitemapItemOptions.UpdateFrequency,
-                Url = SitemapUrlBuilder.CreateAbsoluteUrl(urlTemplate, sitemap.BaseUrl, sitemap.Store.DefaultLanguage, seoSupportItem != null ? seoSupportItem.Id : null)
-            };
-
-            if (seoSupportItem != null && !seoSupportItem.SeoInfos.IsNullOrEmpty())
-            {
-                var seoInfos = seoSupportItem.SeoInfos.Where(si => si.IsActive && sitemap.Store.Languages.Contains(si.LanguageCode)).ToList();
+                var seoInfos = seoSupportObj.SeoInfos.Where(x => x.IsActive).ToList();
                 foreach (var seoInfo in seoInfos)
                 {
-                    sitemapItemRecord.Url = SitemapUrlBuilder.CreateAbsoluteUrl(sitemap.UrlTemplate, sitemap.BaseUrl, seoInfo.LanguageCode, seoInfo.SemanticUrl);
-                    sitemapItemRecords.Add(sitemapItemRecord);
+                    var record = GetNewRecord(options, urlTemplate, baseUrl);
+                    record.Url = SitemapUrlBuilder.CreateAbsoluteUrl(urlTemplate, baseUrl, seoInfo.LanguageCode, seoInfo.SemanticUrl);
+                    sitemapItemRecords.Add(record);
                 }
             }
             else
             {
-                sitemapItemRecords.Add(sitemapItemRecord);
+                sitemapItemRecords.Add(GetNewRecord(options, urlTemplate, baseUrl));
             }
 
             return sitemapItemRecords;
         }
 
-        private SitemapItemOptions GetSitemapItemOptions(string sitemapItemType)
+        private SitemapItemRecord GetNewRecord(SitemapItemOptions options, string urlTemplate, string baseUrl, ISeoSupport seoSupportObj = null)
         {
-            var sitemapItemOptions = new SitemapItemOptions();
-
-            if (sitemapItemType.EqualsInvariant("category"))
+            var auditableEntity = seoSupportObj as AuditableEntity;
+            return new SitemapItemRecord
             {
-                sitemapItemOptions.Priority = SettingsManager.GetValue("Sitemap.CategoryPagePriority", .7M);
-                sitemapItemOptions.UpdateFrequency = SettingsManager.GetValue("Sitemap.CategoryPageUpdateFrequency", UpdateFrequency.Weekly);
-            }
-            else if (sitemapItemType.EqualsInvariant("product"))
-            {
-                sitemapItemOptions.Priority = SettingsManager.GetValue("Sitemap.ProductPagePriority", 1.0M);
-                sitemapItemOptions.UpdateFrequency = SettingsManager.GetValue("Sitemap.ProductPageUpdateFrequency", UpdateFrequency.Daily);
-            }
-
-            return sitemapItemOptions;
+                ModifiedDate = auditableEntity != null ? auditableEntity.ModifiedDate.Value : DateTime.UtcNow,
+                Priority = options.Priority,
+                UpdateFrequency = options.UpdateFrequency,
+                Url = SitemapUrlBuilder.CreateAbsoluteUrl(urlTemplate, baseUrl)
+            };
         }
     }
 }

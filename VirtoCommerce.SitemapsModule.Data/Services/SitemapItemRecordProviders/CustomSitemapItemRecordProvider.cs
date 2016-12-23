@@ -16,21 +16,15 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         {
         }
 
-        public virtual ICollection<SitemapItemRecord> GetSitemapItemRecords(Sitemap sitemap)
+        public virtual void LoadSitemapItemRecords(Sitemap sitemap, string baseUrl)
         {
             var sitemapItemRecords = new List<SitemapItemRecord>();
-
+            var customOptions = new SitemapItemOptions();
             var customSitemapItems = sitemap.Items.Where(si => si.ObjectType.EqualsInvariant(SitemapItemTypes.Custom));
             foreach (var customSitemapItem in customSitemapItems)
             {
-                var sitemapItemRecord = CreateSitemapItemRecords(sitemap, customSitemapItem.UrlTemplate, SitemapItemTypes.Custom).FirstOrDefault();
-                if (sitemapItemRecord != null)
-                {
-                    sitemapItemRecords.Add(sitemapItemRecord);
-                }
+                customSitemapItem.ItemsRecords = GetSitemapItemRecords(customOptions, customSitemapItem.UrlTemplate, baseUrl);
             }
-
-            return sitemapItemRecords;
         }
     }
 }

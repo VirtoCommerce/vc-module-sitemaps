@@ -73,9 +73,9 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 {
                     sitemapEntities = sitemapEntities.Where(s => s.StoreId == request.StoreId);
                 }
-                if (!string.IsNullOrEmpty(request.Filename))
+                if (!string.IsNullOrEmpty(request.Location))
                 {
-                    sitemapEntities = sitemapEntities.Where(s => s.Filename == request.Filename);
+                    sitemapEntities = sitemapEntities.Where(s => s.Filename == request.Location);
                 }
 
                 searchResponse.TotalCount = sitemapEntities.Count();

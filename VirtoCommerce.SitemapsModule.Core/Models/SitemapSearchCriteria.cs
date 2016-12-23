@@ -6,6 +6,6 @@ namespace VirtoCommerce.SitemapsModule.Core.Models
     {
         public string StoreId { get; set; }
 
-        public string Filename { get; set; }
+        public string Location { get; set; }
     }
 }

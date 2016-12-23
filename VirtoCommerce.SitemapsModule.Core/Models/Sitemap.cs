@@ -9,20 +9,21 @@ namespace VirtoCommerce.SitemapsModule.Core.Models
         public Sitemap()
         {
             Items = new List<SitemapItem>();
+            PagedLocations = new List<string>();
         }
 
-        public string Filename { get; set; }
+        public string Location { get; set; }
 
         public string StoreId { get; set; }
-
-        public Store Store { get; set; }
 
         public ICollection<SitemapItem> Items { get; set; }
 
         public string UrlTemplate { get; set; }
 
-        public string BaseUrl { get; set; }
-
         public int TotalItemsCount { get; set; }
+
+        public ICollection<string> PagedLocations { get; set; }
+
+
     }
 }

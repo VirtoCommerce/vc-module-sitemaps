@@ -30,7 +30,7 @@
         },
         "formSitemap": {
           "labelSitemapLocation": "Sitemap location",
-          "descriptionSitemapLocation": "Sitemap location is the unique relative sitemap URL in context of index sitemap, i.e.: 'categories/electronics.xml', 'products.xml', etc. Requirements for sitemap path are the same to any URL. Please avoid of using 'sitemap.xml' in sitemap path. To generate a sitemap URL can be used the next patterns: {language} - will be replaced with language code (i.e. en-US)",
+          "descriptionSitemapLocation": "Sitemap location is the unique relative sitemap URL in context of index sitemap, i.e.: 'categories/electronics.xml', 'products.xml', etc. Requirements for sitemap path are the same to any URL. Please avoid of using 'sitemap.xml' in sitemap path.",
           "sitemapIndexErrorMessage": "Please avoid of using \"sitemap.xml\" as sitemap location",
           "sitemapSitemapLocationExistErrorMessage": "This sitemap location is already used",
           "labelSitemapItemsLocation": "Sitemap items location",
@@ -67,7 +67,7 @@
         },
         "formCustomSitemapItem": {
           "labelUrlTemplate": "URL template",
-          "descriptionUrlTemplate": "The URL template for custom items should be an absolute URL, i.e.: http://mystore.com/about-us"
+          "descriptionUrlTemplate": "The concrete relative URL  for custom items, i.e.: /about-us, /my-folder/my-page"
         }
       }
     },

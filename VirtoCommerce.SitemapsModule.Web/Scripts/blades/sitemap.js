@@ -149,13 +149,13 @@
 
     function saveSitemap() {
         blade.isLoading = true;
-        if (blade.currentEntity.filename.toLowerCase() === 'sitemap.xml') {
+        if (blade.currentEntity.location.toLowerCase() === 'sitemap.xml') {
             $scope.errorMessage = 'sitemapsModule.blades.sitemap.formSitemap.sitemapIndexErrorMessage';
             blade.isLoading = false;
         }
         sitemapsResource.searchSitemaps({}, {
             storeId: blade.currentEntity.storeId,
-            filename: blade.currentEntity.filename,
+            location: blade.currentEntity.location,
         }, function (response) {
             if (!blade.currentEntity.id) {
                 if (response.totalCount > 0) {
@@ -163,7 +163,7 @@
                     blade.isLoading = false;
                 }
             } else {
-                var existingSitemap = _.find(response.results, function (s) { return s.filename === blade.currentEntity.filename && s.id !== blade.currentEntity.id });
+                var existingSitemap = _.find(response.results, function (s) { return s.location === blade.currentEntity.location && s.id !== blade.currentEntity.id });
                 if (existingSitemap) {
                     $scope.errorMessage = 'sitemapsModule.blades.sitemap.formSitemap.sitemapSitemapLocationExistErrorMessage';
                     blade.isLoading = false;

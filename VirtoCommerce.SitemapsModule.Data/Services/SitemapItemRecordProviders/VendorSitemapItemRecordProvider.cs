@@ -22,24 +22,22 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
         protected IMemberService MemberService { get; private set; }
 
-        public virtual ICollection<SitemapItemRecord> GetSitemapItemRecords(Sitemap sitemap)
+        public virtual void LoadSitemapItemRecords(Sitemap sitemap, string baseUrl)
         {
             var sitemapItemRecords = new List<SitemapItemRecord>();
+            var vendorOptions = new SitemapItemOptions();
 
-            var vendorSitemapItems = sitemap.Items.Where(si => si.ObjectType.EqualsInvariant(SitemapItemTypes.Custom));
-            var vendorIds = vendorSitemapItems.Select(si => si.ObjectId).ToArray();
+            var vendorSitemapItems = sitemap.Items.Where(x => x.ObjectType.EqualsInvariant(SitemapItemTypes.Vendor));
+            var vendorIds = vendorSitemapItems.Select(x => x.ObjectId).ToArray();
             var members = MemberService.GetByIds(vendorIds);
-            foreach (var member in members)
+            foreach (var sitemapItem in vendorSitemapItems)
             {
-                var vendor = member as Vendor;
+                var vendor = members.FirstOrDefault(x=>x.Id == sitemapItem.ObjectId) as Vendor;
                 if (vendor != null)
-                {
-                    var vendorSitemapItemRecords = CreateSitemapItemRecords(sitemap, sitemap.UrlTemplate, SitemapItemTypes.Vendor, vendor);
-                    sitemapItemRecords.AddRange(vendorSitemapItemRecords);
+                {                    
+                    sitemapItem.ItemsRecords = GetSitemapItemRecords(vendorOptions, sitemap.UrlTemplate, baseUrl, vendor);
                 }
             }
-
-            return sitemapItemRecords;
         }
     }
 }

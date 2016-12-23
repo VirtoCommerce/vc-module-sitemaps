@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="Models\SitemapItemRecord.cs" />
     <Compile Include="Models\SitemapItemTypes.cs" />
+    <Compile Include="Models\SitemapLocation.cs" />
     <Compile Include="Models\UpdateFrequency.cs" />
     <Compile Include="Models\Sitemap.cs" />
     <Compile Include="Models\SitemapItemOptions.cs" />

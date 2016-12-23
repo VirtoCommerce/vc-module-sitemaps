@@ -35,7 +35,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
 
             sitemap.CreatedBy = CreatedBy;
             sitemap.CreatedDate = CreatedDate;
-            sitemap.Filename = Filename;
+            sitemap.Location = Filename;
             sitemap.Id = Id;
             sitemap.ModifiedBy = ModifiedBy;
             sitemap.ModifiedDate = ModifiedDate;
@@ -59,7 +59,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
             pkMap.AddPair(sitemap, this);
 
             Id = sitemap.Id;
-            Filename = sitemap.Filename;
+            Filename = sitemap.Location;
             StoreId = sitemap.StoreId;
             UrlTemplate = sitemap.UrlTemplate;
 
