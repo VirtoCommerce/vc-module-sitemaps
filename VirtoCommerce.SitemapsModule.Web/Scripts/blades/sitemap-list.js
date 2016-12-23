@@ -11,8 +11,8 @@
     blade.selectSitemap = function (sitemap) {
         showSitemapBlade(sitemap);
     }
-    blade.removeSitemap = function (sitemap) {
-        showSitemapRemoveConfirmationDialog(sitemap.id);
+    blade.removeSitemaps = function (sitemaps) {
+        showSitemapRemoveConfirmationDialog(sitemaps);
     }
     blade.downloadSitemaps = function () {
         showBaseUrlDialog(blade.store.id, blade.store.url || blade.store.secureUrl);
@@ -35,6 +35,15 @@
             },
             executeMethod: function () {
                 showSitemapBlade();
+            }
+        }, {
+            name: 'sitemapsModule.blades.sitemapList.toolbar.removeSitemap',
+            icon: 'fa fa-trash',
+            canExecuteMethod: function () {
+                return $scope.gridApi && _.any($scope.gridApi.selection.getSelectedRows());
+            },
+            executeMethod: function () {
+                blade.removeSitemaps($scope.gridApi.selection.getSelectedRows());
             }
         }, {
             name: 'sitemapsModule.blades.sitemapList.toolbar.refresh',
@@ -80,7 +89,8 @@
         bladeNavigationService.showBlade(sitemapBlade, blade);
     }
 
-    function showSitemapRemoveConfirmationDialog(sitemapIds) {
+    function showSitemapRemoveConfirmationDialog(sitemaps) {
+        var sitemapIds = _.map(sitemaps, function (s) { return s.id; });
         var confirmDialog = {
             id: 'confirmDeleteSitemaps',
             title: 'sitemapsModule.dialogs.confirmRemoveSitemap.title',
