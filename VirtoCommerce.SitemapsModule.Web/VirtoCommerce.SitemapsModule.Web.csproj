@@ -157,6 +157,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Scripts\blades\sitemap-add-custom-item.tpl.html" />
+    <Content Include="Scripts\blades\member-items-select.js" />
+    <Content Include="Scripts\blades\member-items-select.tpl.html" />
     <Content Include="Scripts\blades\sitemap-items-add.js" />
     <Content Include="Scripts\blades\sitemap-items-add.tpl.html" />
     <Content Include="Scripts\blades\sitemap-list.js" />

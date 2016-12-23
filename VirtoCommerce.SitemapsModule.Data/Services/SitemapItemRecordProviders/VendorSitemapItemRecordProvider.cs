@@ -26,7 +26,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         {
             var sitemapItemRecords = new List<SitemapItemRecord>();
 
-            var vendorSitemapItems = sitemap.Items.Where(si => si.ObjectType.EqualsInvariant(SitemapItemTypes.Custom));
+            var vendorSitemapItems = sitemap.Items.Where(si => si.ObjectType.EqualsInvariant(SitemapItemTypes.Vendor));
             var vendorIds = vendorSitemapItems.Select(si => si.ObjectId).ToArray();
             var members = MemberService.GetByIds(vendorIds);
             foreach (var member in members)

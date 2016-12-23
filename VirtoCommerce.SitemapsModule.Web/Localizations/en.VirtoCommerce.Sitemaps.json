@@ -49,6 +49,10 @@
           "title": "Catalog items",
           "description": "Include product and categories"
         },
+        "addVendorItems": {
+          "title": "Vendor items",
+          "description": "Include vendors"
+        },
         "addCustomItem": {
           "title": "Custom item",
           "description": "Item with custom URL"
@@ -68,6 +72,12 @@
         "formCustomSitemapItem": {
           "labelUrlTemplate": "URL template",
           "descriptionUrlTemplate": "The URL template for custom items should be an absolute URL, i.e.: http://mystore.com/about-us"
+        }
+      },
+      "addVendorItems": {
+        "title": "Add vendor items",
+        "toolbar": {
+          "addSelected": "Add selected"
         }
       }
     },
