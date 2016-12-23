@@ -1,11 +1,30 @@
 # VirtoCommerce.Sitemaps
 VirtoCommerce.Sitemaps module represents sitemaps management system.
 
-Key features:
+# Use cases
+* Get a sitemaps schema
+
+```
+// Get a collection of sitemap location URLs
+
+[GET] api/sitemaps/schema?storeId=...
+```
+  
+* Download a zip package with pregenerated sitemap XML files and place its content to store website manually
+* Generate sitemap index file and sitemap files on-the-fly by API call (recommended for small stores, where the number of catalog items/vendors is less than 500)
+* Pregenerate sitemap XML files by scheduled recurring job (recommended for big stores since catalog/vendor search is a long-term process and sitemaps generation may require tens of minutes)
+
+```
+// Get a stream contains a sitemap file XML data
+
+[GET] api/sitemaps/generate?storeId=...&baseUrl=...&sitemapUrl=...
+```
+
+# Key features
 * Managing store sitemaps
 * Managing sitemap records
 
-![sitemaps](https://cloud.githubusercontent.com/assets/10347112/21455566/eccaa5f4-c929-11e6-9590-ecaa203ef39b.png)
+![sitemaps](https://cloud.githubusercontent.com/assets/10347112/21456466/f538e78a-c930-11e6-8dad-5bdddc3f9611.png)
 
 # Documentation
 User guide: [Sitemaps](http://virtocommerce.com/docs/vc2userguide/sitemaps)
