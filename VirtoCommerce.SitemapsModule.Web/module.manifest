@@ -54,9 +54,9 @@
                 <defaultValue>--</defaultValue>
             </setting>
             <setting>
-                <name>Sitemap.CatalogSearchBunchSize</name>
-                <title>Catalog search bunch size</title>
-                <description>The bunch size for catalog search items</description>
+                <name>Sitemap.SearchBunchSize</name>
+                <title>Search bunch size</title>
+                <description>The bunch size for search items (i.e. catalog search)</description>
                 <valueType>integer</valueType>
                 <defaultValue>1000</defaultValue>
             </setting>
