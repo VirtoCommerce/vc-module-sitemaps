@@ -84,6 +84,10 @@
         "title": "Base URL",
         "messageNoBaseUrl": "Please enter a base URL for sitemaps",
         "messageConfirmBaseUrl": "Please confirm a base URL for sitemaps"
+      },
+      "discardChanges": {
+        "title": "Save changes",
+        "message": "The sitemap has been modified. Do you want to save changes?"
       }
     },
     "errorMessages": {

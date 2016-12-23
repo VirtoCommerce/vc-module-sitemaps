@@ -5,27 +5,23 @@
     blade.headIcon = 'fa fa-sitemap';
     blade.isLoading = false;
     blade.toolbarCommands = getBladeToolbarCommands();
+    blade.addedSitemapItems = [];
+    blade.removedSitemapItems = [];
     blade.addItems = function (sitemapItems) {
         blade.isLoading = true;
-        if (blade.currentEntity.isNew) {
-            _.each(sitemapItems, function (sitemapItem) {
-                blade.currentEntity.items.push(sitemapItem);
-            });
-            blade.isLoading = false;
-        } else {
-            addSitemapItems(sitemapItems);
-        }
+        _.each(sitemapItems, function (sitemapItem) {
+            blade.addedSitemapItems.push(sitemapItem);
+            blade.currentEntity.items.push(sitemapItem);
+        });
+        blade.isLoading = false;
     }
     blade.removeItems = function (sitemapItems) {
         blade.isLoading = true;
-        if (blade.currentEntity.isNew) {
-            _.each(sitemapItems, function (sitemapItem) {
-                blade.currentEntity.items = _.without(blade.currentEntity.items, sitemapItem);
-            });
-            blade.isLoading = false;
-        } else {
-            removeSitemapItems(sitemapItems);
-        }
+        _.each(sitemapItems, function (sitemapItem) {
+            blade.currentEntity.items = _.without(blade.currentEntity.items, sitemapItem);
+            blade.removedSitemapItems.push(sitemapItem);
+        });
+        blade.isLoading = false;
     }
     blade.refresh = function () {
         if (!blade.currentEntity.isNew) {
@@ -35,6 +31,9 @@
     blade.saveSitemap = function () {
         saveSitemap();
     }
+    blade.onClose = function (closeCallback) {
+        bladeNavigationService.showConfirmationIfNeeded(isDirty(), canSave(), blade, saveSitemap, closeCallback, "sitemapsModule.dialogs.discardChanges.title", "sitemapsModule.dialogs.discardChanges.message");
+    }
 
     $scope.setForm = function (form) {
         $scope.formScope = form;
@@ -43,6 +42,16 @@
     $scope.setGridOptions = function (gridOptions) {
         uiGridHelper.initialize($scope, gridOptions, function (gridApi) { });
         bladeUtils.initializePagination($scope);
+    }
+
+    blade.refresh();
+
+    function isDirty() {
+        return !angular.equals(blade.originalEntity, blade.currentEntity);
+    }
+
+    function canSave() {
+        return isDirty() && $scope.formScope && $scope.formScope.$valid;
     }
 
     function getBladeToolbarCommands() {
@@ -68,7 +77,7 @@
             name: 'sitemapsModule.blades.sitemap.toolbar.saveSitemap',
             icon: 'fa fa-save',
             canExecuteMethod: function () {
-                return $scope.formScope && $scope.formScope.$valid && !angular.equals(blade.originalEntity, blade.currentEntity);
+                return canSave();
             },
             executeMethod: function () {
                 $scope.errorMessage = null;
@@ -111,6 +120,9 @@
             $scope.pageSettings.totalItems = response.totalCount;
             blade.currentEntity.items = response.results;
             blade.currentEntity.totalItemsCount = response.totalCount;
+            blade.originalEntity = angular.copy(blade.currentEntity);
+            blade.addedSitemapItems = [];
+            blade.removedSitemapItems = [];
             blade.isLoading = false;
         }, function (error) {
             bladeNavigationService.setError('Error ' + error.status, blade);
@@ -174,18 +186,27 @@
                     sitemapsResource.addSitemap({}, blade.currentEntity, function (response) {
                         blade.currentEntity = response;
                         blade.isLoading = false;
-                        if (blade.currentEntity.items.length) {
-                            addSitemapItems(blade.currentEntity.items);
+                        if (blade.addedSitemapItems.length) {
+                            addSitemapItems(blade.addedSitemapItems);
                         }
                         blade.refresh();
                         blade.parentBlade.refresh();
+                        blade.originalEntity = angular.copy(blade.currentEntity);
                     }, function (error) {
                         bladeNavigationService.setError('Error ' + error.status, blade);
                         blade.isLoading = false;
                     });
                 } else {
+                    var addedSitemapItems = blade.addedSitemapItems;
+                    var removedSitemapItems = blade.removedSitemapItems;
                     sitemapsResource.updateSitemap({}, blade.currentEntity, function (response) {
                         blade.isLoading = false;
+                        if (blade.addedSitemapItems.length) {
+                            addSitemapItems(blade.addedSitemapItems);
+                        }
+                        if (blade.removedSitemapItems.length) {
+                            removeSitemapItems(blade.removedSitemapItems);
+                        }
                         blade.refresh();
                         blade.parentBlade.refresh();
                     }, function (error) {
