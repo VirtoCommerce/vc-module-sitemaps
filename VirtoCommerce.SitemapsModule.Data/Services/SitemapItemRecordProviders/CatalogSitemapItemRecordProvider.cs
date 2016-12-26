@@ -80,7 +80,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                         catalogSearchCriteria.ResponseGroup = SearchResponseGroup.WithProducts;
                         var productTotalCount  = CatalogSearchService.Search(catalogSearchCriteria).ProductsTotalCount;
                         var itemRecords = new ConcurrentBag<SitemapItemRecord>();
-                        Parallel.For(0, (int)Math.Ceiling(catalogSearchResult.ProductsTotalCount / (double)searchBunchSize), new ParallelOptions { MaxDegreeOfParallelism = 5 }, (i) =>
+                        Parallel.For(0, (int)Math.Ceiling(productTotalCount / (double)searchBunchSize), new ParallelOptions { MaxDegreeOfParallelism = 5 }, (i) =>
                         {
                             var productSearchCriteria = new Domain.Catalog.Model.SearchCriteria
                             {
