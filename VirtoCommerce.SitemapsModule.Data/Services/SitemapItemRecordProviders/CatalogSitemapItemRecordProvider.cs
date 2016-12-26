@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -74,17 +75,32 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                             sitemapItem.ItemsRecords.AddRange(GetSitemapItemRecords(categoryOptions, sitemap.UrlTemplate, baseUrl, seoObj));
                         }
 
+                        //Load all category products
+                        catalogSearchCriteria.Take = 1;
                         catalogSearchCriteria.ResponseGroup = SearchResponseGroup.WithProducts;
-                        catalogSearchResult = CatalogSearchService.Search(catalogSearchCriteria);
-                        for (int i = 0; i < catalogSearchResult.ProductsTotalCount; i += searchBunchSize)
+                        var productTotalCount  = CatalogSearchService.Search(catalogSearchCriteria).ProductsTotalCount;
+                        var itemRecords = new ConcurrentBag<SitemapItemRecord>();
+                        Parallel.For(0, (int)Math.Ceiling(catalogSearchResult.ProductsTotalCount / (double)searchBunchSize), new ParallelOptions { MaxDegreeOfParallelism = 5 }, (i) =>
                         {
-                            foreach (var product in catalogSearchResult.Products)
+                            var productSearchCriteria = new Domain.Catalog.Model.SearchCriteria
                             {
-                                sitemapItem.ItemsRecords.AddRange(GetSitemapItemRecords(productOptions, sitemap.UrlTemplate, baseUrl, product));
-                            }
-                            catalogSearchCriteria.Skip = i;
-                            catalogSearchResult = CatalogSearchService.Search(catalogSearchCriteria);
-                        }
+                                CategoryId = category.Id,
+                                ResponseGroup = SearchResponseGroup.WithProducts,
+                                Skip = i * searchBunchSize,
+                                Take = searchBunchSize,
+                                HideDirectLinkedCategories = true,
+                                SearchInChildren = true
+                            };                        
+                            var productSearchResult = CatalogSearchService.Search(catalogSearchCriteria);
+                            foreach (var product in productSearchResult.Products)
+                            {
+                                foreach(var record in GetSitemapItemRecords(productOptions, sitemap.UrlTemplate, baseUrl, product))
+                                {
+                                    itemRecords.Add(record);
+                                }
+                            }    
+                        });
+                        sitemapItem.ItemsRecords = itemRecords.ToList();
                     }
                 }
             }));
