@@ -89,7 +89,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                                 Skip = i * searchBunchSize,
                                 Take = searchBunchSize,
                                 HideDirectLinkedCategories = true,
-                                SearchInChildren = true
+                                SearchInChildren = true,
+                                OnlyBuyable = true
                             };                        
                             var productSearchResult = CatalogSearchService.Search(productSearchCriteria);
                             foreach (var product in productSearchResult.Products)
