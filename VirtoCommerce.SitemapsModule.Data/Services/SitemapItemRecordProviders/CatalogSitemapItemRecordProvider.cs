@@ -91,7 +91,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                                 HideDirectLinkedCategories = true,
                                 SearchInChildren = true
                             };                        
-                            var productSearchResult = CatalogSearchService.Search(catalogSearchCriteria);
+                            var productSearchResult = CatalogSearchService.Search(productSearchCriteria);
                             foreach (var product in productSearchResult.Products)
                             {
                                 foreach(var record in GetSitemapItemRecords(productOptions, sitemap.UrlTemplate, baseUrl, product))
