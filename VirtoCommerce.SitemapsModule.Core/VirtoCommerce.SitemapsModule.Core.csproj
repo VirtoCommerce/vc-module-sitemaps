@@ -48,12 +48,13 @@
       <HintPath>..\packages\VirtoCommerce.Domain.2.19.2\lib\net451\VirtoCommerce.Domain.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="VirtoCommerce.Platform.Core, Version=2.12.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VirtoCommerce.Platform.Core.2.12.5-rc2\lib\net461\VirtoCommerce.Platform.Core.dll</HintPath>
+    <Reference Include="VirtoCommerce.Platform.Core, Version=2.12.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VirtoCommerce.Platform.Core.2.12.5\lib\net461\VirtoCommerce.Platform.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\CommonAssemblyInfo.cs" />
     <Compile Include="Models\SitemapItemRecord.cs" />
     <Compile Include="Models\SitemapItemTypes.cs" />
     <Compile Include="Models\SitemapLocation.cs" />
