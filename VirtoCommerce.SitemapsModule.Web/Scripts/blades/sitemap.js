@@ -40,7 +40,8 @@
     }
 
     $scope.setGridOptions = function (gridOptions) {
-        uiGridHelper.initialize($scope, gridOptions, function (gridApi) { });
+        uiGridHelper.initialize($scope, gridOptions, function (gridApi) {
+        });
         bladeUtils.initializePagination($scope);
     }
 
@@ -103,7 +104,7 @@
             id: blade.currentEntity.id
         }, function (response) {
             blade.currentEntity = response;
-            getSitemapItems();
+            getSitemapItems(($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount, $scope.pageSettings.itemsPerPageCount);
         }, function (error) {
             bladeNavigationService.setError('Error ' + error.status, blade);
             blade.isLoading = false;
