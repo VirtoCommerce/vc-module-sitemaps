@@ -29,7 +29,7 @@
 </div>
 
 <script id="sitemap-list-row.tpl.html" type="text/ng-template">
-    <div ng-click="grid.appScope.blade.selectSitemap(row.entity)" 
+    <div ng-click="grid.appScope.blade.selectNode(row.entity)" 
          ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.uid"
          ui-grid-one-bind-id-grid="rowRenderIndex + '-' + col.uid + '-cell'"
          class="ui-grid-cell"

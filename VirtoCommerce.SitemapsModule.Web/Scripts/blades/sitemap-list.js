@@ -3,37 +3,48 @@
     bladeUtils.initializePagination($scope);
     var blade = $scope.blade;
     blade.headIcon = 'fa fa-sitemap';
-    blade.isLoading = false;
     blade.toolbarCommands = getBladeToolbarCommands();
     blade.refresh = function () {
         searchSitemaps(blade.store.id, ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount, $scope.pageSettings.itemsPerPageCount);
-    }
-    blade.selectSitemap = function (sitemap) {
-        showSitemapBlade(sitemap);
-    }
+    };
+
+    blade.selectNode = function (listItem) {
+        $scope.selectedNodeId = listItem.id;
+
+        showSitemapBlade(listItem);
+    };
+
     blade.removeSitemaps = function (sitemaps) {
         showSitemapRemoveConfirmationDialog(sitemaps);
-    }
+    };
+
     blade.downloadSitemaps = function () {
         showBaseUrlDialog(blade.store.id, blade.store.url || blade.store.secureUrl);
-    }
+    };
 
     blade.refresh();
 
     $scope.setGridOptions = function (gridOptions) {
-        uiGridHelper.initialize($scope, gridOptions, function (gridApi) {
-        });
+        uiGridHelper.initialize($scope, gridOptions);
         bladeUtils.initializePagination($scope);
-    }
+    };
 
     function getBladeToolbarCommands() {
         return [{
+            name: 'sitemapsModule.blades.sitemapList.toolbar.refresh',
+            icon: 'fa fa-refresh',
+            canExecuteMethod: function () {
+                return true;
+            },
+            executeMethod: blade.refresh
+        }, {
             name: 'sitemapsModule.blades.sitemapList.toolbar.addSitemap',
             icon: 'fa fa-plus',
             canExecuteMethod: function () {
                 return true;
             },
             executeMethod: function () {
+                $scope.selectedNodeId = undefined;
                 showSitemapBlade();
             }
         }, {
@@ -44,15 +55,6 @@
             },
             executeMethod: function () {
                 blade.removeSitemaps($scope.gridApi.selection.getSelectedRows());
-            }
-        }, {
-            name: 'sitemapsModule.blades.sitemapList.toolbar.refresh',
-            icon: 'fa fa-refresh',
-            canExecuteMethod: function () {
-                return true;
-            },
-            executeMethod: function () {
-                blade.refresh();
             }
         }, {
             name: 'sitemapsModule.blades.sitemapList.toolbar.download',
@@ -69,7 +71,6 @@
     function showSitemapBlade(sitemap) {
         var sitemapBlade = {
             id: 'sitemap',
-            title: 'sitemapsModule.blades.sitemap.newSitemapTitle',
             controller: 'virtoCommerce.sitemapsModule.sitemapController',
             template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/sitemap.tpl.html',
             currentEntity: {
@@ -79,13 +80,11 @@
                 storeId: blade.store.id,
                 items: []
             }
-        }
+        };
+
         if (sitemap) {
-            sitemapBlade.title = sitemap.location;
             sitemapBlade.currentEntity = angular.copy(sitemap);
-            sitemapBlade.currentEntity.isNew = false;
         }
-        sitemapBlade.originalEntity = angular.copy(sitemapBlade.currentEntity);
         bladeNavigationService.showBlade(sitemapBlade, blade);
     }
 
@@ -100,7 +99,7 @@
                     removeSitemaps(sitemapIds);
                 }
             }
-        }
+        };
         dialogService.showConfirmationDialog(confirmDialog);
     }
 
@@ -116,7 +115,7 @@
                     return confirmDialog;
                 }
             }
-        }
+        };
         var dialogInstance = $modal.open(confirmDialog);
         dialogInstance.result.then(function (baseUrl) {
             if (baseUrl) {
@@ -137,7 +136,6 @@
             blade.isLoading = false;
         }, function (error) {
             bladeNavigationService.setError('Error ' + error.status, blade);
-            blade.isLoading = false;
         });
     }
 
@@ -146,13 +144,9 @@
         _.each(blade.childrenBlades, function (childBlade) {
             bladeNavigationService.closeBlade(childBlade);
         });
-        sitemapsResource.remove({ ids: sitemapIds }, function () {
-            blade.refresh();
-            blade.isLoading = false;
-        }, function (error) {
-            bladeNavigationService.setError('Error ' + error.status, blade);
-            blade.isLoading = false;
-        });
+        sitemapsResource.remove({ ids: sitemapIds },
+            blade.refresh,
+            function (error) { bladeNavigationService.setError('Error ' + error.status, blade); });
     }
 
     function downloadSitemaps(storeId, baseUrl) {

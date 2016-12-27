@@ -1,13 +1,16 @@
 ﻿angular.module('virtoCommerce.customerModule')
 .controller('virtoCommerce.customerModule.memberItemSelectController', ['$scope', '$timeout', 'virtoCommerce.customerModule.members', 'platformWebApp.dialogService', 'platformWebApp.bladeUtils', 'platformWebApp.uiGridHelper', 'virtoCommerce.customerModule.memberTypesResolverService',
 function ($scope, $timeout, members, dialogService, bladeUtils, uiGridHelper, memberTypesResolverService) {
+    $scope.uiGridConstants = uiGridHelper.uiGridConstants;
     var bladeNavigationService = bladeUtils.bladeNavigationService;
     var blade = $scope.blade;
+
     blade.headIcon = 'fa-user';
     blade.currentEntity = {};
     blade.setSelectedNode = function (listItem) {
         $scope.selectedNodeId = listItem.id;
     };
+
     blade.refresh = function () {
         blade.isLoading = true;
         members.search({
@@ -20,7 +23,6 @@ function ($scope, $timeout, members, dialogService, bladeUtils, uiGridHelper, me
             take: $scope.pageSettings.itemsPerPageCount
         },
         function (data) {
-            
             $scope.listEntries = data.results;
             $scope.pageSettings.totalItems = data.totalCount;
             var memberTypeDefinition;
@@ -33,12 +35,9 @@ function ($scope, $timeout, members, dialogService, bladeUtils, uiGridHelper, me
             blade.isLoading = false;
         }, function (error) {
             bladeNavigationService.setError('Error ' + error.status, blade);
-            blade.isLoading = false;
         });
-    }
-
-    $scope.uiGridConstants = uiGridHelper.uiGridConstants;
-
+    };
+    
     $scope.options = angular.extend({
         showCheckingMultiple: true,
         allowCheckingItem: true,
@@ -47,18 +46,18 @@ function ($scope, $timeout, members, dialogService, bladeUtils, uiGridHelper, me
 
     $scope.setGridOptions = function (gridOptions) {
         uiGridHelper.initialize($scope, gridOptions, externalRegisterApiCallback);
-
         bladeUtils.initializePagination($scope);
     };
 
     $scope.selectNode = function (listItem) {
-        if ($scope.selectedNodeId == listItem.id) {
+        if ($scope.selectedNodeId === listItem.id) {
             return;
         }
         blade.setSelectedNode(listItem);
+
         if ($scope.options.selectItemFn) {
             $scope.options.selectItemFn(listItem);
-        };
+        }
         if (listItem.memberType.toLowerCase() === 'organization') {
             var newBlade = {
                 id: blade.id,
@@ -112,14 +111,14 @@ function ($scope, $timeout, members, dialogService, bladeUtils, uiGridHelper, me
                 bladeNavigationService.showBlade(breadcrumb.blade);
                 breadcrumb.blade.refresh();
             }
-        }
+        };
     }
 
     function externalRegisterApiCallback(gridApi) {
         gridApi.grid.registerDataChangeCallback(function (grid) {
             $timeout(function () {
                 _.each($scope.items, function (x) {
-                    if (_.some($scope.options.selectedItemIds, function (y) { return y == x.id; })) {
+                    if (_.some($scope.options.selectedItemIds, function (y) { return y === x.id; })) {
                         gridApi.selection.selectRow(x);
                     }
                 });
@@ -129,7 +128,7 @@ function ($scope, $timeout, members, dialogService, bladeUtils, uiGridHelper, me
         gridApi.selection.on.rowSelectionChanged($scope, function (row) {
             if ($scope.options.checkItemFn) {
                 $scope.options.checkItemFn(row.entity, row.isSelected);
-            };
+            }
             if (row.isSelected) {
                 if (!_.contains($scope.options.selectedItemIds, row.entity.id)) {
                     $scope.options.selectedItemIds.push(row.entity.id);

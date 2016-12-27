@@ -1,6 +1,6 @@
 ﻿var moduleName = 'virtoCommerce.sitemapsModule';
 
-if (AppDependencies != undefined) {
+if (AppDependencies !== undefined) {
     AppDependencies.push(moduleName);
 }
 

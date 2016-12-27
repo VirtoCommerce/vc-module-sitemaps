@@ -10,8 +10,8 @@
         "title": "Sitemaps",
         "subtitle": "Manage sitemaps to include them into index sitemap.xml",
         "toolbar": {
-          "addSitemap": "Add sitemap",
-          "removeSitemap": "Remove sitemap",
+          "addSitemap": "Add",
+          "removeSitemap": "Delete sitemaps",
           "refresh": "Refresh",
           "download": "Download sitemaps"
         },
@@ -29,13 +29,13 @@
           "saveSitemap": "Save sitemap"
         },
         "formSitemap": {
-          "labelSitemapLocation": "Sitemap location",
-          "descriptionSitemapLocation": "Sitemap location is the unique relative sitemap URL in context of index sitemap, i.e.: 'categories/electronics.xml', 'products.xml', etc. Requirements for sitemap path are the same to any URL. Please avoid of using 'sitemap.xml' in sitemap path.",
-          "sitemapIndexErrorMessage": "Please avoid of using \"sitemap.xml\" as sitemap location",
-          "sitemapSitemapLocationExistErrorMessage": "This sitemap location is already used",
-          "labelSitemapItemsLocation": "Sitemap items location",
-          "descriptionSitemapItemsLocation": "To generate a sitemap item URL can be used the next patterns: {language} - will be replaced with language code (i.e. en-US), {slug} - will be replaced with SEO semantic URL part",
-          "labelSitemapItems": "Sitemap items"
+            "labelSitemapLocation": "Sitemap location",
+            "descriptionSitemapLocation": "Sitemap location should be a relative sitemap URL unique in context of index sitemap, i.e.: 'categories/electronics.xml', 'products.xml', etc. Please avoid of using 'sitemap.xml' in sitemap path.",
+            "sitemapIndexErrorMessage": "Please avoid of using \"sitemap.xml\" as sitemap location",
+            "sitemapSitemapLocationExistErrorMessage": "This sitemap location is already used",
+            "labelSitemapItemsLocation": "Sitemap items location",
+            "descriptionSitemapItemsLocation": "To generate a sitemap item URL can be used the next patterns: {language} - will be replaced with language code (i.e. en-US), {slug} - will be replaced with SEO semantic URL part",
+            "labelSitemapItems": "Sitemap items"
         },
         "gridHeaders": {
           "title": "Title",
@@ -86,10 +86,10 @@
       "remove": "Remove"
     },
     "dialogs": {
-      "confirmRemoveSitemap": {
-        "title": "Removing sitemaps",
-        "message": "Do you want to remove sitemap?"
-      },
+        "confirmRemoveSitemap": {
+            "title": "Delete confirmation",
+            "message": "Are you sure you want to delete selected sitemaps?"
+        },
       "confirmBaseUrl": {
         "title": "Base URL",
         "messageNoBaseUrl": "Please enter a base URL for sitemaps",
@@ -101,7 +101,7 @@
       }
     },
     "errorMessages": {
-      "filenameNotUnique": "Sitemap with this filename is already exists"
+      "filenameNotUnique": "Sitemap with this filename already exists"
     }
   }
 }

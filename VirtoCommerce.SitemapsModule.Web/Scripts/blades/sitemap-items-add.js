@@ -1,7 +1,6 @@
 ﻿angular.module('virtoCommerce.sitemapsModule')
 .controller('virtoCommerce.sitemapsModule.sitemapItemsAddController', ['$scope', 'platformWebApp.bladeNavigationService', 'virtoCommerce.sitemapsModule.sitemaps', function ($scope, bladeNavigationService, sitemapsResource) {
     var blade = $scope.blade;
-    blade.headIcon = 'fa fa-sitemap';
     blade.isLoading = false;
 
     $scope.addCatalogItems = function () {
@@ -90,7 +89,6 @@
     }
 
     function addItemsToSitemap(items) {
-        blade.isLoading = true;
         var sitemapItems = [];
         _.each(items, function (item) {
             sitemapItems.push({
@@ -101,6 +99,5 @@
             });
         });
         blade.parentBlade.addItems(sitemapItems);
-        blade.isLoading = false;
     }
 }]);

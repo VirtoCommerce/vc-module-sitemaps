@@ -2,20 +2,20 @@
 <div class="blade-content __medium-wide">
     <div class="blade-inner">
         <div class="inner-block">
-            <form class="form" name="formSitemap">
+            <form class="list __info" name="formSitemap">
                 <div class="form-group" ng-init="setForm(formSitemap)">
                     <label class="form-label" for="sitemapPath" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.labelSitemapLocation' | translate"></label>
                     <div class="form-input">
                         <input id="sitemapPath" name="sitemapPath" required="required" type="text" ng-pattern="/^([\/{}a-z_\-\s0-9\.]+)+\.(xml)$/" ng-model="blade.currentEntity.location" />
                         <div class="error" ng-if="errorMessage" ng-bind="errorMessage | translate"></div>
-                        <div class="description" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.descriptionSitemapLocation' | translate"></div>
+                        <div class="list-descr" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.descriptionSitemapLocation' | translate"></div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="urlTemplate" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.labelSitemapItemsLocation' | translate"></label>
                     <div class="form-input">
                         <input id="urlTemplate" name="urlTemplate" required="required" type="text" ng-pattern="/^([\/{}a-z_\-\s0-9\.]+)$/" ng-model="blade.currentEntity.urlTemplate" />
-                        <div class="description" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.descriptionSitemapItemsLocation' | translate"></div>
+                        <div class="list-descr" ng-bind="'sitemapsModule.blades.sitemap.formSitemap.descriptionSitemapItemsLocation' | translate"></div>
                     </div>
                 </div>
             </form>
@@ -44,7 +44,8 @@
                     displayName: 'sitemapsModule.blades.sitemap.gridHeaders.title'
                 }, {
                     name: 'objectType',
-                    displayName: 'sitemapsModule.blades.sitemap.gridHeaders.type'
+                    displayName: 'sitemapsModule.blades.sitemap.gridHeaders.type',
+                    width: 65
                 }]})">
                 <div ui-grid="gridOptions"
                      ui-grid-auto-resize
@@ -64,14 +65,12 @@
 </div>
 
 <script id="sitemap-item-list-row.tpl.html" type="text/ng-template">
-    <div ng-click="grid.appScope.blade.selectSitemap(row.entity)"
-         ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.uid"
+    <div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.uid"
          ui-grid-one-bind-id-grid="rowRenderIndex + '-' + col.uid + '-cell'"
          class="ui-grid-cell"
          ng-class="{
              'ui-grid-row-header-cell': col.isRowHeader,
-             '__hovered': grid.appScope.contextMenuEntity === row.entity,
-             '__selected': row.entity.id===grid.appScope.selectedNodeId }"
+             '__hovered': grid.appScope.contextMenuEntity === row.entity }"
          role="{{ col.isRowHeader ? 'rowheader' : 'gridcell' }}"
          ui-grid-cell
          context-menu="grid.appScope.contextMenuEntity = row.entity"
@@ -85,5 +84,5 @@
 </script>
 
 <script id="sitemap-item-list-image-cell.tpl.html" type="text/ng-template">
-    <img ng-src="{{ COL_FIELD }}" />
+    <img ng-src="{{ COL_FIELD }}" ng-if="COL_FIELD" />
 </script>
