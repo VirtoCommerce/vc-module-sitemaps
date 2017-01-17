@@ -33,8 +33,6 @@ function ($scope, $timeout, members, dialogService, bladeUtils, uiGridHelper, me
             });
             setBreadcrumbs();
             blade.isLoading = false;
-        }, function (error) {
-            bladeNavigationService.setError('Error ' + error.status, blade);
         });
     };
     

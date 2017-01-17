@@ -10,9 +10,6 @@
         "title": "Sitemaps",
         "subtitle": "Manage sitemaps to include them into index sitemap.xml",
         "toolbar": {
-          "addSitemap": "Add",
-          "removeSitemap": "Delete sitemaps",
-          "refresh": "Refresh",
           "download": "Download sitemaps"
         },
         "gridHeaders": {
@@ -25,19 +22,19 @@
         "newSitemapTitle": "New sitemap",
         "toolbar": {
           "addItems": "Add items",
-          "removeItems": "Remove items",
-          "saveSitemap": "Save sitemap"
+          "removeItems": "Remove items"
         },
         "formSitemap": {
             "labelSitemapLocation": "Sitemap location",
-            "descriptionSitemapLocation": "Sitemap location should be a relative sitemap URL unique in context of index sitemap, i.e.: 'categories/electronics.xml', 'products.xml', etc. Please avoid of using 'sitemap.xml' in sitemap path.",
-            "sitemapIndexErrorMessage": "Please avoid of using \"sitemap.xml\" as sitemap location",
+            "descriptionSitemapLocation": "Sitemap location should be a relative sitemap URL unique in context of index sitemap, i.e.: 'categories/electronics.xml', 'products.xml', etc. Please avoid using 'sitemap.xml' in sitemap path.",
+            "sitemapIndexErrorMessage": "Please avoid using \"sitemap.xml\" as sitemap location",
             "sitemapSitemapLocationExistErrorMessage": "This sitemap location is already used",
             "labelSitemapItemsLocation": "Sitemap items location",
             "descriptionSitemapItemsLocation": "To generate a sitemap item URL can be used the next patterns: {language} - will be replaced with language code (i.e. en-US), {slug} - will be replaced with SEO semantic URL part",
             "labelSitemapItems": "Sitemap items"
         },
         "gridHeaders": {
+          "img": "Pic.",
           "title": "Title",
           "type": "Type"
         },
@@ -86,19 +83,23 @@
       "remove": "Remove"
     },
     "dialogs": {
-        "confirmRemoveSitemap": {
+        "sitemap-delete": {
             "title": "Delete confirmation",
             "message": "Are you sure you want to delete selected sitemaps?"
         },
-      "confirmBaseUrl": {
-        "title": "Base URL",
-        "messageNoBaseUrl": "Please enter a base URL for sitemaps",
-        "messageConfirmBaseUrl": "Please confirm a base URL for sitemaps"
-      },
-      "discardChanges": {
-        "title": "Save changes",
-        "message": "The sitemap has been modified. Do you want to save changes?"
-      }
+        "sitemapItems-delete": {
+            "title": "Remove confirmation",
+            "message": "Are you sure you want to remove selected items from sitemap?"
+        },
+        "confirmBaseUrl": {
+            "title": "Base URL",
+            "messageNoBaseUrl": "Please enter base URL for sitemaps",
+            "messageConfirmBaseUrl": "Please confirm base URL for sitemaps"
+        },
+        "discardChanges": {
+            "title": "Save changes",
+            "message": "The sitemap has been modified. Do you want to save changes?"
+        }
     },
     "errorMessages": {
       "filenameNotUnique": "Sitemap with this filename already exists"

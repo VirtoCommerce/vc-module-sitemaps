@@ -1,5 +1,5 @@
 ﻿angular.module('virtoCommerce.sitemapsModule')
-.controller('virtoCommerce.sitemapsModule.sitemapItemsAddController', ['$scope', 'platformWebApp.bladeNavigationService', 'virtoCommerce.sitemapsModule.sitemaps', function ($scope, bladeNavigationService, sitemapsResource) {
+.controller('virtoCommerce.sitemapsModule.sitemapItemsAddController', ['$scope', 'platformWebApp.bladeNavigationService', 'virtoCommerce.sitemapsModule.sitemapApi', function ($scope, bladeNavigationService, sitemapApi) {
     var blade = $scope.blade;
     blade.isLoading = false;
 
@@ -12,14 +12,13 @@
             template: 'Modules/$(VirtoCommerce.Catalog)/Scripts/blades/common/catalog-items-select.tpl.html',
             breadcrumbs: [],
             toolbarCommands: [{
-                name: 'sitemapsModule.blades.addCatalogItems.toolbar.addSelected',
-                icon: 'fa fa-plus',
+                name: 'sitemapsModule.blades.addCatalogItems.toolbar.addSelected', icon: 'fa fa-plus',
                 canExecuteMethod: function () {
                     return selectedItems.length > 0;
                 },
                 executeMethod: function (catalogBlade) {
-                    addItemsToSitemap(selectedItems);
-                    bladeNavigationService.closeBlade(catalogBlade);
+                    var sitemapItems = _.map(selectedItems, itemToSitemapItem);
+                    saveNewSitemapItems(sitemapItems, catalogBlade);
                 }
             }],
             options: {
@@ -47,8 +46,8 @@
                     return selectedItems.length > 0;
                 },
                 executeMethod: function (vendorsBlade) {
-                    addItemsToSitemap(selectedItems);
-                    bladeNavigationService.closeBlade(vendorsBlade);
+                    var sitemapItems = _.map(selectedItems, itemToSitemapItem);
+                    saveNewSitemapItems(sitemapItems, vendorsBlade);
                 }
             }],
             options: {
@@ -64,12 +63,11 @@
     $scope.addCustomItem = function () {
         var addCustomItemBlade = {
             id: 'addCustomItemBlade',
+            currentEntity: {},
+            confirmChangesFn: saveNewSitemapItems,
             title: 'sitemapsModule.blades.addCustomItem.title',
             controller: 'virtoCommerce.sitemapsModule.sitemapItemsAddCustomItemController',
-            template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/sitemap-add-custom-item.tpl.html',
-            currentEntity: {
-                sitemap: blade.sitemap
-            }
+            template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/sitemap-add-custom-item.tpl.html'
         }
         bladeNavigationService.closeBlade(blade, function () {
             bladeNavigationService.showBlade(addCustomItemBlade, blade.parentBlade);
@@ -88,16 +86,22 @@
         return selectedItems;
     }
 
-    function addItemsToSitemap(items) {
-        var sitemapItems = [];
-        _.each(items, function (item) {
-            sitemapItems.push({
-                title: item.name,
-                imageUrl: item.imageUrl,
-                objectId: item.id,
-                objectType: item.type || item.seoObjectType
+    function saveNewSitemapItems(sitemapItems, currentBlade) {
+        currentBlade.isLoading = true;
+
+        sitemapApi.addSitemapItems({ sitemapId: blade.sitemap.id },
+            sitemapItems,
+            function () {
+                bladeNavigationService.closeBlade(currentBlade, blade.parentRefresh);
             });
-        });
-        blade.parentBlade.addItems(sitemapItems);
+    }
+
+    function itemToSitemapItem(item) {
+        return {
+            title: item.name,
+            imageUrl: item.imageUrl,
+            objectId: item.id,
+            objectType: item.type || item.seoObjectType
+        };
     }
 }]);

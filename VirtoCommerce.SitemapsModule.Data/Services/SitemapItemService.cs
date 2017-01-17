@@ -56,7 +56,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 query = query.OrderBySortInfos(sortInfos);
                 searchResponse.TotalCount = query.Count();
 
-                foreach (var sitemapItemEntity in query.OrderByDescending(i => i.CreatedDate).Skip(criteria.Skip).Take(criteria.Take))
+                foreach (var sitemapItemEntity in query.Skip(criteria.Skip).Take(criteria.Take))
                 {
                     var sitemapItem = AbstractTypeFactory<SitemapItem>.TryCreateInstance();
                     if (sitemapItem != null)

@@ -1,8 +1,7 @@
 ﻿angular.module('virtoCommerce.sitemapsModule')
-.factory('virtoCommerce.sitemapsModule.sitemaps', ['$resource', function ($resource) {
-    return $resource('api/sitemaps', {}, {
-        searchSitemaps: { method: 'POST', url: 'api/sitemaps/search' },
-        getSitemapById: { method: 'GET', url: 'api/sitemaps/:id' },
+.factory('virtoCommerce.sitemapsModule.sitemapApi', ['$resource', function ($resource) {
+    return $resource('api/sitemaps/:id', {}, {
+        search: { method: 'POST', url: 'api/sitemaps/search' },
         addSitemap: { method: 'POST' },
         updateSitemap: { method: 'PUT' },
         removeSitemap: { method: 'DELETE' },

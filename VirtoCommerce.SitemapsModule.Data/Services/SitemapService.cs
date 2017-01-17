@@ -47,7 +47,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                         });
 
                         sitemap = sitemapEntity.ToModel(sitemap);
-                        sitemap.Items = sitemapItemsSearchResponse.Results;
+                        // sitemap.Items = sitemapItemsSearchResponse.Results;
                         sitemap.TotalItemsCount = sitemapItemsSearchResponse.TotalCount;
                     }
                 }

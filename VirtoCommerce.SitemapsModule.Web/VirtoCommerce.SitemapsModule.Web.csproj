@@ -134,7 +134,9 @@
     <Content Include="Content\logo.png" />
     <Content Include="Content\sitemap.css" />
     <Content Include="packages.config" />
-    <Content Include="module.manifest" />
+    <Content Include="module.manifest">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Localizations\en.VirtoCommerce.Sitemaps.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -151,11 +153,11 @@
     <Content Include="Scripts\blades\sitemap-items-add.tpl.html" />
     <Content Include="Scripts\blades\sitemap-list.js" />
     <Content Include="Scripts\blades\sitemap-list.tpl.html" />
-    <Content Include="Scripts\blades\sitemap.js" />
-    <Content Include="Scripts\blades\sitemap.tpl.html" />
+    <Content Include="Scripts\blades\sitemap-detail.js" />
+    <Content Include="Scripts\blades\sitemap-detail.tpl.html" />
     <Content Include="Scripts\blades\sitemap-add-custom-item.js" />
     <Content Include="Scripts\dialogs\confirm-base-url-dialog.js" />
-    <Content Include="Scripts\resources\sitemaps.js" />
+    <Content Include="Scripts\resources\sitemapApi.js" />
     <Content Include="Scripts\sitemapsModule.js" />
     <Content Include="Scripts\widgets\store-sitemaps-widget.js" />
     <Content Include="Scripts\widgets\store-sitemaps-widget.tpl.html" />
