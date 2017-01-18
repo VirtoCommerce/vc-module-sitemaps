@@ -19,5 +19,6 @@
 
     $scope.setForm = function (form) { $scope.formScope = form; };
 
+    blade.currentEntity = {};
     blade.isLoading = false;
 }]);

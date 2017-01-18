@@ -2,7 +2,7 @@
 <module>
     <id>VirtoCommerce.Sitemaps</id>
     <version>1.0.1</version>
-    <platformVersion>2.12.5</platformVersion>    
+    <platformVersion>2.12.5</platformVersion>
     <dependencies>
         <dependency id="VirtoCommerce.Core" version="2.17.2" />
         <dependency id="VirtoCommerce.Catalog" version="2.16.0" />
@@ -24,9 +24,7 @@
     <tags>sitemaps</tags>
     <assemblyFile>VirtoCommerce.SitemapsModule.Web.dll</assemblyFile>
     <moduleType>VirtoCommerce.SitemapsModule.Web.Module, VirtoCommerce.SitemapsModule.Web</moduleType>
-    <styles>
-        <directory virtualPath="$/Content" searchPattern="*.css" searchSubdirectories="true" />
-    </styles>
+
     <scripts>
         <directory virtualPath="$/Scripts" searchPattern="*.js" searchSubdirectories="true" />
     </scripts>
@@ -67,7 +65,7 @@
                 <title>Product page update frequency</title>
                 <description>How frequently the product page is likely to change. This value provides general information to search engines and may not correlate exactly to how often they crawl the page.</description>
                 <valueType>string</valueType>
-                 <allowedValues>
+                <allowedValues>
                     <value>always</value>
                     <value>hourly</value>
                     <value>daily</value>

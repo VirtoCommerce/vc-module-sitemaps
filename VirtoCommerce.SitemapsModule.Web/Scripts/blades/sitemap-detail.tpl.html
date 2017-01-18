@@ -29,9 +29,10 @@
                     data: 'blade.currentEntities',
                     useExternalSorting: true,
                     rowTemplate: 'sitemap-item-list-row.tpl.html',
+                    rowHeight: 48,
                     columnDefs: [
                      { name: 'actions',  displayName: '', cellTemplate: 'sitemap-item-list-actions-cell.tpl.html', enableColumnResizing: false, enableSorting: false, pinnedLeft: true, width: 30 },
-                     { name: 'imageUrl', displayName: 'sitemapsModule.blades.sitemap.gridHeaders.img', cellTemplate: 'sitemap-item-list-image-cell.tpl.html',   enableColumnResizing: false, enableSorting: false, width: 40 },
+                     { name: 'imageUrl', displayName: 'sitemapsModule.blades.sitemap.gridHeaders.img', cellTemplate: 'sitemap-item-list-image-cell.tpl.html',   enableColumnResizing: false, enableSorting: false, width: 60 },
                      { name: 'title', displayName: 'sitemapsModule.blades.sitemap.gridHeaders.title' },
                      { name: 'objectType', displayName: 'sitemapsModule.blades.sitemap.gridHeaders.type', width: 65 }]})">
                     <div ui-grid="gridOptions" ui-grid-pinning ui-grid-auto-resize ui-grid-save-state ui-grid-selection ui-grid-resize-columns ui-grid-move-columns></div>
@@ -66,5 +67,9 @@
 </script>
 
 <script id="sitemap-item-list-image-cell.tpl.html" type="text/ng-template">
-    <img ng-src="{{ COL_FIELD }}" ng-if="COL_FIELD" />
+    <div class="ui-grid-cell-contents">
+        <div class="product-img">
+            <div class="image" style="background-image: url('{{COL_FIELD}}')" ng-if="COL_FIELD"></div>
+        </div>
+    </div>
 </script>

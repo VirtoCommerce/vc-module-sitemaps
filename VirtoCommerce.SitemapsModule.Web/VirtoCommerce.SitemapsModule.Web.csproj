@@ -132,7 +132,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\logo.png" />
-    <Content Include="Content\sitemap.css" />
     <Content Include="packages.config" />
     <Content Include="module.manifest">
       <SubType>Designer</SubType>

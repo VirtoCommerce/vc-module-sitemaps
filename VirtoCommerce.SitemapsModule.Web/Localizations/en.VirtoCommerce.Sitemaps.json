@@ -42,11 +42,11 @@
       },
       "addItems": {
         "title": "Add items",
-        "addCatalogItems": {
+        "addCatalogItem": {
           "title": "Catalog items",
           "description": "Include product and categories"
         },
-        "addVendorItems": {
+        "addVendorItem": {
           "title": "Vendor items",
           "description": "Include vendors"
         },

@@ -4,6 +4,7 @@ function ($scope, $timeout, members, dialogService, bladeUtils, uiGridHelper, me
     $scope.uiGridConstants = uiGridHelper.uiGridConstants;
     var bladeNavigationService = bladeUtils.bladeNavigationService;
     var blade = $scope.blade;
+    blade.selectedItems = [];
 
     blade.headIcon = 'fa-user';
     blade.currentEntity = {};
@@ -35,17 +36,12 @@ function ($scope, $timeout, members, dialogService, bladeUtils, uiGridHelper, me
             blade.isLoading = false;
         });
     };
-    
+
     $scope.options = angular.extend({
         showCheckingMultiple: true,
         allowCheckingItem: true,
         selectedItemIds: []
     }, blade.options);
-
-    $scope.setGridOptions = function (gridOptions) {
-        uiGridHelper.initialize($scope, gridOptions, externalRegisterApiCallback);
-        bladeUtils.initializePagination($scope);
-    };
 
     $scope.selectNode = function (listItem) {
         if ($scope.selectedNodeId === listItem.id) {
@@ -112,6 +108,12 @@ function ($scope, $timeout, members, dialogService, bladeUtils, uiGridHelper, me
         };
     }
 
+    // ui-grid
+    $scope.setGridOptions = function (gridOptions) {
+        uiGridHelper.initialize($scope, gridOptions, externalRegisterApiCallback);
+        bladeUtils.initializePagination($scope);
+    };
+
     function externalRegisterApiCallback(gridApi) {
         gridApi.grid.registerDataChangeCallback(function (grid) {
             $timeout(function () {
@@ -130,10 +132,12 @@ function ($scope, $timeout, members, dialogService, bladeUtils, uiGridHelper, me
             if (row.isSelected) {
                 if (!_.contains($scope.options.selectedItemIds, row.entity.id)) {
                     $scope.options.selectedItemIds.push(row.entity.id);
+                    blade.selectedItems.push(row.entity);
                 }
             }
             else {
                 $scope.options.selectedItemIds = _.without($scope.options.selectedItemIds, row.entity.id);
+                blade.selectedItems = _.filter(blade.selectedItems, function (x) { return x.id !== row.entity.id; });
             }
         });
 
