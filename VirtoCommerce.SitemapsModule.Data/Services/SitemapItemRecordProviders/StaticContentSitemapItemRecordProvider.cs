@@ -62,7 +62,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                         {
                             frontMatterPermalink = new FrontMatterPermalink(permalinks.FirstOrDefault());
                         }
-                        sitemapItem.ItemsRecords.AddRange(GetSitemapItemRecords(options, frontMatterPermalink.ToUrl().TrimStart(new[] { '/' }), string.Format("{0}/{1}", baseUrl, contentBasePath)));
+                        sitemapItem.ItemsRecords.AddRange(GetSitemapItemRecords(options, frontMatterPermalink.ToUrl().TrimStart(new[] { '/' }), baseUrl));
                     }
                 }
             }

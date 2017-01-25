@@ -1,16 +1,10 @@
 ﻿using Microsoft.Practices.Unity;
 using System;
-using System.Configuration;
 using System.IO;
-using System.Web;
 using System.Web.Hosting;
-using VirtoCommerce.ContentModule.Data.Services;
-using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Settings;
-using VirtoCommerce.Platform.Data.Assets;
-using VirtoCommerce.Platform.Data.Azure;
 using VirtoCommerce.Platform.Data.Infrastructure;
 using VirtoCommerce.Platform.Data.Infrastructure.Interceptors;
 using VirtoCommerce.SitemapsModule.Core.Services;
@@ -42,41 +36,6 @@ namespace VirtoCommerce.SitemapsModule.Web
 
         public override void Initialize()
         {
-            Func<string, IContentBlobStorageProvider> contentProviderFactory = rootPath =>
-            {
-                var settingManager = _container.Resolve<ISettingsManager>();
-                var connectionString = settingManager.GetValue("VirtoCommerce.Content.CmsContentConnectionString", string.Empty);
-                var configConnectionString = ConfigurationManager.ConnectionStrings["CmsContentConnectionString"];
-                if (configConnectionString != null && !string.IsNullOrEmpty(configConnectionString.ConnectionString))
-                {
-                    connectionString = configConnectionString.ConnectionString;
-                }
-
-                if (string.IsNullOrEmpty(connectionString))
-                {
-                    throw new InvalidOperationException("CmsContentConnectionString not defined. Please define module setting VirtoCommerce.Content.CmsContentConnectionString or in web.config");
-                }
-                var blobConnectionString = BlobConnectionString.Parse(connectionString);
-                if (string.Equals(blobConnectionString.Provider, FileSystemBlobProvider.ProviderName, StringComparison.OrdinalIgnoreCase))
-                {
-                    var storagePath = Path.Combine(NormalizePath(blobConnectionString.RootPath), rootPath.Replace("/", "\\"));
-                    //Use content api/content as public url by default
-                    var publicUrl = VirtualPathUtility.ToAbsolute("~/api/content/" + rootPath) + "?relativeUrl=";
-                    if (!string.IsNullOrEmpty(blobConnectionString.PublicUrl))
-                    {
-                        publicUrl = blobConnectionString.PublicUrl + "/" + rootPath;
-                    }
-                    //Do not export default theme (Themes/default) its will distributed with code
-                    return new FileSystemContentBlobStorageProvider(storagePath, publicUrl);
-                }
-                else if (string.Equals(blobConnectionString.Provider, AzureBlobProvider.ProviderName, StringComparison.OrdinalIgnoreCase))
-                {
-                    return new AzureContentBlobStorageProvider(blobConnectionString.ConnectionString, Path.Combine(blobConnectionString.RootPath, rootPath));
-                }
-                throw new InvalidOperationException("Unknown storage provider: " + blobConnectionString.Provider);
-            };
-            _container.RegisterInstance(contentProviderFactory);
-
             _container.RegisterType<ISitemapRepository>(new InjectionFactory(c => new SitemapRepository(_connectionStringName, new EntityPrimaryKeyGeneratorInterceptor(), _container.Resolve<AuditableInterceptor>())));
             _container.RegisterType<ISitemapItemService, SitemapItemService>();
             _container.RegisterType<ISitemapService, SitemapService>();
