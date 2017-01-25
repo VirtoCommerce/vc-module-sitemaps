@@ -50,6 +50,10 @@
           "title": "Vendor items",
           "description": "Include vendors"
         },
+        "addStaticContentItem": {
+          "title": "Static content items",
+          "description": "Include pages and blogs"
+        },
         "addCustomItem": {
           "title": "Custom item",
           "description": "Item with custom URL"
@@ -73,6 +77,12 @@
       },
       "addVendorItems": {
         "title": "Add vendor items",
+        "toolbar": {
+          "addSelected": "Add selected"
+        }
+      },
+      "addStaticContentItems": {
+        "title": "Add static content items",
         "toolbar": {
           "addSelected": "Add selected"
         }

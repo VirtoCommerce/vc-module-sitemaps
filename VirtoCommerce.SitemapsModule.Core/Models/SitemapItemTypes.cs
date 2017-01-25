@@ -5,6 +5,7 @@
         public const string Category = "Category",
                             Product = "Product",
                             Vendor = "Vendor",
+                            StaticContent = "StaticContent",
                             Custom = "Custom";
     }
 }

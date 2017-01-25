@@ -130,6 +130,7 @@
             var newBlade = {
                 id: 'addSitemapItemsBlade',
                 sitemap: blade.currentEntity,
+                storeId: blade.currentEntity.storeId,
                 parentRefresh: refreshSitemapItemsAndParent,
                 title: 'sitemapsModule.blades.addItems.title',
                 controller: 'virtoCommerce.sitemapsModule.sitemapItemsAddController',
