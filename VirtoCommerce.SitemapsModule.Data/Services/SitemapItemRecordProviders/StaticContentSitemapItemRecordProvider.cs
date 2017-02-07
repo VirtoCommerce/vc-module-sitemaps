@@ -33,10 +33,13 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             var contentBasePath = string.Format("Pages/{0}", sitemap.StoreId);
             var storageProvider = ContentStorageProviderFactory(contentBasePath);
             var options = new SitemapItemOptions();
-            foreach (var sitemapItem in sitemap.Items)
+            var staticContentSitemapItems = sitemap.Items.Where(si => !string.IsNullOrEmpty(si.ObjectType) &&
+                                                                      (si.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem) ||
+                                                                       si.ObjectType.EqualsInvariant(SitemapItemTypes.Folder)));
+            foreach (var sitemapItem in staticContentSitemapItems)
             {
                 var urls = new List<string>();
-                if (sitemapItem.ObjectType.EqualsInvariant("folder"))
+                if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.Folder))
                 {
                     var searchResult = storageProvider.Search(sitemapItem.UrlTemplate, null);
                     urls.AddRange(GetItemUrls(storageProvider, searchResult));
