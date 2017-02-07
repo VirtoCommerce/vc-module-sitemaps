@@ -242,6 +242,7 @@ ModelManifest.xml
 .fake/
 
 *.nupkg
+
 *.zip
 
 .vs/
