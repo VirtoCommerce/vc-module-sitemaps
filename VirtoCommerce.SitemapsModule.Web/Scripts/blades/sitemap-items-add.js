@@ -9,8 +9,8 @@
             id: node.newBlade.id || 'sitemapItem-details',
             selectedItems: [],
             storeId: blade.storeId,
-            checkItemFn: node.newBlade.checkItemFn || updateSelectedItemsList,
-            confirmChangesFn: node.newBlade.confirmChangesFn || saveNewSitemapItems,
+            checkItemFn: updateSelectedItemsList,
+            confirmChangesFn: saveNewSitemapItems
         });
 
         bladeNavigationService.showBlade(newBlade, blade.parentBlade);
@@ -114,19 +114,7 @@
         controller: 'virtoCommerce.customerModule.staticContentItemSelectController',
         template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/static-content-items-select.tpl.html',
         headIcon: 'fa-code',
-        currentEntity: {},
-        selectedItems: [],
-        toolbarCommands: [{
-            name: 'sitemapsModule.blades.addStaticContentItems.toolbar.addSelected',
-            icon: 'fa fa-plus',
-            canExecuteMethod: function (staticContentBlade) {
-                return _.any(staticContentBlade.selectedItems);
-            },
-            executeMethod: function (staticContentBlade) {
-                var sitemapItems = _.map(staticContentBlade.selectedItems, itemToSitemapItem);
-                staticContentBlade.confirmChangesFn(sitemapItems, staticContentBlade);
-            }
-        }]
+        currentEntity: {}
     }
 
     knownSitemapItemTypes.registerType({
