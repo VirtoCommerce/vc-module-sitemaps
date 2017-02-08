@@ -54,7 +54,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\CommonAssemblyInfo.cs" />
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Models\SitemapItemRecord.cs" />
     <Compile Include="Models\SitemapItemTypes.cs" />
     <Compile Include="Models\SitemapLocation.cs" />
