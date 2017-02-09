@@ -4,6 +4,7 @@ function ($scope, $timeout, staticContent, bladeUtils, uiGridHelper) {
     $scope.uiGridConstants = uiGridHelper.uiGridConstants;
     var bladeNavigationService = bladeUtils.bladeNavigationService;
     var blade = $scope.blade;
+    blade.selectedItems = [];
     blade.toolbarCommands = [{
         name: 'sitemapsModule.blades.addStaticContentItems.toolbar.addSelected',
         icon: 'fa fa-plus',
@@ -59,6 +60,7 @@ function ($scope, $timeout, staticContent, bladeUtils, uiGridHelper) {
         }
         if (listItem.type.toLowerCase() === 'folder') {
             var newBlade = {
+                confirmChangesFn: blade.confirmChangesFn,
                 id: blade.id,
                 contentType: blade.contentType,
                 storeId: blade.storeId,
