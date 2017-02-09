@@ -1,1 +1,4 @@
 ﻿VirtoCommerce.Domain.dll
+VirtoCommerce.ContentModule.Data.dll
+Microsoft.Azure.KeyVault.Core.dll
+Microsoft.Azure.KeyVault.Core.xml
