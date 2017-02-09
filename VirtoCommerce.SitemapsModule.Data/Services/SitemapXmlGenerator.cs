@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
+using Common.Logging;
 using VirtoCommerce.Domain.Store.Model;
 using VirtoCommerce.Domain.Store.Services;
 using VirtoCommerce.Platform.Core.Common;
@@ -22,15 +23,18 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             ISitemapItemService sitemapItemService,
             ISitemapUrlBuilder sitemapUrlBuilder,
             ISitemapItemRecordProvider[] sitemapItemRecordProviders,
-            ISettingsManager settingsManager)
+            ISettingsManager settingsManager,
+            ILog logging)
         {
             SitemapService = sitemapService;
             SitemapItemService = sitemapItemService;
             SitemapUrlBuilder = sitemapUrlBuilder;
             SitemapItemRecordProviders = sitemapItemRecordProviders;
             SettingsManager = settingsManager;
+            Logging = logging;
         }
 
+        protected ILog Logging { get; private set; }
         protected ISitemapService SitemapService { get; private set; }
         protected ISitemapItemService SitemapItemService { get; private set; }
         protected ISitemapUrlBuilder SitemapUrlBuilder { get; private set; }
@@ -141,7 +145,15 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             sitemap.Items = SitemapItemService.Search(sitemapItemSearchCriteria).Results;
             foreach(var recordProvider in SitemapItemRecordProviders)
             {
-                recordProvider.LoadSitemapItemRecords(sitemap, baseUrl);
+                //Log exceptions to prevent fail whole sitemap.xml generation
+                try
+                {
+                    recordProvider.LoadSitemapItemRecords(sitemap, baseUrl);
+                }
+                catch(Exception ex)
+                {
+                    Logging.Error(ex.ToString());
+                }
             }
             sitemap.PagedLocations.Clear();
             var totalRecordsCount = sitemap.Items.SelectMany(x => x.ItemsRecords).GroupBy(x => x.Url).Count();
