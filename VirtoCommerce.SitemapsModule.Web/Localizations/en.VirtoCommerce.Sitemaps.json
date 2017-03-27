@@ -86,6 +86,17 @@
         "toolbar": {
           "addSelected": "Add selected"
         }
+      },
+      "download": {
+        "title": "Download sitemap",
+        "labels": {
+          "start": "Start",
+          "end": "End",
+          "total": "Total",
+          "processed": "Processed",
+          "errors-count": "Errors count",
+          "errors": "Errors"
+        }
       }
     },
     "contextMenu": {

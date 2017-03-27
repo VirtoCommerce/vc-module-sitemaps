@@ -103,7 +103,18 @@
         var dialogInstance = $modal.open(confirmDialog);
         dialogInstance.result.then(function (baseUrl) {
             if (baseUrl) {
-                $window.open('api/sitemaps/download?storeId=' + blade.store.id + '&baseUrl=' + baseUrl, '_blank');
+                var newBlade = {
+                    id: 'sitemap-download',
+                    title: 'sitemapsModule.blades.download.title',
+                    headIcon: 'fa fa-download',
+                    controller: 'virtoCommerce.sitemapsModule.sitemapDownloadController',
+                    template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/sitemap-download.tpl.html',
+                    storeId: blade.store.id,
+                    baseUrl: baseUrl
+                };
+                bladeNavigationService.showBlade(newBlade, blade);
+
+                //$window.open('api/sitemaps/download?storeId=' + blade.store.id + '&baseUrl=' + baseUrl, '_blank');
             }
         });
     }
