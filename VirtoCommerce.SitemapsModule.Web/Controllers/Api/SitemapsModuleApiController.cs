@@ -288,46 +288,5 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             var sitemapPartStream = sitemapPart.GetStream();
             stream.CopyTo(sitemapPartStream);
         }
-
-
-        //[HttpGet]
-        //[Route("download")]
-        //[SwaggerFileResponse]
-        //public HttpResponseMessage DownloadSitemapsZip(string storeId, string baseUrl)
-        //{
-        //    var zipPackageName = "sitemap.zip";
-
-        //    var resultStream = new MemoryStream();
-
-        //    using (var zipPackage = ZipPackage.Open(resultStream, FileMode.Create))
-        //    {
-        //        CreateSitemapPart(zipPackage, storeId, baseUrl, "sitemap.xml");
-
-        //        var sitemapUrls = _sitemapXmlGenerator.GetSitemapUrls(storeId);
-        //        foreach (var sitemapUrl in sitemapUrls)
-        //        {
-        //            if (!string.IsNullOrEmpty(sitemapUrl))
-        //            {
-        //                CreateSitemapPart(zipPackage, storeId, baseUrl, sitemapUrl);
-        //            }
-        //        }
-        //    }
-
-        //    resultStream.Seek(0, SeekOrigin.Begin);
-
-        //    var result = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(resultStream) };
-        //    result.Content.Headers.ContentType = new MediaTypeHeaderValue(MimeMapping.GetMimeMapping(zipPackageName));
-
-        //    return result;
-        //}
-
-        //private void CreateSitemapPart(System.IO.Packaging.Package package, string storeId, string baseUrl, string sitemapUrl)
-        //{
-        //    var uri = PackUriHelper.CreatePartUri(new Uri(sitemapUrl, UriKind.Relative));
-        //    var sitemapPart = package.CreatePart(uri, System.Net.Mime.MediaTypeNames.Text.Xml, CompressionOption.Normal);
-        //    var stream = _sitemapXmlGenerator.GenerateSitemapXml(storeId, baseUrl, sitemapUrl);
-        //    var sitemapPartStream = sitemapPart.GetStream();
-        //    stream.CopyTo(sitemapPartStream);
-        //}
     }
 }
