@@ -170,6 +170,9 @@
       <HintPath>..\packages\VirtoCommerce.Platform.Data.Azure.2.12.5\lib\net461\VirtoCommerce.Platform.Data.Azure.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="VirtoCommerce.Tools, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VirtoCommerce.Tools.1.2.0\lib\net461\VirtoCommerce.Tools.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>

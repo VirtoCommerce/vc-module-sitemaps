@@ -1,15 +1,10 @@
 ﻿using System.Collections.Generic;
-using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.SitemapsModule.Core.Models
 {
     public class SitemapItem : AuditableEntity
     {
-        public SitemapItem()
-        {
-            ItemsRecords = new List<SitemapItemRecord>();
-        }
         public string SitemapId { get; set; }
 
         public string Title { get; set; }
@@ -22,6 +17,6 @@ namespace VirtoCommerce.SitemapsModule.Core.Models
 
         public string UrlTemplate { get; set; }
 
-        public ICollection<SitemapItemRecord> ItemsRecords { get; set; }
+        public ICollection<SitemapItemRecord> ItemsRecords { get; set; } = new List<SitemapItemRecord>();
     }
 }

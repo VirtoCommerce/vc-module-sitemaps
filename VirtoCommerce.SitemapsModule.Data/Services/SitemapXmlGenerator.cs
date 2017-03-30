@@ -10,9 +10,7 @@ using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
-using VirtoCommerce.SitemapsModule.Data.Models;
 using VirtoCommerce.SitemapsModule.Data.Models.Xml;
-using VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services
 {
@@ -24,7 +22,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             ISitemapUrlBuilder sitemapUrlBuilder,
             ISitemapItemRecordProvider[] sitemapItemRecordProviders,
             ISettingsManager settingsManager,
-            ILog logging)
+            ILog logging,
+            IStoreService storeService)
         {
             SitemapService = sitemapService;
             SitemapItemService = sitemapItemService;
@@ -32,6 +31,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             SitemapItemRecordProviders = sitemapItemRecordProviders;
             SettingsManager = settingsManager;
             Logging = logging;
+            StoreService = storeService;
         }
 
         protected ILog Logging { get; private set; }
@@ -40,6 +40,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
         protected ISitemapUrlBuilder SitemapUrlBuilder { get; private set; }
         protected ISitemapItemRecordProvider[] SitemapItemRecordProviders { get; private set; }
         protected ISettingsManager SettingsManager { get; private set; }
+        protected IStoreService StoreService { get; private set; }
 
         public virtual ICollection<string> GetSitemapUrls(string storeId)
         {
@@ -50,8 +51,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
 
             var sitemapUrls = new List<string>();
 
-
-            var sitemaps = LoadAllStoreSitemaps(storeId, "");
+            var store = StoreService.GetById(storeId);
+            var sitemaps = LoadAllStoreSitemaps(store, "");
             foreach (var sitemap in sitemaps)
             {
                 sitemapUrls.AddRange(sitemap.PagedLocations);
@@ -70,22 +71,23 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             XmlSerializer xmlSerializer = null;
             var xmlNamespaces = new XmlSerializerNamespaces();
             xmlNamespaces.Add("", "http://www.sitemaps.org/schemas/sitemap/0.9");
-       
-            var sitemapLocation = SitemapLocation.Parse(sitemapUrl, filenameSeparator);
+            xmlNamespaces.Add("xhtml", "http://www.w3.org/1999/xhtml");
 
+            var sitemapLocation = SitemapLocation.Parse(sitemapUrl, filenameSeparator);
+            var store = StoreService.GetById(storeId);
             if (sitemapLocation.Location.EqualsInvariant("sitemap.xml"))
             {
-                var allStoreSitemaps = LoadAllStoreSitemaps(storeId, baseUrl);
+                var allStoreSitemaps = LoadAllStoreSitemaps(store, baseUrl);
                 var sitemapIndexXmlRecord = new SitemapIndexXmlRecord();
-                foreach(var sitemap in allStoreSitemaps)
+                foreach (var sitemap in allStoreSitemaps)
                 {
                     var xmlSiteMapRecords = sitemap.PagedLocations.Select(location => new SitemapIndexItemXmlRecord
                     {
                         ModifiedDate = sitemap.Items.Select(x => x.ModifiedDate).OrderByDescending(x => x).FirstOrDefault(),
-                        Url = SitemapUrlBuilder.CreateAbsoluteUrl(location, baseUrl)
+                        Url = SitemapUrlBuilder.CreateAbsoluteUrl(store, location, baseUrl)
                     }).ToList();
                     sitemapIndexXmlRecord.Sitemaps.AddRange(xmlSiteMapRecords);
-                }             
+                }
                 xmlSerializer = new XmlSerializer(sitemapIndexXmlRecord.GetType());
                 xmlSerializer.Serialize(stream, sitemapIndexXmlRecord, xmlNamespaces);
             }
@@ -95,7 +97,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 var sitemap = sitemapSearchResult.Results.FirstOrDefault();
                 if (sitemap != null)
                 {
-                    LoadSitemapRecords(sitemap, baseUrl);
+                    LoadSitemapRecords(store, sitemap, baseUrl);
                     var distinctRecords = sitemap.Items.SelectMany(x => x.ItemsRecords).GroupBy(x => x.Url).Select(x => x.FirstOrDefault());
                     var sitemapItemRecords = distinctRecords.Skip((sitemapLocation.PageNumber - 1) * recordsLimitPerFile).Take(recordsLimitPerFile).ToArray();
                     var sitemapRecord = new SitemapXmlRecord
@@ -112,26 +114,26 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             stream.Seek(0, SeekOrigin.Begin);
             return stream;
         }
-        
-        private ICollection<Sitemap> LoadAllStoreSitemaps(string storeId, string baseUrl)
+
+        private ICollection<Sitemap> LoadAllStoreSitemaps(Store store, string baseUrl)
         {
-            var result = new List<Sitemap>();          
+            var result = new List<Sitemap>();
             var sitemapSearchCriteria = new SitemapSearchCriteria
             {
-                StoreId = storeId,
+                StoreId = store.Id,
                 Skip = 0,
                 Take = int.MaxValue
             };
             var sitemapSearchResult = SitemapService.Search(sitemapSearchCriteria);
-            foreach(var sitemap in sitemapSearchResult.Results)
-            {              
-                LoadSitemapRecords(sitemap, baseUrl);
+            foreach (var sitemap in sitemapSearchResult.Results)
+            {
+                LoadSitemapRecords(store, sitemap, baseUrl);
                 result.Add(sitemap);
             }
             return result;
         }
 
-        private void LoadSitemapRecords(Sitemap sitemap, string baseUrl)
+        private void LoadSitemapRecords(Store store, Sitemap sitemap, string baseUrl)
         {
             var recordsLimitPerFile = SettingsManager.GetValue("Sitemap.RecordsLimitPerFile", 10000);
             var filenameSeparator = SettingsManager.GetValue("Sitemap.FilenameSeparator", "--");
@@ -143,14 +145,14 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 Take = int.MaxValue
             };
             sitemap.Items = SitemapItemService.Search(sitemapItemSearchCriteria).Results;
-            foreach(var recordProvider in SitemapItemRecordProviders)
+            foreach (var recordProvider in SitemapItemRecordProviders)
             {
                 //Log exceptions to prevent fail whole sitemap.xml generation
                 try
                 {
-                    recordProvider.LoadSitemapItemRecords(sitemap, baseUrl);
+                    recordProvider.LoadSitemapItemRecords(store, sitemap, baseUrl);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Logging.Error(ex.ToString());
                 }

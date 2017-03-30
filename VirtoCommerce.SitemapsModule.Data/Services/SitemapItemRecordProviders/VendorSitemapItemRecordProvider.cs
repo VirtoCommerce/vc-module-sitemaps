@@ -2,27 +2,29 @@
 using System.Linq;
 using VirtoCommerce.Domain.Customer.Model;
 using VirtoCommerce.Domain.Customer.Services;
+using VirtoCommerce.Domain.Store.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
+using VirtoCommerce.Tools;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 {
     public class VendorSitemapItemRecordProvider : SitemapItemRecordProviderBase, ISitemapItemRecordProvider
     {
         public VendorSitemapItemRecordProvider(
-            ISitemapUrlBuilder sitemapUrlBuilder,
+            IUrlBuilder urlBuilder,
             ISettingsManager settingsManager,
             IMemberService memberService)
-            : base(settingsManager, sitemapUrlBuilder)
+            : base(settingsManager, urlBuilder)
         {
             MemberService = memberService;
         }
 
         protected IMemberService MemberService { get; private set; }
 
-        public virtual void LoadSitemapItemRecords(Sitemap sitemap, string baseUrl)
+        public virtual void LoadSitemapItemRecords(Store store, Sitemap sitemap, string baseUrl)
         {
             var sitemapItemRecords = new List<SitemapItemRecord>();
             var vendorOptions = new SitemapItemOptions();
@@ -32,10 +34,10 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             var members = MemberService.GetByIds(vendorIds);
             foreach (var sitemapItem in vendorSitemapItems)
             {
-                var vendor = members.FirstOrDefault(x=>x.Id == sitemapItem.ObjectId) as Vendor;
+                var vendor = members.FirstOrDefault(x => x.Id == sitemapItem.ObjectId) as Vendor;
                 if (vendor != null)
-                {                    
-                    sitemapItem.ItemsRecords = GetSitemapItemRecords(vendorOptions, sitemap.UrlTemplate, baseUrl, vendor);
+                {
+                    sitemapItem.ItemsRecords = GetSitemapItemRecords(store, vendorOptions, sitemap.UrlTemplate, baseUrl, vendor);
                 }
             }
         }

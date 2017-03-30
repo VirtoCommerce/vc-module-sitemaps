@@ -1,7 +1,7 @@
-﻿using Microsoft.Practices.Unity;
-using System;
+﻿using System;
 using System.IO;
 using System.Web.Hosting;
+using Microsoft.Practices.Unity;
 using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Settings;
@@ -12,6 +12,7 @@ using VirtoCommerce.SitemapsModule.Data.Repositories;
 using VirtoCommerce.SitemapsModule.Data.Services;
 using VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders;
 using VirtoCommerce.SitemapsModule.Web.ExportImport;
+using VirtoCommerce.Tools;
 
 namespace VirtoCommerce.SitemapsModule.Web
 {
@@ -39,6 +40,7 @@ namespace VirtoCommerce.SitemapsModule.Web
             _container.RegisterType<ISitemapRepository>(new InjectionFactory(c => new SitemapRepository(_connectionStringName, new EntityPrimaryKeyGeneratorInterceptor(), _container.Resolve<AuditableInterceptor>())));
             _container.RegisterType<ISitemapItemService, SitemapItemService>();
             _container.RegisterType<ISitemapService, SitemapService>();
+            _container.RegisterType<IUrlBuilder, UrlBuilder>();
             _container.RegisterType<ISitemapUrlBuilder, SitemapUrlBuilder>();
             _container.RegisterType<ISitemapItemRecordProvider, CatalogSitemapItemRecordProvider>("CatalogSitemapItemRecordProvider");
             _container.RegisterType<ISitemapItemRecordProvider, CustomSitemapItemRecordProvider>("CustomSitemapItemRecordProvider");
@@ -47,7 +49,6 @@ namespace VirtoCommerce.SitemapsModule.Web
             _container.RegisterType<ISitemapXmlGenerator, SitemapXmlGenerator>();
         }
 
-     
         public void DoExport(System.IO.Stream outStream, PlatformExportManifest manifest, Action<ExportImportProgressInfo> progressCallback)
         {
             var job = _container.Resolve<SitemapExportImport>();

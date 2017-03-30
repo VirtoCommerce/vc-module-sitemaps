@@ -4,12 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using VirtoCommerce.ContentModule.Data.Services;
-using VirtoCommerce.ContentModule.Utils;
+using VirtoCommerce.Domain.Store.Model;
 using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
+using VirtoCommerce.Tools;
 using YamlDotNet.RepresentationModel;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
@@ -17,10 +18,10 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
     public class StaticContentSitemapItemRecordProvider : SitemapItemRecordProviderBase, ISitemapItemRecordProvider
     {
         public StaticContentSitemapItemRecordProvider(
-            ISitemapUrlBuilder sitemapUrlBuilder,
+            IUrlBuilder urlBuilder,
             ISettingsManager settingsManager,
             Func<string, IContentBlobStorageProvider> contentStorageProviderFactory)
-            : base(settingsManager, sitemapUrlBuilder)
+            : base(settingsManager, urlBuilder)
         {
             ContentStorageProviderFactory = contentStorageProviderFactory;
         }
@@ -28,7 +29,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         private readonly Func<string, IContentBlobStorageProvider> ContentStorageProviderFactory;
         private static readonly Regex _headerRegExp = new Regex(@"(?s:^---(.*?)---)");
 
-        public virtual void LoadSitemapItemRecords(Sitemap sitemap, string baseUrl)
+        public virtual void LoadSitemapItemRecords(Store store, Sitemap sitemap, string baseUrl)
         {
             var contentBasePath = string.Format("Pages/{0}", sitemap.StoreId);
             var storageProvider = ContentStorageProviderFactory(contentBasePath);
@@ -65,7 +66,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                         {
                             frontMatterPermalink = new FrontMatterPermalink(permalinks.FirstOrDefault());
                         }
-                        sitemapItem.ItemsRecords.AddRange(GetSitemapItemRecords(options, frontMatterPermalink.ToUrl().TrimStart(new[] { '/' }), baseUrl));
+                        sitemapItem.ItemsRecords.AddRange(GetSitemapItemRecords(store, options, frontMatterPermalink.ToUrl().TrimStart(new[] { '/' }), baseUrl));
                     }
                 }
             }
