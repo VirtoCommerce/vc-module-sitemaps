@@ -48,7 +48,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
             var categorySitemapItems = sitemap.Items.Where(x => x.ObjectType.EqualsInvariant(SitemapItemTypes.Category));
             var categoryIds = categorySitemapItems.Select(x => x.ObjectId).ToArray();
-            var categories = CategoryService.GetByIds(categoryIds, CategoryResponseGroup.WithSeo | CategoryResponseGroup.WithOutlines);
+            var categories = CategoryService.GetByIds(categoryIds, CategoryResponseGroup.WithSeo | CategoryResponseGroup.WithOutlines).Where(c => !c.IsActive.HasValue || c.IsActive.Value);
 
             Parallel.ForEach(categorySitemapItems, new ParallelOptions { MaxDegreeOfParallelism = 5 }, (sitemapItem =>
             {
@@ -69,7 +69,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                         };
                         var catalogSearchResult = CatalogSearchService.Search(catalogSearchCriteria);
 
-                        foreach (var seoObj in catalogSearchResult.Categories)
+                        foreach (var seoObj in catalogSearchResult.Categories.Where(c => !c.IsActive.HasValue || c.IsActive.Value))
                         {
                             sitemapItem.ItemsRecords.AddRange(GetSitemapItemRecords(store, categoryOptions, sitemap.UrlTemplate, baseUrl, seoObj));
                         }
@@ -92,7 +92,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                                 OnlyBuyable = true
                             };
                             var productSearchResult = CatalogSearchService.Search(productSearchCriteria);
-                            foreach (var product in productSearchResult.Products)
+                            foreach (var product in productSearchResult.Products.Where(p => !p.IsActive.HasValue || p.IsActive.Value))
                             {
                                 foreach (var record in GetSitemapItemRecords(store, productOptions, sitemap.UrlTemplate, baseUrl, product))
                                 {
@@ -100,18 +100,19 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                                 }
                             }
                         });
-                        sitemapItem.ItemsRecords = itemRecords.ToList();
+                        sitemapItem.ItemsRecords.AddRange(itemRecords);
                     }
                 }
             }));
 
             var productSitemapItems = sitemap.Items.Where(si => si.ObjectType.EqualsInvariant(SitemapItemTypes.Product));
             var productIds = productSitemapItems.Select(si => si.ObjectId).ToArray();
-            var products = ItemService.GetByIds(productIds, ItemResponseGroup.Seo | ItemResponseGroup.Outlines);
+            var products = ItemService.GetByIds(productIds, ItemResponseGroup.Seo | ItemResponseGroup.Outlines).Where(p => !p.IsActive.HasValue || p.IsActive.Value);
             foreach (var sitemapItem in productSitemapItems)
             {
                 var product = products.FirstOrDefault(x => x.Id == sitemapItem.ObjectId);
-                sitemapItem.ItemsRecords = GetSitemapItemRecords(store, productOptions, sitemap.UrlTemplate, baseUrl, product);
+                var itemRecords = GetSitemapItemRecords(store, productOptions, sitemap.UrlTemplate, baseUrl, product);
+                sitemapItem.ItemsRecords.AddRange(itemRecords);
             }
         }
 
