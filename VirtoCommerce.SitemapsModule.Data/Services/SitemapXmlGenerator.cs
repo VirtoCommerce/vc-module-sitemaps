@@ -11,6 +11,7 @@ using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
 using VirtoCommerce.SitemapsModule.Data.Models.Xml;
+using VirtoCommerce.Platform.Core.ExportImport;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services
 {
@@ -61,7 +62,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             return sitemapUrls;
         }
 
-        public virtual Stream GenerateSitemapXml(string storeId, string baseUrl, string sitemapUrl)
+        public virtual Stream GenerateSitemapXml(string storeId, string baseUrl, string sitemapUrl, Action<ExportImportProgressInfo> progressCallback = null)
         {
             var stream = new MemoryStream();
 
@@ -77,6 +78,14 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             var store = StoreService.GetById(storeId);
             if (sitemapLocation.Location.EqualsInvariant("sitemap.xml"))
             {
+                if (progressCallback != null)
+                {
+                    progressCallback(new ExportImportProgressInfo
+                    {
+                        Description = "Creating sitemap.xml..."
+                    });
+                }
+
                 var allStoreSitemaps = LoadAllStoreSitemaps(store, baseUrl);
                 var sitemapIndexXmlRecord = new SitemapIndexXmlRecord();
                 foreach (var sitemap in allStoreSitemaps)
@@ -97,7 +106,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 var sitemap = sitemapSearchResult.Results.FirstOrDefault();
                 if (sitemap != null)
                 {
-                    LoadSitemapRecords(store, sitemap, baseUrl);
+                    LoadSitemapRecords(store, sitemap, baseUrl, progressCallback);
                     var distinctRecords = sitemap.Items.SelectMany(x => x.ItemsRecords).GroupBy(x => x.Url).Select(x => x.FirstOrDefault());
                     var sitemapItemRecords = distinctRecords.Skip((sitemapLocation.PageNumber - 1) * recordsLimitPerFile).Take(recordsLimitPerFile).ToArray();
                     var sitemapRecord = new SitemapXmlRecord
@@ -133,7 +142,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             return result;
         }
 
-        private void LoadSitemapRecords(Store store, Sitemap sitemap, string baseUrl)
+        private void LoadSitemapRecords(Store store, Sitemap sitemap, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
         {
             var recordsLimitPerFile = SettingsManager.GetValue("Sitemap.RecordsLimitPerFile", 10000);
             var filenameSeparator = SettingsManager.GetValue("Sitemap.FilenameSeparator", "--");
@@ -150,7 +159,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 //Log exceptions to prevent fail whole sitemap.xml generation
                 try
                 {
-                    recordProvider.LoadSitemapItemRecords(store, sitemap, baseUrl);
+                    recordProvider.LoadSitemapItemRecords(store, sitemap, baseUrl, progressCallback);
                 }
                 catch (Exception ex)
                 {

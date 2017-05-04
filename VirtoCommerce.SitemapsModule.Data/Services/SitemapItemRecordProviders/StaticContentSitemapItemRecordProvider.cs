@@ -7,6 +7,7 @@ using VirtoCommerce.ContentModule.Data.Services;
 using VirtoCommerce.Domain.Store.Model;
 using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
@@ -29,14 +30,18 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         private readonly Func<string, IContentBlobStorageProvider> ContentStorageProviderFactory;
         private static readonly Regex _headerRegExp = new Regex(@"(?s:^---(.*?)---)");
 
-        public virtual void LoadSitemapItemRecords(Store store, Sitemap sitemap, string baseUrl)
+        public virtual void LoadSitemapItemRecords(Store store, Sitemap sitemap, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
         {
+            var progressInfo = new ExportImportProgressInfo();
+
             var contentBasePath = string.Format("Pages/{0}", sitemap.StoreId);
             var storageProvider = ContentStorageProviderFactory(contentBasePath);
             var options = new SitemapItemOptions();
             var staticContentSitemapItems = sitemap.Items.Where(si => !string.IsNullOrEmpty(si.ObjectType) &&
                                                                       (si.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem) ||
                                                                        si.ObjectType.EqualsInvariant(SitemapItemTypes.Folder)));
+            var staticContentItemsCount = staticContentSitemapItems.Count();
+            var i = 0;
             foreach (var sitemapItem in staticContentSitemapItems)
             {
                 var urls = new List<string>();
@@ -57,6 +62,9 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 {
                     using (var stream = storageProvider.OpenRead(url))
                     {
+                        progressInfo.Description = string.Format("Generating sitemap items for static content: {0}...", i);
+
+
                         var content = stream.ReadToString();
                         var yamlHeader = ReadYamlHeader(content);
                         IEnumerable<string> permalinks = null;
@@ -67,6 +75,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                             frontMatterPermalink = new FrontMatterPermalink(permalinks.FirstOrDefault());
                         }
                         sitemapItem.ItemsRecords.AddRange(GetSitemapItemRecords(store, options, frontMatterPermalink.ToUrl().TrimStart(new[] { '/' }), baseUrl));
+                        i++;
                     }
                 }
             }
