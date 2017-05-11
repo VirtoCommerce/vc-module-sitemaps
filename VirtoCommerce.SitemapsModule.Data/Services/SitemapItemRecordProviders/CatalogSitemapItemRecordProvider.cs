@@ -53,10 +53,14 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             var categorySitemapItems = sitemap.Items.Where(x => x.ObjectType.EqualsInvariant(SitemapItemTypes.Category));
             var categoryIds = categorySitemapItems.Select(x => x.ObjectId).ToArray();
             var categories = CategoryService.GetByIds(categoryIds, CategoryResponseGroup.WithSeo | CategoryResponseGroup.WithOutlines).Where(c => !c.IsActive.HasValue || c.IsActive.Value);
-            Parallel.ForEach(categorySitemapItems, new ParallelOptions { MaxDegreeOfParallelism = 5 }, (sitemapItem =>
-            {
-                var itemsCount = 0;
 
+            var processedCount = 0;
+            var totalCount = categories.Count();
+            progressInfo.Description = $"Catalog: start generating records for {totalCount} categories";
+            progressCallback?.Invoke(progressInfo);
+
+            foreach (var sitemapItem in categorySitemapItems)
+            {       
                 var category = categories.FirstOrDefault(x => x.Id == sitemapItem.ObjectId);
                 if (category != null)
                 {
@@ -67,20 +71,13 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                         {
                             CategoryId = category.Id,
                             ResponseGroup = SearchResponseGroup.WithCategories | SearchResponseGroup.WithOutlines,
-                            Skip = 0,
+                            Skip = 0,                           
                             Take = searchBunchSize,
                             HideDirectLinkedCategories = true,
                             SearchInChildren = true
                         };
-                        var catalogSearchResult = CatalogSearchService.Search(catalogSearchCriteria);
-
-                        Interlocked.Exchange(ref itemsCount, catalogSearchResult.Categories.Count);
-                        progressInfo.Description = string.Format("Generating sitemap items for category \"{0}\": {1}...", category.Name, itemsCount);
-                        if (progressCallback != null)
-                        {
-                            progressCallback(progressInfo);
-                        }
-
+                        var catalogSearchResult = CatalogSearchService.Search(catalogSearchCriteria);                    
+                
                         foreach (var seoObj in catalogSearchResult.Categories.Where(c => !c.IsActive.HasValue || c.IsActive.Value))
                         {
                             sitemapItem.ItemsRecords.AddRange(GetSitemapItemRecords(store, categoryOptions, sitemap.UrlTemplate, baseUrl, seoObj));
@@ -103,14 +100,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                                 SearchInChildren = true,
                                 OnlyBuyable = true
                             };
-                            var productSearchResult = CatalogSearchService.Search(productSearchCriteria);
-
-                            Interlocked.Exchange(ref itemsCount, productSearchResult.Products.Count);
-                            progressInfo.Description = string.Format("Generating sitemap items for category \"{0}\": {1}...", category.Name, itemsCount);
-                            if (progressCallback != null)
-                            {
-                                progressCallback(progressInfo);
-                            }
+                            var productSearchResult = CatalogSearchService.Search(productSearchCriteria);                  
 
                             foreach (var product in productSearchResult.Products.Where(p => !p.IsActive.HasValue || p.IsActive.Value))
                             {
@@ -120,10 +110,15 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                                 }
                             }
                         });
+
+                        processedCount++;
+                        progressInfo.Description = $"Catalog: generated records for {processedCount} of {totalCount} categories";
+                        progressCallback?.Invoke(progressInfo);
+
                         sitemapItem.ItemsRecords.AddRange(itemRecords);
                     }
                 }
-            }));
+            }
 
             var productSitemapItems = sitemap.Items.Where(si => si.ObjectType.EqualsInvariant(SitemapItemTypes.Product));
             var productIds = productSitemapItems.Select(si => si.ObjectId).ToArray();

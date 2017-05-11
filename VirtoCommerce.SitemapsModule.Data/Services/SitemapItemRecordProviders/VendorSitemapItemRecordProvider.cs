@@ -36,7 +36,12 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             var vendorSitemapItems = sitemap.Items.Where(x => x.ObjectType.EqualsInvariant(SitemapItemTypes.Vendor));
             var vendorIds = vendorSitemapItems.Select(x => x.ObjectId).ToArray();
             var members = MemberService.GetByIds(vendorIds);
-            var i = 0;
+
+            var totalCount = members.Count();
+            var processedCount = 0;
+            progressInfo.Description = $"Vendor: start generating {totalCount} records for vendors";
+            progressCallback?.Invoke(progressInfo);
+
             foreach (var sitemapItem in vendorSitemapItems)
             {
                 var vendor = members.FirstOrDefault(x => x.Id == sitemapItem.ObjectId) as Vendor;
@@ -44,13 +49,9 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 {
                     sitemapItem.ItemsRecords = GetSitemapItemRecords(store, vendorOptions, sitemap.UrlTemplate, baseUrl, vendor);
 
-                    progressInfo.Description = string.Format("Generating sitemap items for vendors: {0}...", i);
-                    if (progressCallback != null)
-                    {
-                        progressCallback(progressInfo);
-                    }
-
-                    i += sitemapItem.ItemsRecords.Count;
+                    processedCount++;
+                    progressInfo.Description = $"Vendor: generated  {processedCount} of {totalCount} records for vendors";
+                    progressCallback?.Invoke(progressInfo);
                 }
             }
         }

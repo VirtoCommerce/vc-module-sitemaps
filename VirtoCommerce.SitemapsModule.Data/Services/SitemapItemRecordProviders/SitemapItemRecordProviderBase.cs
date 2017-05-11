@@ -25,9 +25,9 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         protected IUrlBuilder UrlBuilder { get; private set; }
 
         public ICollection<SitemapItemRecord> GetSitemapItemRecords(Store store, SitemapItemOptions options, string urlTemplate, string baseUrl, IEntity entity = null)
-        {            
+        {
             var auditableEntity = entity as AuditableEntity;
-         
+
             var result = new SitemapItemRecord
             {
                 ModifiedDate = auditableEntity != null ? auditableEntity.ModifiedDate.Value : DateTime.UtcNow,
@@ -58,10 +58,13 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         protected virtual string GetSemanticUrl(Store store, string language, string urlTemplate, string baseUrl, IEntity entity)
         {
             var toolsStore = store.ToToolsStore(baseUrl);
-                    
-            var seoSupport = entity as ISeoSupport;
-            var realativeUrl = urlTemplate;
 
+            var seoSupport = entity as ISeoSupport;
+            //remove unused {language} template
+            urlTemplate = urlTemplate.Replace("{language}/", string.Empty);
+            urlTemplate = urlTemplate.Replace("{language}", string.Empty);
+
+            var slug = string.Empty;
             if (seoSupport != null)
             {
                 var hasOutlines = entity as IHasOutlines;
@@ -69,12 +72,12 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 seoInfos = seoInfos.GetBestMatchingSeoInfos(toolsStore.Id, toolsStore.DefaultLanguage, language, null);
                 if (!seoInfos.IsNullOrEmpty())
                 {
-                    realativeUrl = seoInfos.Select(x => x.SemanticUrl).FirstOrDefault();
+                    slug = seoInfos.Select(x => x.SemanticUrl).FirstOrDefault();
                 }
                 if (hasOutlines != null && !hasOutlines.Outlines.IsNullOrEmpty())
                 {
                     var outlines = hasOutlines.Outlines.Select(x => x.JsonConvert<Tools.Models.Outline>());
-                    realativeUrl = outlines.GetSeoPath(toolsStore, language, realativeUrl);
+                    slug = outlines.GetSeoPath(toolsStore, language, slug);
                 }
             }
             var toolsContext = new Tools.Models.UrlBuilderContext
@@ -83,9 +86,10 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 CurrentLanguage = language,
                 CurrentStore = toolsStore
             };
-            return UrlBuilder.BuildStoreUrl(toolsContext, realativeUrl);
-        }               
-
-       
+            //Replace {slug} template in passed url template
+            urlTemplate = urlTemplate.Replace("{slug}", slug);
+            var result = UrlBuilder.BuildStoreUrl(toolsContext, urlTemplate);
+            return result;
+        }
     }
 }

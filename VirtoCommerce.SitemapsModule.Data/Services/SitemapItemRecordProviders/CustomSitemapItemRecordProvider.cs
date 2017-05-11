@@ -27,18 +27,17 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             var sitemapItemRecords = new List<SitemapItemRecord>();
             var customOptions = new SitemapItemOptions();
             var customSitemapItems = sitemap.Items.Where(si => si.ObjectType.EqualsInvariant(SitemapItemTypes.Custom));
-            var customSitemapItemsCount = customSitemapItems.Count();
-            var i = 0;
+            var processedCount = 0;
+            var totalCount = customSitemapItems.Count();
+            progressInfo.Description = $"Custom: start generating {totalCount} custom records";
+            progressCallback?.Invoke(progressInfo);
+
             foreach (var customSitemapItem in customSitemapItems)
             {
-                progressInfo.Description = string.Format("Generating sitemap items for custom entities: {0}", i);
-                if (progressCallback != null)
-                {
-                    progressCallback(progressInfo);
-                }
-
                 customSitemapItem.ItemsRecords = GetSitemapItemRecords(store, customOptions, customSitemapItem.UrlTemplate, baseUrl);
-                i++;
+                processedCount++;
+                progressInfo.Description = $"Custom: generated {processedCount} of {totalCount} custom records";
+                progressCallback?.Invoke(progressInfo);
             }
         }
     }

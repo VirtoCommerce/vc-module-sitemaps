@@ -42,7 +42,7 @@
                 executeMethod: function () {
                     blade.selectNode({
                         location: 'sitemap/',
-                        urlTemplate: '{language}/{slug}',
+                        urlTemplate: '{slug}',
                         storeId: blade.store.id,
                         items: []
                     }, true);

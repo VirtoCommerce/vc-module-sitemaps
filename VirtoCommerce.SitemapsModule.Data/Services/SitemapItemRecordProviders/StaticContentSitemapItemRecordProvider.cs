@@ -40,8 +40,11 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             var staticContentSitemapItems = sitemap.Items.Where(si => !string.IsNullOrEmpty(si.ObjectType) &&
                                                                       (si.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem) ||
                                                                        si.ObjectType.EqualsInvariant(SitemapItemTypes.Folder)));
-            var staticContentItemsCount = staticContentSitemapItems.Count();
-            var i = 0;
+            var totalCount = staticContentSitemapItems.Count();
+            var processedCount = 0;
+            progressInfo.Description = $"Content: start generating records for {totalCount} pages";
+            progressCallback?.Invoke(progressInfo);
+
             foreach (var sitemapItem in staticContentSitemapItems)
             {
                 var urls = new List<string>();
@@ -62,9 +65,6 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 {
                     using (var stream = storageProvider.OpenRead(url))
                     {
-                        progressInfo.Description = string.Format("Generating sitemap items for static content: {0}...", i);
-
-
                         var content = stream.ReadToString();
                         var yamlHeader = ReadYamlHeader(content);
                         IEnumerable<string> permalinks = null;
@@ -75,7 +75,10 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                             frontMatterPermalink = new FrontMatterPermalink(permalinks.FirstOrDefault());
                         }
                         sitemapItem.ItemsRecords.AddRange(GetSitemapItemRecords(store, options, frontMatterPermalink.ToUrl().TrimStart(new[] { '/' }), baseUrl));
-                        i++;
+
+                        processedCount++;
+                        progressInfo.Description = $"Content: generated records for {processedCount} of {totalCount} pages";
+                        progressCallback?.Invoke(progressInfo);
                     }
                 }
             }
