@@ -1,57 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Store.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
+using VirtoCommerce.SitemapsModule.Data.Converters;
+using VirtoCommerce.SitemapsModule.Data.Extensions;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 {
     public abstract class SitemapItemRecordProviderBase
     {
-        public SitemapItemRecordProviderBase(ISettingsManager settingsManager, ISitemapUrlBuilder sitemapUrlBuilder)
+        public SitemapItemRecordProviderBase(ISettingsManager settingsManager, ISitemapUrlBuilder urlBuilider)
         {
             SettingsManager = settingsManager;
-            SitemapUrlBuilder = sitemapUrlBuilder;
+            UrlBuilder = urlBuilider;
         }
 
         protected ISettingsManager SettingsManager { get; private set; }
-        protected ISitemapUrlBuilder SitemapUrlBuilder { get; private set; }
+        protected ISitemapUrlBuilder UrlBuilder { get; private set; }
 
-        public ICollection<SitemapItemRecord> GetSitemapItemRecords(SitemapItemOptions options, string urlTemplate, string baseUrl, ISeoSupport seoSupportObj = null)
+        public ICollection<SitemapItemRecord> GetSitemapItemRecords(Store store, SitemapItemOptions options, string urlTemplate, string baseUrl, IEntity entity = null)
         {
-            var sitemapItemRecords = new List<SitemapItemRecord>();
-            if (seoSupportObj != null)
-            {
-                var seoInfos = seoSupportObj.SeoInfos.Where(x => x.IsActive).ToList();
-                foreach (var seoInfo in seoInfos)
-                {
-                    var record = GetNewRecord(options, urlTemplate, baseUrl);
-                    record.Url = SitemapUrlBuilder.CreateAbsoluteUrl(urlTemplate, baseUrl, seoInfo.LanguageCode, seoInfo.SemanticUrl);
-                    sitemapItemRecords.Add(record);
-                }
-            }
-            else
-            {
-                sitemapItemRecords.Add(GetNewRecord(options, urlTemplate, baseUrl));
-            }
+            var auditableEntity = entity as AuditableEntity;
 
-            return sitemapItemRecords;
-        }
-
-        private SitemapItemRecord GetNewRecord(SitemapItemOptions options, string urlTemplate, string baseUrl, ISeoSupport seoSupportObj = null)
-        {
-            var auditableEntity = seoSupportObj as AuditableEntity;
-            return new SitemapItemRecord
+            var result = new SitemapItemRecord
             {
                 ModifiedDate = auditableEntity != null ? auditableEntity.ModifiedDate.Value : DateTime.UtcNow,
                 Priority = options.Priority,
                 UpdateFrequency = options.UpdateFrequency,
-                Url = SitemapUrlBuilder.CreateAbsoluteUrl(urlTemplate, baseUrl)
+                Url = UrlBuilder.BuildStoreUrl(store, store.DefaultLanguage, urlTemplate, baseUrl, entity)
             };
-        }
+            var seoSupport = entity as ISeoSupport;
+            if (seoSupport != null)
+            {
+                foreach (var seoInfo in seoSupport.SeoInfos.Where(x => x.IsActive))
+                {
+                    if (store.Languages.Contains(seoInfo.LanguageCode) && !store.DefaultLanguage.EqualsInvariant(seoInfo.LanguageCode))
+                    {
+                        var alternate = new SitemapItemAlternateLinkRecord
+                        {
+                            Language = seoInfo.LanguageCode,
+                            Type = "alternate",
+                            Url = UrlBuilder.BuildStoreUrl(store, seoInfo.LanguageCode, urlTemplate, baseUrl, entity)
+                        };
+                        result.Alternates.Add(alternate);
+                    }
+                }
+            }
+            return new[] { result }.ToList();
+        }       
     }
 }

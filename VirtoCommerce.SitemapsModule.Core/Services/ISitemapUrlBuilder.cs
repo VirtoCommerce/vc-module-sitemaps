@@ -1,7 +1,10 @@
-﻿namespace VirtoCommerce.SitemapsModule.Core.Services
+﻿using VirtoCommerce.Domain.Store.Model;
+using VirtoCommerce.Platform.Core.Common;
+
+namespace VirtoCommerce.SitemapsModule.Core.Services
 {
     public interface ISitemapUrlBuilder
     {
-        string CreateAbsoluteUrl(string urlTemplate, string baseUrl, string language = null, string semanticUrl = null);
+        string BuildStoreUrl(Store store, string language, string urlTemplate, string baseUrl, IEntity entity = null);
     }
 }

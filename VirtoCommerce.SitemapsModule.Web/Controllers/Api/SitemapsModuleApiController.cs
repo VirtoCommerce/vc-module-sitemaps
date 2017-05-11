@@ -4,16 +4,22 @@ using System.IO.Packaging;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using Hangfire;
+using Omu.ValueInjecter;
 using VirtoCommerce.Domain.Commerce.Model.Search;
 using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.ExportImport;
+using VirtoCommerce.Platform.Core.PushNotifications;
+using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Web.Security;
+using VirtoCommerce.Platform.Data.Common;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
 using VirtoCommerce.SitemapsModule.Data.Services;
+using VirtoCommerce.SitemapsModule.Web.Model.PushNotifications;
 using VirtoCommerce.SitemapsModule.Web.Security;
 
 namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
@@ -25,15 +31,27 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         private readonly ISitemapService _sitemapService;
         private readonly ISitemapItemService _sitemapItemService;
         private readonly ISitemapXmlGenerator _sitemapXmlGenerator;
+        private readonly IUserNameResolver _userNameResolver;
+        private readonly IPushNotificationManager _notifier;
+        private readonly IBlobStorageProvider _blobStorageProvider;
+        private readonly IBlobUrlResolver _blobUrlResolver;
 
         public SitemapsModuleApiController(
             ISitemapService sitemapService,
             ISitemapItemService sitemapItemService,
-            ISitemapXmlGenerator sitemapXmlGenerator)
+            ISitemapXmlGenerator sitemapXmlGenerator,
+            IUserNameResolver userNameResolver,
+            IPushNotificationManager notifier,
+            IBlobStorageProvider blobStorageProvider,
+            IBlobUrlResolver blobUrlResolver)
         {
             _sitemapService = sitemapService;
             _sitemapItemService = sitemapItemService;
             _sitemapXmlGenerator = sitemapXmlGenerator;
+            _userNameResolver = userNameResolver;
+            _notifier = notifier;
+            _blobStorageProvider = blobStorageProvider;
+            _blobUrlResolver = blobUrlResolver;
         }
 
         [HttpPost]
@@ -189,7 +207,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
         [HttpGet]
         [Route("generate")]
-        [SwaggerFileResponseAttribute]
+        [SwaggerFileResponse]
         public HttpResponseMessage GenerateSitemap(string storeId, string baseUrl, string sitemapUrl)
         {
             var stream = _sitemapXmlGenerator.GenerateSitemapXml(storeId, baseUrl, sitemapUrl);
@@ -202,40 +220,71 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
         [HttpGet]
         [Route("download")]
-        [SwaggerFileResponseAttribute]
-        public HttpResponseMessage DownloadSitemapsZip(string storeId, string baseUrl)
+        [ResponseType(typeof(SitemapDownloadNotification))]
+        public IHttpActionResult DownloadSitemap(string storeId, string baseUrl)
         {
-            var zipPackageName = "sitemap.zip";
-
-            var resultStream = new MemoryStream();
-
-            using (var zipPackage = ZipPackage.Open(resultStream, FileMode.Create))
+            var notification = new SitemapDownloadNotification(_userNameResolver.GetCurrentUserName())
             {
-                CreateSitemapPart(zipPackage, storeId, baseUrl, "sitemap.xml");
+                Title = "Download sitemaps",
+                Description = "Processing download sitemaps..."
+            };
 
-                var sitemapUrls = _sitemapXmlGenerator.GetSitemapUrls(storeId);
-                foreach (var sitemapUrl in sitemapUrls)
+            _notifier.Upsert(notification);
+
+            BackgroundJob.Enqueue(() => BackgroundDownload(storeId, baseUrl, notification));
+
+            return Ok(notification);
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public void BackgroundDownload(string storeId, string baseUrl, SitemapDownloadNotification notification)
+        {
+            Action<ExportImportProgressInfo> progressCallback = c =>
+            {
+                notification.InjectFrom(c);
+                _notifier.Upsert(notification);
+            };
+
+            try
+            {
+                var blobRelativeUrl = string.Format("temp/sitemap-{0}.zip", storeId);
+                using (var blobStream = _blobStorageProvider.OpenWrite(blobRelativeUrl))
                 {
-                    if (!string.IsNullOrEmpty(sitemapUrl))
+                    using (var zipPackage = ZipPackage.Open(blobStream, FileMode.Create))
                     {
-                        CreateSitemapPart(zipPackage, storeId, baseUrl, sitemapUrl);
+                        CreateSitemapPart(zipPackage, storeId, baseUrl, "sitemap.xml", progressCallback);
+
+                        var sitemapUrls = _sitemapXmlGenerator.GetSitemapUrls(storeId);
+                        foreach (var sitemapUrl in sitemapUrls)
+                        {
+                            if (!string.IsNullOrEmpty(sitemapUrl))
+                            {
+                                CreateSitemapPart(zipPackage, storeId, baseUrl, sitemapUrl, progressCallback);
+                            }
+                        }
+
+                        notification.DownloadUrl = _blobUrlResolver.GetAbsoluteUrl(blobRelativeUrl);
+                        notification.Description = "Sitemap download finished";
                     }
                 }
             }
-
-            resultStream.Seek(0, SeekOrigin.Begin);
-
-            var result = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(resultStream) };
-            result.Content.Headers.ContentType = new MediaTypeHeaderValue(MimeMapping.GetMimeMapping(zipPackageName));
-
-            return result;
+            catch (Exception exception)
+            {
+                notification.Description = "Sitemap download failed";
+                notification.Errors.Add(exception.ExpandExceptionMessage());
+            }
+            finally
+            {
+                notification.Finished = DateTime.UtcNow;
+                _notifier.Upsert(notification);
+            }
         }
 
-        private void CreateSitemapPart(System.IO.Packaging.Package package, string storeId, string baseUrl, string sitemapUrl)
+        private void CreateSitemapPart(Package package, string storeId, string baseUrl, string sitemapUrl, Action<ExportImportProgressInfo> progressCallback)
         {
             var uri = PackUriHelper.CreatePartUri(new Uri(sitemapUrl, UriKind.Relative));
             var sitemapPart = package.CreatePart(uri, System.Net.Mime.MediaTypeNames.Text.Xml, CompressionOption.Normal);
-            var stream = _sitemapXmlGenerator.GenerateSitemapXml(storeId, baseUrl, sitemapUrl);
+            var stream = _sitemapXmlGenerator.GenerateSitemapXml(storeId, baseUrl, sitemapUrl, progressCallback);
             var sitemapPartStream = sitemapPart.GetStream();
             stream.CopyTo(sitemapPartStream);
         }

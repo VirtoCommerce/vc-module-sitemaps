@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using VirtoCommerce.Domain.Store.Model;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.SitemapsModule.Core.Models
@@ -23,7 +22,5 @@ namespace VirtoCommerce.SitemapsModule.Core.Models
         public int TotalItemsCount { get; set; }
 
         public ICollection<string> PagedLocations { get; set; }
-
-
     }
 }

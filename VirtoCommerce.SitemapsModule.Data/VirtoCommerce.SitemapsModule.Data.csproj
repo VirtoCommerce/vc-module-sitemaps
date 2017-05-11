@@ -129,6 +129,9 @@
       <HintPath>..\packages\VirtoCommerce.Platform.Data.Azure.2.12.5\lib\net461\VirtoCommerce.Platform.Data.Azure.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="VirtoCommerce.Tools, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VirtoCommerce.Tools.1.2.0\lib\net461\VirtoCommerce.Tools.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="YamlDotNet, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\YamlDotNet.4.1.0\lib\net35\YamlDotNet.dll</HintPath>
@@ -139,6 +142,8 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Converters\ToolsConverter.cs" />
+    <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Migrations\201612120848380_Initial.cs" />
     <Compile Include="Migrations\201612120848380_Initial.Designer.cs">
       <DependentUpon>201612120848380_Initial.cs</DependentUpon>
@@ -148,6 +153,7 @@
     <Compile Include="Models\SitemapItemEntity.cs" />
     <Compile Include="Models\Xml\SitemapIndexItemXmlRecord.cs" />
     <Compile Include="Models\Xml\SitemapIndexXmlRecord.cs" />
+    <Compile Include="Models\Xml\SitemapItemAlternateLinkXmlRecord.cs" />
     <Compile Include="Models\Xml\SitemapItemXmlRecord.cs" />
     <Compile Include="Models\Xml\SitemapXmlRecord.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

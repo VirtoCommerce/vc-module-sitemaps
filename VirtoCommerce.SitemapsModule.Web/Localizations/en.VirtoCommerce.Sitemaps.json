@@ -30,7 +30,7 @@
             "sitemapIndexErrorMessage": "Please avoid using \"sitemap.xml\" as sitemap location",
             "sitemapSitemapLocationExistErrorMessage": "This sitemap location is already used",
             "labelSitemapItemsLocation": "Sitemap items location",
-            "descriptionSitemapItemsLocation": "To generate a sitemap item URL can be used the next patterns: {language} - will be replaced with language code (i.e. en-US), {slug} - will be replaced with SEO semantic URL part",
+            "descriptionSitemapItemsLocation": "To generate a sitemap item URL can be used the next patterns: {slug} - will be replaced with SEO semantic URL part constructed depend on store SEO 'Links settings' rules. E.g /my-page/{slug}",
             "labelSitemapItems": "Sitemap items"
         },
         "gridHeaders": {
@@ -85,6 +85,17 @@
         "title": "Add static content items",
         "toolbar": {
           "addSelected": "Add selected"
+        }
+      },
+      "download": {
+        "title": "Download sitemap",
+        "labels": {
+          "start": "Start",
+          "end": "End",
+          "total": "Total",
+          "processed": "Processed",
+          "errors-count": "Errors count",
+          "errors": "Errors"
         }
       }
     },

@@ -4,12 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using VirtoCommerce.ContentModule.Data.Services;
-using VirtoCommerce.ContentModule.Utils;
+using VirtoCommerce.Domain.Store.Model;
 using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
+using VirtoCommerce.Tools;
 using YamlDotNet.RepresentationModel;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
@@ -17,10 +19,10 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
     public class StaticContentSitemapItemRecordProvider : SitemapItemRecordProviderBase, ISitemapItemRecordProvider
     {
         public StaticContentSitemapItemRecordProvider(
-            ISitemapUrlBuilder sitemapUrlBuilder,
+            ISitemapUrlBuilder urlBuilder,
             ISettingsManager settingsManager,
             Func<string, IContentBlobStorageProvider> contentStorageProviderFactory)
-            : base(settingsManager, sitemapUrlBuilder)
+            : base(settingsManager, urlBuilder)
         {
             ContentStorageProviderFactory = contentStorageProviderFactory;
         }
@@ -28,14 +30,21 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         private readonly Func<string, IContentBlobStorageProvider> ContentStorageProviderFactory;
         private static readonly Regex _headerRegExp = new Regex(@"(?s:^---(.*?)---)");
 
-        public virtual void LoadSitemapItemRecords(Sitemap sitemap, string baseUrl)
+        public virtual void LoadSitemapItemRecords(Store store, Sitemap sitemap, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
         {
+            var progressInfo = new ExportImportProgressInfo();
+
             var contentBasePath = string.Format("Pages/{0}", sitemap.StoreId);
             var storageProvider = ContentStorageProviderFactory(contentBasePath);
             var options = new SitemapItemOptions();
             var staticContentSitemapItems = sitemap.Items.Where(si => !string.IsNullOrEmpty(si.ObjectType) &&
                                                                       (si.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem) ||
                                                                        si.ObjectType.EqualsInvariant(SitemapItemTypes.Folder)));
+            var totalCount = staticContentSitemapItems.Count();
+            var processedCount = 0;
+            progressInfo.Description = $"Content: start generating records for {totalCount} pages";
+            progressCallback?.Invoke(progressInfo);
+
             foreach (var sitemapItem in staticContentSitemapItems)
             {
                 var urls = new List<string>();
@@ -52,6 +61,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                         urls.Add(item.RelativeUrl);
                     }
                 }
+                totalCount = urls.Count();
                 foreach (var url in urls)
                 {
                     using (var stream = storageProvider.OpenRead(url))
@@ -65,7 +75,11 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                         {
                             frontMatterPermalink = new FrontMatterPermalink(permalinks.FirstOrDefault());
                         }
-                        sitemapItem.ItemsRecords.AddRange(GetSitemapItemRecords(options, frontMatterPermalink.ToUrl().TrimStart(new[] { '/' }), baseUrl));
+                        sitemapItem.ItemsRecords.AddRange(GetSitemapItemRecords(store, options, frontMatterPermalink.ToUrl().TrimStart(new[] { '/' }), baseUrl));
+
+                        processedCount++;
+                        progressInfo.Description = $"Content: generated records for {processedCount} of {totalCount} pages";
+                        progressCallback?.Invoke(progressInfo);
                     }
                 }
             }

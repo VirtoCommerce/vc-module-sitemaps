@@ -7,6 +7,7 @@
         removeSitemap: { method: 'DELETE' },
         searchSitemapItems: { method: 'POST', url: 'api/sitemaps/items/search' },
         addSitemapItems: { method: 'POST', url: 'api/sitemaps/:sitemapId/items' },
-        removeSitemapItems: { method: 'DELETE', url: 'api/sitemaps/:sitemapId/items' }
+        removeSitemapItems: { method: 'DELETE', url: 'api/sitemaps/:sitemapId/items' },
+        download: { method: 'GET', url: 'api/sitemaps/download' }
     });
 }]);
