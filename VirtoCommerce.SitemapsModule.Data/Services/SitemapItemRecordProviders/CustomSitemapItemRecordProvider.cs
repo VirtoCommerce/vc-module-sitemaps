@@ -14,7 +14,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
     public class CustomSitemapItemRecordProvider : SitemapItemRecordProviderBase, ISitemapItemRecordProvider
     {
         public CustomSitemapItemRecordProvider(
-            IUrlBuilder urlBuilder,
+            ISitemapUrlBuilder urlBuilder,
             ISettingsManager settingsManager)
             : base(settingsManager, urlBuilder)
         {

@@ -1,10 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using VirtoCommerce.Domain.Catalog.Model;
+using VirtoCommerce.Domain.Commerce.Model;
+using VirtoCommerce.Domain.Store.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
+using VirtoCommerce.SitemapsModule.Data.Converters;
+using VirtoCommerce.SitemapsModule.Data.Extensions;
 using VirtoCommerce.Tools;
-using VirtoCommerce.Tools.Models;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services
 {
@@ -17,57 +22,43 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
 
         protected IUrlBuilder UrlBuilder { get; private set; }
 
-        public virtual string CreateAbsoluteUrl(Domain.Store.Model.Store store, string urlTemplate, string baseUrl, string language = null, string semanticUrl = null)
+        #region ISitemapUrlBuilder members
+        public virtual string BuildStoreUrl(Store store, string language, string urlTemplate, string baseUrl, IEntity entity = null)
         {
-            if (urlTemplate.IsAbsoluteUrl())
+            var toolsStore = store.ToToolsStore(baseUrl);
+
+            var seoSupport = entity as ISeoSupport;
+
+            //remove unused {language} template
+            urlTemplate = urlTemplate.Replace(UrlTemplatePatterns.Language, string.Empty);
+
+            var slug = string.Empty;
+            if (seoSupport != null)
             {
-                return urlTemplate;
-            }
-
-            var url = urlTemplate;
-            if (!string.IsNullOrEmpty(baseUrl))
-            {
-                url = string.Format("{0}/{1}", baseUrl.TrimEnd('/'), urlTemplate);
-            }
-
-            url = url.Replace(UrlTemplatePatterns.Language, language);
-            url = url.Replace(UrlTemplatePatterns.Slug, semanticUrl);
-
-            var urlBuilderStore = new Store
-            {
-                Catalog = store.Catalog,
-                DefaultLanguage = store.DefaultLanguage,
-                Id = store.Id,
-                SecureUrl = store.SecureUrl,
-                SeoLinksType = GetSeoLinksType(store)
-            };
-
-            var urlBuilderContext = new UrlBuilderContext
-            {
-                AllStores = new List<Store> { urlBuilderStore },
-                CurrentLanguage = language,
-                CurrentStore = urlBuilderStore,
-                CurrentUrl = url
-            };
-            var result = UrlBuilder.BuildStoreUrl(urlBuilderContext, url);
-
-            return result;
-        }
-
-        private SeoLinksType GetSeoLinksType(Domain.Store.Model.Store store)
-        {
-            var seoLinksType = SeoLinksType.Long;
-
-            if (store.Settings != null)
-            {
-                var seoLinksTypeSetting = store.Settings.FirstOrDefault(s => s.Name == "Stores.SeoLinksType");
-                if (seoLinksTypeSetting != null)
+                var hasOutlines = entity as IHasOutlines;
+                var seoInfos = seoSupport.SeoInfos.Select(x => x.JsonConvert<Tools.Models.SeoInfo>());
+                seoInfos = seoInfos.GetBestMatchingSeoInfos(toolsStore.Id, toolsStore.DefaultLanguage, language, null);
+                if (!seoInfos.IsNullOrEmpty())
                 {
-                    seoLinksType = EnumUtility.SafeParse(seoLinksTypeSetting.Value, SeoLinksType.Collapsed);
+                    slug = seoInfos.Select(x => x.SemanticUrl).FirstOrDefault();
+                }
+                if (hasOutlines != null && !hasOutlines.Outlines.IsNullOrEmpty())
+                {
+                    var outlines = hasOutlines.Outlines.Select(x => x.JsonConvert<Tools.Models.Outline>());
+                    slug = outlines.GetSeoPath(toolsStore, language, slug);
                 }
             }
-
-            return seoLinksType;
-        }
+            var toolsContext = new Tools.Models.UrlBuilderContext
+            {
+                AllStores = new[] { toolsStore },
+                CurrentLanguage = language,
+                CurrentStore = toolsStore
+            };
+            //Replace {slug} template in passed url template
+            urlTemplate = urlTemplate.Replace(UrlTemplatePatterns.Slug, slug);
+            var result = UrlBuilder.BuildStoreUrl(toolsContext, urlTemplate);
+            return result;
+        } 
+        #endregion
     }
 }

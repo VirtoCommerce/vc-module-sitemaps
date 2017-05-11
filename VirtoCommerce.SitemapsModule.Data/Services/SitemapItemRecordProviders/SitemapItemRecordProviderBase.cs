@@ -7,22 +7,22 @@ using VirtoCommerce.Domain.Store.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SitemapsModule.Core.Models;
+using VirtoCommerce.SitemapsModule.Core.Services;
 using VirtoCommerce.SitemapsModule.Data.Converters;
 using VirtoCommerce.SitemapsModule.Data.Extensions;
-using VirtoCommerce.Tools;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 {
     public abstract class SitemapItemRecordProviderBase
     {
-        public SitemapItemRecordProviderBase(ISettingsManager settingsManager, IUrlBuilder urlBuilider)
+        public SitemapItemRecordProviderBase(ISettingsManager settingsManager, ISitemapUrlBuilder urlBuilider)
         {
             SettingsManager = settingsManager;
             UrlBuilder = urlBuilider;
         }
 
         protected ISettingsManager SettingsManager { get; private set; }
-        protected IUrlBuilder UrlBuilder { get; private set; }
+        protected ISitemapUrlBuilder UrlBuilder { get; private set; }
 
         public ICollection<SitemapItemRecord> GetSitemapItemRecords(Store store, SitemapItemOptions options, string urlTemplate, string baseUrl, IEntity entity = null)
         {
@@ -33,7 +33,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 ModifiedDate = auditableEntity != null ? auditableEntity.ModifiedDate.Value : DateTime.UtcNow,
                 Priority = options.Priority,
                 UpdateFrequency = options.UpdateFrequency,
-                Url = GetSemanticUrl(store, store.DefaultLanguage, urlTemplate, baseUrl, entity)
+                Url = UrlBuilder.BuildStoreUrl(store, store.DefaultLanguage, urlTemplate, baseUrl, entity)
             };
             var seoSupport = entity as ISeoSupport;
             if (seoSupport != null)
@@ -46,50 +46,13 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                         {
                             Language = seoInfo.LanguageCode,
                             Type = "alternate",
-                            Url = GetSemanticUrl(store, seoInfo.LanguageCode, urlTemplate, baseUrl, entity)
+                            Url = UrlBuilder.BuildStoreUrl(store, seoInfo.LanguageCode, urlTemplate, baseUrl, entity)
                         };
                         result.Alternates.Add(alternate);
                     }
                 }
             }
             return new[] { result }.ToList();
-        }
-
-        protected virtual string GetSemanticUrl(Store store, string language, string urlTemplate, string baseUrl, IEntity entity)
-        {
-            var toolsStore = store.ToToolsStore(baseUrl);
-
-            var seoSupport = entity as ISeoSupport;
-            //remove unused {language} template
-            urlTemplate = urlTemplate.Replace("{language}/", string.Empty);
-            urlTemplate = urlTemplate.Replace("{language}", string.Empty);
-
-            var slug = string.Empty;
-            if (seoSupport != null)
-            {
-                var hasOutlines = entity as IHasOutlines;
-                var seoInfos = seoSupport.SeoInfos.Select(x => x.JsonConvert<Tools.Models.SeoInfo>());
-                seoInfos = seoInfos.GetBestMatchingSeoInfos(toolsStore.Id, toolsStore.DefaultLanguage, language, null);
-                if (!seoInfos.IsNullOrEmpty())
-                {
-                    slug = seoInfos.Select(x => x.SemanticUrl).FirstOrDefault();
-                }
-                if (hasOutlines != null && !hasOutlines.Outlines.IsNullOrEmpty())
-                {
-                    var outlines = hasOutlines.Outlines.Select(x => x.JsonConvert<Tools.Models.Outline>());
-                    slug = outlines.GetSeoPath(toolsStore, language, slug);
-                }
-            }
-            var toolsContext = new Tools.Models.UrlBuilderContext
-            {
-                AllStores = new[] { toolsStore },
-                CurrentLanguage = language,
-                CurrentStore = toolsStore
-            };
-            //Replace {slug} template in passed url template
-            urlTemplate = urlTemplate.Replace("{slug}", slug);
-            var result = UrlBuilder.BuildStoreUrl(toolsContext, urlTemplate);
-            return result;
-        }
+        }       
     }
 }

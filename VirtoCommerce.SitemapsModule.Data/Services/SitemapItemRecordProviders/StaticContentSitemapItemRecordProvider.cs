@@ -19,7 +19,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
     public class StaticContentSitemapItemRecordProvider : SitemapItemRecordProviderBase, ISitemapItemRecordProvider
     {
         public StaticContentSitemapItemRecordProvider(
-            IUrlBuilder urlBuilder,
+            ISitemapUrlBuilder urlBuilder,
             ISettingsManager settingsManager,
             Func<string, IContentBlobStorageProvider> contentStorageProviderFactory)
             : base(settingsManager, urlBuilder)

@@ -21,7 +21,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             ICategoryService categoryService,
             IItemService itemService,
             ICatalogSearchService catalogSearchService,
-            IUrlBuilder urlBuilder,
+            ISitemapUrlBuilder urlBuilder,
             ISettingsManager settingsManager)
             : base(settingsManager, urlBuilder)
         {
