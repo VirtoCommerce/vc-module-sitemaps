@@ -61,6 +61,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                         urls.Add(item.RelativeUrl);
                     }
                 }
+                totalCount = urls.Count();
                 foreach (var url in urls)
                 {
                     using (var stream = storageProvider.OpenRead(url))
