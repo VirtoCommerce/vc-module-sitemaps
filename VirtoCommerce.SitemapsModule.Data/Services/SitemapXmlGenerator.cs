@@ -92,7 +92,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 {
                     var xmlSiteMapRecords = sitemap.PagedLocations.Select(location => new SitemapIndexItemXmlRecord
                     {
-                        ModifiedDate = sitemap.Items.Select(x => x.ModifiedDate).OrderByDescending(x => x).FirstOrDefault(),
+                        ModifiedDate = sitemap.Items.Select(x => x.ModifiedDate).OrderByDescending(x => x).FirstOrDefault()?.ToString("yyyy-MM-dd"),
                         Url = SitemapUrlBuilder.BuildStoreUrl(store, store.DefaultLanguage, location, baseUrl)
                     }).ToList();
                     sitemapIndexXmlRecord.Sitemaps.AddRange(xmlSiteMapRecords);

@@ -13,7 +13,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Models.Xml
         public string Url { get; set; }
 
         [XmlElement("lastmod")]
-        public DateTime ModifiedDate { get; set; }
+        public string ModifiedDate { get; set; }
 
         [XmlElement("changefreq")]
         public string UpdateFrequency { get; set; }
@@ -31,7 +31,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Models.Xml
                 throw new ArgumentNullException("coreModel");
             }
 
-            ModifiedDate = coreModel.ModifiedDate;
+            ModifiedDate = coreModel.ModifiedDate.ToString("yyyy-MM-dd");
             Priority = coreModel.Priority;
             UpdateFrequency = coreModel.UpdateFrequency;
             Url = coreModel.Url;
