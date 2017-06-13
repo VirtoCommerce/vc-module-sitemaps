@@ -10,6 +10,6 @@ namespace VirtoCommerce.SitemapsModule.Data.Models.Xml
         public string Url { get; set; }
 
         [XmlElement("lastmod")]
-        public DateTime? ModifiedDate { get; set; }
+        public string ModifiedDate { get; set; }
     }
 }
