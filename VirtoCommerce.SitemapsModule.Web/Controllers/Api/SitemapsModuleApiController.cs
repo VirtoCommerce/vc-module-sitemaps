@@ -2,6 +2,7 @@
 using System.IO;
 using System.IO.Packaging;
 using System.Net;
+using System.Web.Hosting;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web.Http;
@@ -247,10 +248,18 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
             try
             {
-                var blobRelativeUrl = string.Format("temp/sitemap-{0}.zip", storeId);
-                using (var blobStream = _blobStorageProvider.OpenWrite(blobRelativeUrl))
+                var relativeUrl = $"tmp/sitemap-{storeId}.zip";
+                var localTmpFolder = HostingEnvironment.MapPath("~/App_Data/Uploads/tmp");
+                var localTmpPath = Path.Combine(localTmpFolder, $"sitemap-{storeId}.zip");
+                if (!Directory.Exists(localTmpFolder))
                 {
-                    using (var zipPackage = ZipPackage.Open(blobStream, FileMode.Create))
+                    Directory.CreateDirectory(localTmpFolder);
+                }
+
+                //Import first to local tmp folder because Azure blob storage doesn't support some special file access mode 
+                using (var stream = File.Open(localTmpPath, FileMode.OpenOrCreate))
+                {
+                    using (var zipPackage = ZipPackage.Open(stream, FileMode.Create))
                     {
                         CreateSitemapPart(zipPackage, storeId, baseUrl, "sitemap.xml", progressCallback);
 
@@ -261,11 +270,16 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                             {
                                 CreateSitemapPart(zipPackage, storeId, baseUrl, sitemapUrl, progressCallback);
                             }
-                        }
-
-                        notification.DownloadUrl = _blobUrlResolver.GetAbsoluteUrl(blobRelativeUrl);
-                        notification.Description = "Sitemap download finished";
+                        }                      
                     }
+                }
+                //Copy export data to blob provider for get public download url
+                using (var localStream = File.Open(localTmpPath, FileMode.Open))
+                using (var blobStream = _blobStorageProvider.OpenWrite(relativeUrl))
+                {
+                    localStream.CopyTo(blobStream);
+                    notification.DownloadUrl = _blobUrlResolver.GetAbsoluteUrl(relativeUrl);
+                    notification.Description = "Sitemap download finished";
                 }
             }
             catch (Exception exception)
