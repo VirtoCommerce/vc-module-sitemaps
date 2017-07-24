@@ -24,6 +24,9 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
         [StringLength(256)]
         public string UrlTemplate { get; set; }
 
+        [StringLength(256)]
+        public string AcceptedFilenameExtensions { get; set; }
+
         public virtual ObservableCollection<SitemapItemEntity> Items { get; set; }
 
         public virtual Sitemap ToModel(Sitemap sitemap)
@@ -41,6 +44,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
             sitemap.ModifiedDate = ModifiedDate;
             sitemap.StoreId = StoreId;
             sitemap.UrlTemplate = UrlTemplate;
+            sitemap.AcceptedFilenameExtensions = AcceptedFilenameExtensions;
 
             return sitemap;
         }
@@ -62,6 +66,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
             Filename = sitemap.Location;
             StoreId = sitemap.StoreId;
             UrlTemplate = sitemap.UrlTemplate;
+            AcceptedFilenameExtensions = sitemap.AcceptedFilenameExtensions;
 
             return this;
         }
@@ -76,6 +81,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
             sitemapEntity.Filename = Filename;
             sitemapEntity.StoreId = StoreId;
             sitemapEntity.UrlTemplate = UrlTemplate;
+            sitemapEntity.AcceptedFilenameExtensions = AcceptedFilenameExtensions;
         }
     }
 }

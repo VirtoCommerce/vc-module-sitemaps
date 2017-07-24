@@ -22,5 +22,7 @@ namespace VirtoCommerce.SitemapsModule.Core.Models
         public int TotalItemsCount { get; set; }
 
         public ICollection<string> PagedLocations { get; set; }
+
+        public string AcceptedFilenameExtensions { get; set; }
     }
 }

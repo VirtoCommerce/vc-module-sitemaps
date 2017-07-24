@@ -53,7 +53,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                     var searchResult = storageProvider.Search(sitemapItem.UrlTemplate, null);
                     urls.AddRange(GetItemUrls(storageProvider, searchResult));
                 }
-                else
+                if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem))
                 {
                     var item = storageProvider.GetBlobInfo(sitemapItem.UrlTemplate);
                     if (item != null)
@@ -62,24 +62,35 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                     }
                 }
                 totalCount = urls.Count();
+
+                var acceptedFilenameExtensions = new List<string>();
+                if (!string.IsNullOrEmpty(sitemap.AcceptedFilenameExtensions))
+                {
+                    acceptedFilenameExtensions = sitemap.AcceptedFilenameExtensions.Split(',').Select(i => i.Trim()).ToList();
+                }
+
                 foreach (var url in urls)
                 {
-                    using (var stream = storageProvider.OpenRead(url))
+                    var filenameExtension = Path.GetExtension(url);
+                    if (acceptedFilenameExtensions.Any() && acceptedFilenameExtensions.Contains(filenameExtension, StringComparer.OrdinalIgnoreCase))
                     {
-                        var content = stream.ReadToString();
-                        var yamlHeader = ReadYamlHeader(content);
-                        IEnumerable<string> permalinks = null;
-                        yamlHeader.TryGetValue("permalink", out permalinks);
-                        var frontMatterPermalink = new FrontMatterPermalink(url.Replace(".md", ""));
-                        if (permalinks != null && permalinks.Any())
+                        using (var stream = storageProvider.OpenRead(url))
                         {
-                            frontMatterPermalink = new FrontMatterPermalink(permalinks.FirstOrDefault());
-                        }
-                        sitemapItem.ItemsRecords.AddRange(GetSitemapItemRecords(store, options, frontMatterPermalink.ToUrl().TrimStart(new[] { '/' }), baseUrl));
+                            var content = stream.ReadToString();
+                            var yamlHeader = ReadYamlHeader(content);
+                            IEnumerable<string> permalinks = null;
+                            yamlHeader.TryGetValue("permalink", out permalinks);
+                            var frontMatterPermalink = new FrontMatterPermalink(url.Replace(".md", ""));
+                            if (permalinks != null && permalinks.Any())
+                            {
+                                frontMatterPermalink = new FrontMatterPermalink(permalinks.FirstOrDefault());
+                            }
+                            sitemapItem.ItemsRecords.AddRange(GetSitemapItemRecords(store, options, frontMatterPermalink.ToUrl().TrimStart(new[] { '/' }), baseUrl));
 
-                        processedCount++;
-                        progressInfo.Description = $"Content: generated records for {processedCount} of {totalCount} pages";
-                        progressCallback?.Invoke(progressInfo);
+                            processedCount++;
+                            progressInfo.Description = $"Content: generated records for {processedCount} of {totalCount} pages";
+                            progressCallback?.Invoke(progressInfo);
+                        }
                     }
                 }
             }

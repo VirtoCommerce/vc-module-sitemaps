@@ -12,6 +12,9 @@
     };
 
     function initializeBlade(data) {
+        if (!data.acceptedFilenameExtensions) {
+            data.acceptedFilenameExtensions = '.md,.html';
+        }
         blade.currentEntity = angular.copy(data);
         blade.origEntity = data;
         blade.isLoading = false;
@@ -54,6 +57,11 @@
 
     function canSave() {
         return isDirty() && $scope.formScope && $scope.formScope.$valid;
+    }
+
+    $scope.hasStaticContentItems = function () {
+        var staticContentItem = _.find(blade.currentEntities, function (e) { return e.objectType.toLowerCase() === 'contentitem' || e.objectType.toLowerCase() === 'folder' });
+        return staticContentItem != null && staticContentItem != undefined;
     }
 
     $scope.saveChanges = function () {
