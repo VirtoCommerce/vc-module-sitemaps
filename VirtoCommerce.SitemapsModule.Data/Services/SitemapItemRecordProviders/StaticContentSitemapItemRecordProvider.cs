@@ -42,6 +42,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                                                                        si.ObjectType.EqualsInvariant(SitemapItemTypes.Folder)));
             var totalCount = staticContentSitemapItems.Count();
             var processedCount = 0;
+            var acceptedFilenameExtensionsSettingValue = SettingsManager.GetValue("Sitemap.AcceptedFilenameExtensions", string.Empty);
+
             progressInfo.Description = $"Content: start generating records for {totalCount} pages";
             progressCallback?.Invoke(progressInfo);
 
@@ -50,7 +52,6 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 var urls = new List<string>();
                 if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.Folder))
                 {
-                    var acceptedFilenameExtensionsSettingValue = SettingsManager.GetSettingByName("Sitemap.AcceptedFilenameExtensions").Value;
                     var acceptedFilenameExtensions = new List<string>();
                     if (!string.IsNullOrEmpty(acceptedFilenameExtensionsSettingValue))
                     {
