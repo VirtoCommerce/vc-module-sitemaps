@@ -148,10 +148,6 @@
     <Compile Include="Migrations\201612120848380_Initial.Designer.cs">
       <DependentUpon>201612120848380_Initial.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201707240958160_AcceptedStaticContentFilenameExtensions.cs" />
-    <Compile Include="Migrations\201707240958160_AcceptedStaticContentFilenameExtensions.Designer.cs">
-      <DependentUpon>201707240958160_AcceptedStaticContentFilenameExtensions.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\SitemapEntity.cs" />
     <Compile Include="Models\SitemapItemEntity.cs" />
@@ -189,9 +185,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201612120848380_Initial.resx">
       <DependentUpon>201612120848380_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201707240958160_AcceptedStaticContentFilenameExtensions.resx">
-      <DependentUpon>201707240958160_AcceptedStaticContentFilenameExtensions.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

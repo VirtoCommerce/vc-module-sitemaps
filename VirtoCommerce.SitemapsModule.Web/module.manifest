@@ -59,6 +59,13 @@
                 <valueType>integer</valueType>
                 <defaultValue>500</defaultValue>
             </setting>
+            <setting>
+                <name>Sitemap.AcceptedFilenameExtensions</name>
+                <title>Accepted static content file extensions </title>
+                <description>This field contains the comma separated list of static content filename extensions which will be included to the sitemap. I.e.: .md,.html</description>
+                <valueType>string</valueType>
+                <defaultValue>.md, .html</defaultValue>
+            </setting>
         </group>
         <group name="Sitemap|Product Links">
             <setting>

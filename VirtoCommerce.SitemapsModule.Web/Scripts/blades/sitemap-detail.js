@@ -12,9 +12,6 @@
     };
 
     function initializeBlade(data) {
-        if (!data.acceptedFilenameExtensions) {
-            data.acceptedFilenameExtensions = '.md,.html';
-        }
         blade.currentEntity = angular.copy(data);
         blade.origEntity = data;
         blade.isLoading = false;

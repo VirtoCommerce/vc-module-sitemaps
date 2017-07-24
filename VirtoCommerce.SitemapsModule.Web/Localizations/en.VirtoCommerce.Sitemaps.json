@@ -31,9 +31,7 @@
           "sitemapSitemapLocationExistErrorMessage": "This sitemap location is already used",
           "labelSitemapItemsLocation": "Sitemap items location",
           "descriptionSitemapItemsLocation": "To generate a sitemap item URL can be used the next patterns: {slug} - will be replaced with SEO semantic URL part constructed depend on store SEO 'Links settings' rules. E.g /my-page/{slug}",
-          "labelSitemapItems": "Sitemap items",
-          "labelSitemapAcceptedFilenameExtensions": "Accepted static content file extensions",
-          "descriptionAcceptedFilenameExtensions": "This field contains the comma separated list of static content filename extensions which will be included to the sitemap. I.e.: .md,.html"
+          "labelSitemapItems": "Sitemap items"
         },
         "gridHeaders": {
           "img": "Pic.",
