@@ -24,23 +24,24 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             Func<string, IContentBlobStorageProvider> contentStorageProviderFactory)
             : base(settingsManager, urlBuilder)
         {
-            ContentStorageProviderFactory = contentStorageProviderFactory;
+            _contentStorageProviderFactory = contentStorageProviderFactory;
         }
 
-        private readonly Func<string, IContentBlobStorageProvider> ContentStorageProviderFactory;
+        private readonly Func<string, IContentBlobStorageProvider> _contentStorageProviderFactory;
         private static readonly Regex _headerRegExp = new Regex(@"(?s:^---(.*?)---)");
 
         public virtual void LoadSitemapItemRecords(Store store, Sitemap sitemap, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
         {
             var progressInfo = new ExportImportProgressInfo();
 
-            var contentBasePath = string.Format("Pages/{0}", sitemap.StoreId);
-            var storageProvider = ContentStorageProviderFactory(contentBasePath);
+            var contentBasePath = $"Pages/{sitemap.StoreId}";
+            var storageProvider = _contentStorageProviderFactory(contentBasePath);
             var options = new SitemapItemOptions();
             var staticContentSitemapItems = sitemap.Items.Where(si => !string.IsNullOrEmpty(si.ObjectType) &&
                                                                       (si.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem) ||
-                                                                       si.ObjectType.EqualsInvariant(SitemapItemTypes.Folder)));
-            var totalCount = staticContentSitemapItems.Count();
+                                                                       si.ObjectType.EqualsInvariant(SitemapItemTypes.Folder)))
+                                                                       .ToList();
+            var totalCount = staticContentSitemapItems.Count;
             var processedCount = 0;
 
             var acceptedFilenameExtensions = SettingsManager.GetValue("Sitemap.AcceptedFilenameExtensions", ".md,.html")
@@ -78,7 +79,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                         urls.Add(item.RelativeUrl);
                     }
                 }
-                totalCount = urls.Count();
+                totalCount = urls.Count;
 
                 foreach (var url in urls)
                 {
@@ -86,14 +87,14 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                     {
                         var content = stream.ReadToString();
                         var yamlHeader = ReadYamlHeader(content);
-                        IEnumerable<string> permalinks = null;
+                        IEnumerable<string> permalinks;
                         yamlHeader.TryGetValue("permalink", out permalinks);
                         var frontMatterPermalink = new FrontMatterPermalink(url.Replace(".md", ""));
-                        if (permalinks != null && permalinks.Any())
+                        if (permalinks != null)
                         {
                             frontMatterPermalink = new FrontMatterPermalink(permalinks.FirstOrDefault());
                         }
-                        sitemapItem.ItemsRecords.AddRange(GetSitemapItemRecords(store, options, frontMatterPermalink.ToUrl().TrimStart(new[] { '/' }), baseUrl));
+                        sitemapItem.ItemsRecords.AddRange(GetSitemapItemRecords(store, options, frontMatterPermalink.ToUrl().TrimStart('/'), baseUrl));
 
                         processedCount++;
                         progressInfo.Description = $"Content: generated records for {processedCount} of {totalCount} pages";
@@ -103,7 +104,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             }
         }
 
-        private ICollection<string> GetItemUrls(IContentBlobStorageProvider storageProvider, BlobSearchResult searchResult)
+        private static ICollection<string> GetItemUrls(IContentBlobStorageProvider storageProvider, BlobSearchResult searchResult)
         {
             var urls = new List<string>();
 
