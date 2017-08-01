@@ -65,7 +65,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                         var itemExtension = Path.GetExtension(itemUrl);
                         if (!acceptedFilenameExtensions.Any() ||
                             string.IsNullOrEmpty(itemExtension) ||
-                            acceptedFilenameExtensions.Any() && !string.IsNullOrEmpty(itemExtension) && acceptedFilenameExtensions.Contains(itemExtension, StringComparer.OrdinalIgnoreCase))
+                            acceptedFilenameExtensions.Contains(itemExtension, StringComparer.OrdinalIgnoreCase))
                         {
                             urls.Add(itemUrl);
                         }
