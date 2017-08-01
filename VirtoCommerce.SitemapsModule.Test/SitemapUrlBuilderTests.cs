@@ -10,7 +10,13 @@ namespace VirtoCommerce.SitemapsModule.Test
     {
         [Theory]
         [InlineData("", 6)]
+        [InlineData(" ", 6)]
+        [InlineData(",", 6)]
+        [InlineData(", ", 6)]
         [InlineData(".md,.html", 5)]
+        [InlineData(".md, .html", 5)]
+        [InlineData(".md,.html,", 5)]
+        [InlineData(".md,.html, ", 5)]
         public void CheckStaticContentExtensions(string acceptedExtensionsString, int expectedCount)
         {
             var urls = new[]
@@ -25,15 +31,19 @@ namespace VirtoCommerce.SitemapsModule.Test
 
             // TODO: Call actual implementation
 
-            var acceptedExtensions = acceptedExtensionsString.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            var acceptedFilenameExtensions = acceptedExtensionsString
+                .Split(',')
+                .Select(i => i.Trim())
+                .Where(i => !string.IsNullOrEmpty(i))
+                .ToList();
 
             var sitemapUrls = new List<string>();
             foreach (var url in urls)
             {
                 var itemExtension = Path.GetExtension(url);
-                if (!acceptedExtensions.Any() ||
+                if (!acceptedFilenameExtensions.Any() ||
                     string.IsNullOrEmpty(itemExtension) ||
-                    acceptedExtensions.Contains(itemExtension, StringComparer.OrdinalIgnoreCase))
+                    acceptedFilenameExtensions.Contains(itemExtension, StringComparer.OrdinalIgnoreCase))
                 {
                     sitemapUrls.Add(url);
                 }

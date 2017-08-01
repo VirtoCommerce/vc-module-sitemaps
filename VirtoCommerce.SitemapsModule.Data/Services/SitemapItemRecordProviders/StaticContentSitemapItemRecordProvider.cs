@@ -42,7 +42,12 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                                                                        si.ObjectType.EqualsInvariant(SitemapItemTypes.Folder)));
             var totalCount = staticContentSitemapItems.Count();
             var processedCount = 0;
-            var acceptedFilenameExtensionsSettingValue = SettingsManager.GetValue("Sitemap.AcceptedFilenameExtensions", ".md,.html");
+
+            var acceptedFilenameExtensions = SettingsManager.GetValue("Sitemap.AcceptedFilenameExtensions", ".md,.html")
+                .Split(',')
+                .Select(i => i.Trim())
+                .Where(i => !string.IsNullOrEmpty(i))
+                .ToList();
 
             progressInfo.Description = $"Content: start generating records for {totalCount} pages";
             progressCallback?.Invoke(progressInfo);
@@ -52,12 +57,6 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 var urls = new List<string>();
                 if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.Folder))
                 {
-                    var acceptedFilenameExtensions = new List<string>();
-                    if (!string.IsNullOrEmpty(acceptedFilenameExtensionsSettingValue))
-                    {
-                        acceptedFilenameExtensions = acceptedFilenameExtensionsSettingValue.Split(',').Where(i => !string.IsNullOrEmpty(i)).Select(i => i.Trim()).ToList();
-                    }
-
                     var searchResult = storageProvider.Search(sitemapItem.UrlTemplate, null);
                     var itemUrls = GetItemUrls(storageProvider, searchResult);
                     foreach (var itemUrl in itemUrls)
