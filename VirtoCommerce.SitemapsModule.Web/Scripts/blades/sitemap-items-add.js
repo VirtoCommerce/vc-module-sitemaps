@@ -111,9 +111,10 @@
     var staticContentBlade = {
         id: 'addSitemapStaticContentItems',
         title: 'sitemapsModule.blades.addStaticContentItems.title',
-        controller: 'virtoCommerce.customerModule.staticContentItemSelectController',
+        controller: 'virtoCommerce.sitemapsModule.staticContentItemSelectController',
         template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/static-content-items-select.tpl.html',
         headIcon: 'fa-code',
+        breadcrumbs: null,
         currentEntity: {}
     }
 
