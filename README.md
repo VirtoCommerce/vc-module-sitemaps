@@ -10,7 +10,7 @@ VirtoCommerce.Sitemaps module represents sitemaps management system.
 ![sitemaps-3](https://cloud.githubusercontent.com/assets/10347112/21457327/1d0ef938-c937-11e6-8fda-711b3ad170ce.png)
 
 And after that:
-* Download a zip package with pregenerated sitemap XML files and place its content to store website manually
+* Download a zip package with pregenerated sitemap XML files and place its content to storefront theme folder manually.  
 * Get the sitemaps schema and generate sitemap index file and sitemap files on-the-fly by API call (recommended for small stores, where the number of catalog items/vendors is less than 500)
 * Get the sitemaps schema and pregenerate sitemap XML files by scheduled recurring job (recommended for big stores since catalog/vendor search is a long-term process and sitemaps generation may require tens of minutes)
 
