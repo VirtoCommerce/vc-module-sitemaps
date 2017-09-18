@@ -15,7 +15,7 @@ IF NOT DEFINED MSBUILD_PATH SET MSBUILD_PATH=%WINDIR%\Microsoft.NET\Framework\v4
 
 "%MSBUILD_PATH%" "%SOURCE_DIR%\VirtoCommerce.SitemapsModule.sln" /nologo /verbosity:m /t:Build /p:Configuration=Release;Platform="Any CPU"
 
-nuget pack "%SOURCE_DIR%\VirtoCommerce.SitemapsModule.Core\VirtoCommerce.OrderModule.Core.csproj" -IncludeReferencedProjects -Symbols -Properties Configuration=Release -o "%TARGET_DIR%"
-nuget pack "%SOURCE_DIR%\VirtoCommerce.SitemapsModule.Data\VirtoCommerce.OrderModule.Data.csproj" -IncludeReferencedProjects -Symbols -Properties Configuration=Release -o "%TARGET_DIR%"
+nuget pack "%SOURCE_DIR%\VirtoCommerce.SitemapsModule.Core\VirtoCommerce.SitemapsModule.Core.csproj" -IncludeReferencedProjects -Symbols -Properties Configuration=Release -o "%TARGET_DIR%"
+nuget pack "%SOURCE_DIR%\VirtoCommerce.SitemapsModule.Data\VirtoCommerce.SitemapsModule.Data.csproj" -IncludeReferencedProjects -Symbols -Properties Configuration=Release -o "%TARGET_DIR%"
 
 @pause
