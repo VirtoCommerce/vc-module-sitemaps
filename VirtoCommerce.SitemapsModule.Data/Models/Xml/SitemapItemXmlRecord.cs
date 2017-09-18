@@ -31,7 +31,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Models.Xml
                 throw new ArgumentNullException("coreModel");
             }
 
-            ModifiedDate = coreModel.ModifiedDate.ToString("yyyy-MM-dd");
+            //ModifiedDate = coreModel.ModifiedDate.ToString("yyyy-MM-dd");
             Priority = coreModel.Priority;
             UpdateFrequency = coreModel.UpdateFrequency;
             Url = coreModel.Url;
