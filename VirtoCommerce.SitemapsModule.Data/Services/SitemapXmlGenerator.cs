@@ -7,11 +7,11 @@ using Common.Logging;
 using VirtoCommerce.Domain.Store.Model;
 using VirtoCommerce.Domain.Store.Services;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
 using VirtoCommerce.SitemapsModule.Data.Models.Xml;
-using VirtoCommerce.Platform.Core.ExportImport;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services
 {
@@ -92,7 +92,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 {
                     var xmlSiteMapRecords = sitemap.PagedLocations.Select(location => new SitemapIndexItemXmlRecord
                     {
-                        ModifiedDate = sitemap.Items.Select(x => x.ModifiedDate).OrderByDescending(x => x).FirstOrDefault()?.ToString("yyyy-MM-dd"),
+                        //ModifiedDate = sitemap.Items.Select(x => x.ModifiedDate).OrderByDescending(x => x).FirstOrDefault()?.ToString("yyyy-MM-dd"),
                         Url = SitemapUrlBuilder.BuildStoreUrl(store, store.DefaultLanguage, location, baseUrl)
                     }).ToList();
                     sitemapIndexXmlRecord.Sitemaps.AddRange(xmlSiteMapRecords);
