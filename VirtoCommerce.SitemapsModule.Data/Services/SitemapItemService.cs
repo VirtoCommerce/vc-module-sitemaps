@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.Linq;
-using VirtoCommerce.Domain.Catalog.Services;
-using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Commerce.Model.Search;
-using VirtoCommerce.Domain.Store.Model;
-using VirtoCommerce.Domain.Store.Services;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Data.Infrastructure;
 using VirtoCommerce.SitemapsModule.Core.Models;
@@ -35,7 +30,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             {
                 var searchResponse = new GenericSearchResult<SitemapItem>();
                 var query = repository.SitemapItems;
-                if(!string.IsNullOrEmpty(criteria.SitemapId))
+                if (!string.IsNullOrEmpty(criteria.SitemapId))
                 {
                     query = query.Where(x => x.SitemapId == criteria.SitemapId);
                 }
@@ -53,7 +48,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 {
                     sortInfos = new[] { new SortInfo { SortColumn = ReflectionUtility.GetPropertyName<SitemapItemEntity>(x => x.CreatedDate), SortDirection = SortDirection.Descending } };
                 }
-                query = query.OrderBySortInfos(sortInfos);
+                query = query.OrderBySortInfos(sortInfos).ThenBy(x => x.Id);
                 searchResponse.TotalCount = query.Count();
 
                 foreach (var sitemapItemEntity in query.Skip(criteria.Skip).Take(criteria.Take))
@@ -63,7 +58,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                     {
                         searchResponse.Results.Add(sitemapItemEntity.ToModel(sitemapItem));
                     }
-                }            
+                }
                 return searchResponse;
             }
         }
@@ -119,6 +114,6 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                     CommitChanges(repository);
                 }
             }
-        }        
+        }
     }
 }
