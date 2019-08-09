@@ -143,6 +143,7 @@
     </Compile>
     <Compile Include="Converters\ToolsConverter.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Migrations\201612120848380_Initial.cs" />
     <Compile Include="Migrations\201612120848380_Initial.Designer.cs">
       <DependentUpon>201612120848380_Initial.cs</DependentUpon>
