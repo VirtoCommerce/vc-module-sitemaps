@@ -88,17 +88,18 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                     using (var stream = storageProvider.OpenRead(url))
                     {
                         var content = stream.ReadToString();
-                        FrontMatterPermalink frontMatterPermalink;
-                        JToken token = null;
-                        if (content.IsJson(ref token))
+                        var frontMatterPermalink = new FrontMatterPermalink("/");
+                        if (content.TryParseJson(out JToken token))
                         {
-                            frontMatterPermalink = new FrontMatterPermalink(token[0]["permalink"].ToString());
+                            if (token.HasValues && token.First["permalink"] != null)
+                            {
+                                frontMatterPermalink = new FrontMatterPermalink(token.First["permalink"].ToString());
+                            }
                         }
                         else
                         {
                             var yamlHeader = ReadYamlHeader(content);
-                            IEnumerable<string> permalinks;
-                            yamlHeader.TryGetValue("permalink", out permalinks);
+                            yamlHeader.TryGetValue("permalink", out IEnumerable<string> permalinks);
                             frontMatterPermalink = new FrontMatterPermalink(url.Replace(".md", ""));
                             if (permalinks != null)
                             {

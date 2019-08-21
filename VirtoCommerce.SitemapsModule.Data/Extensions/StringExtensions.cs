@@ -1,28 +1,19 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 
 namespace VirtoCommerce.SitemapsModule.Data.Extensions
 {
     public static class StringExtensions
     {
-        public static bool IsJson(this string source, ref JToken token)
+        public static bool TryParseJson(this string json, out JToken jToken)
         {
-            var trimmed = source.Trim();
-            if (trimmed.StartsWith("[") && trimmed.EndsWith("]") ||
-                trimmed.StartsWith("{") && trimmed.EndsWith("}"))
+            try
             {
-                try
-                {
-                    token = JToken.Parse(source);
-                    return true;
-                }
-                catch
-                {
-                    return false;
-                }
+                jToken = JToken.Parse(json);
+                return true;
             }
-            else
+            catch
             {
+                jToken = null;
                 return false;
             }
         }
