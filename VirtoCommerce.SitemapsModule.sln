@@ -1,15 +1,18 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.SitemapsModule.Core", "VirtoCommerce.SitemapsModule.Core\VirtoCommerce.SitemapsModule.Core.csproj", "{B6C713D5-8681-429D-8D1A-A976AA46B599}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{51FD98CB-BFBE-4E92-B5DE-2B8B7A521A2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.SitemapsModule.Data", "VirtoCommerce.SitemapsModule.Data\VirtoCommerce.SitemapsModule.Data.csproj", "{2F235969-BE39-497C-8F1D-8B7A091F5BFD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{7B2CA9E0-9CCE-4E1D-821B-1C8BE6A07B75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.SitemapsModule.Web", "VirtoCommerce.SitemapsModule.Web\VirtoCommerce.SitemapsModule.Web.csproj", "{C7DC3878-3979-4036-A321-B01E98F49174}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.SitemapsModule.Core", "src\VirtoCommerce.SitemapsModule.Core\VirtoCommerce.SitemapsModule.Core.csproj", "{6DA19884-4A6A-426B-956C-7EF647C39B82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.SitemapsModule.Test", "VirtoCommerce.SitemapsModule.Test\VirtoCommerce.SitemapsModule.Test.csproj", "{921AB956-D4C5-4818-83F4-CD00E9A36B53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.SitemapsModule.Data", "src\VirtoCommerce.SitemapsModule.Data\VirtoCommerce.SitemapsModule.Data.csproj", "{3870B31A-AFCF-4A04-9B49-E3F09F3F0ECE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.SitemapsModule.Web", "src\VirtoCommerce.SitemapsModule.Web\VirtoCommerce.SitemapsModule.Web.csproj", "{6D25D1C4-C72D-4F8D-95DB-F5EA70C7C1D1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.SitemapsModule.Tests", "tests\VirtoCommerce.SitemapsModule.Tests\VirtoCommerce.SitemapsModule.Tests.csproj", "{605F0F47-F54B-4E73-A773-6F83BF04655E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,24 +20,33 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B6C713D5-8681-429D-8D1A-A976AA46B599}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B6C713D5-8681-429D-8D1A-A976AA46B599}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B6C713D5-8681-429D-8D1A-A976AA46B599}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B6C713D5-8681-429D-8D1A-A976AA46B599}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2F235969-BE39-497C-8F1D-8B7A091F5BFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2F235969-BE39-497C-8F1D-8B7A091F5BFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2F235969-BE39-497C-8F1D-8B7A091F5BFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2F235969-BE39-497C-8F1D-8B7A091F5BFD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C7DC3878-3979-4036-A321-B01E98F49174}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C7DC3878-3979-4036-A321-B01E98F49174}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C7DC3878-3979-4036-A321-B01E98F49174}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C7DC3878-3979-4036-A321-B01E98F49174}.Release|Any CPU.Build.0 = Release|Any CPU
-		{921AB956-D4C5-4818-83F4-CD00E9A36B53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{921AB956-D4C5-4818-83F4-CD00E9A36B53}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{921AB956-D4C5-4818-83F4-CD00E9A36B53}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{921AB956-D4C5-4818-83F4-CD00E9A36B53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DA19884-4A6A-426B-956C-7EF647C39B82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DA19884-4A6A-426B-956C-7EF647C39B82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DA19884-4A6A-426B-956C-7EF647C39B82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DA19884-4A6A-426B-956C-7EF647C39B82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3870B31A-AFCF-4A04-9B49-E3F09F3F0ECE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3870B31A-AFCF-4A04-9B49-E3F09F3F0ECE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3870B31A-AFCF-4A04-9B49-E3F09F3F0ECE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3870B31A-AFCF-4A04-9B49-E3F09F3F0ECE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D25D1C4-C72D-4F8D-95DB-F5EA70C7C1D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D25D1C4-C72D-4F8D-95DB-F5EA70C7C1D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D25D1C4-C72D-4F8D-95DB-F5EA70C7C1D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D25D1C4-C72D-4F8D-95DB-F5EA70C7C1D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{605F0F47-F54B-4E73-A773-6F83BF04655E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{605F0F47-F54B-4E73-A773-6F83BF04655E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{605F0F47-F54B-4E73-A773-6F83BF04655E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{605F0F47-F54B-4E73-A773-6F83BF04655E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6DA19884-4A6A-426B-956C-7EF647C39B82} = {51FD98CB-BFBE-4E92-B5DE-2B8B7A521A2E}
+		{3870B31A-AFCF-4A04-9B49-E3F09F3F0ECE} = {51FD98CB-BFBE-4E92-B5DE-2B8B7A521A2E}
+		{6D25D1C4-C72D-4F8D-95DB-F5EA70C7C1D1} = {51FD98CB-BFBE-4E92-B5DE-2B8B7A521A2E}
+		{605F0F47-F54B-4E73-A773-6F83BF04655E} = {7B2CA9E0-9CCE-4E1D-821B-1C8BE6A07B75}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D2141672-99D2-425E-A8DB-656C94B8CCF0}
 	EndGlobalSection
 EndGlobal
