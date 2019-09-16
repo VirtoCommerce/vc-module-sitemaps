@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -14,12 +14,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.SitemapsModul
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.SitemapsModule.Tests", "tests\VirtoCommerce.SitemapsModule.Tests\VirtoCommerce.SitemapsModule.Tests.csproj", "{605F0F47-F54B-4E73-A773-6F83BF04655E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{03FE1A44-9501-4E59-AEC4-3F27423183E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{03FE1A44-9501-4E59-AEC4-3F27423183E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03FE1A44-9501-4E59-AEC4-3F27423183E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6DA19884-4A6A-426B-956C-7EF647C39B82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6DA19884-4A6A-426B-956C-7EF647C39B82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6DA19884-4A6A-426B-956C-7EF647C39B82}.Release|Any CPU.ActiveCfg = Release|Any CPU
