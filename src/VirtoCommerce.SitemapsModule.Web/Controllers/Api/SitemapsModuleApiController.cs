@@ -279,14 +279,10 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         [HttpGet]
         [Route("generate")]
         [SwaggerFileResponse]
-        public async Task<HttpResponseMessage> GenerateSitemap(string storeId, string baseUrl, string sitemapUrl)
+        public async Task<ActionResult> GenerateSitemap(string storeId, string baseUrl, string sitemapUrl)
         {
             var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(storeId, baseUrl, sitemapUrl);
-
-            var result = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(stream) };
-            result.Content.Headers.ContentType = new MediaTypeHeaderValue("text/xml");
-
-            return result;
+            return new FileStreamResult(stream, "text/xml");
         }
 
         /// <summary>
