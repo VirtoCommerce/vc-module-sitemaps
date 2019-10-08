@@ -320,7 +320,6 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         {
             void SendNotificationWithProgressInfo(ExportImportProgressInfo c)
             {
-                // TODO: is there a better way to copy ExportImportProgressInfo properties to SitemapDownloadNotification without using ValueInjecter?
                 notification.Description = c.Description;
                 notification.ProcessedCount = c.ProcessedCount;
                 notification.TotalCount = c.TotalCount;
