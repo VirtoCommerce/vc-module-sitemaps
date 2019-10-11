@@ -9,12 +9,13 @@ using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.SitemapsModule.Core;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
+using VirtoCommerce.SitemapsModule.Data.Extensions;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.Tools;
 using YamlDotNet.RepresentationModel;
-using VirtoCommerce.SitemapsModule.Core;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 {
@@ -88,15 +89,25 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                         using (var stream = storageProvider.OpenRead(url))
                         {
                             var content = stream.ReadToString();
-                            var yamlHeader = ReadYamlHeader(content);
-                            yamlHeader.TryGetValue("permalink", out var permalinks);
-                            var frontMatterPermalink = new FrontMatterPermalink(url.Replace(".md", ""));
-                            if (permalinks != null)
+                            var frontMatterPermalink = new FrontMatterPermalink("/");
+                            if (content.TryParseJson(out var token))
                             {
-                                frontMatterPermalink = new FrontMatterPermalink(permalinks.FirstOrDefault());
+                                if (token.HasValues && token.First["permalink"] != null)
+                                {
+                                    frontMatterPermalink = new FrontMatterPermalink(token.First["permalink"].ToString());
+                                }
+                            }
+                            else
+                            {
+                                var yamlHeader = ReadYamlHeader(content);
+                                yamlHeader.TryGetValue("permalink", out var permalinks);
+                                frontMatterPermalink = new FrontMatterPermalink(url.Replace(".md", ""));
+                                if (permalinks != null)
+                                {
+                                    frontMatterPermalink = new FrontMatterPermalink(permalinks.FirstOrDefault());
+                                }
                             }
                             sitemapItem.ItemsRecords.AddRange(GetSitemapItemRecords(store, options, frontMatterPermalink.ToUrl().TrimStart('/'), baseUrl));
-
                             processedCount++;
                             progressInfo.Description = $"Content: Have been generated records for {processedCount} of {totalCount} pages";
                             progressCallback?.Invoke(progressInfo);
