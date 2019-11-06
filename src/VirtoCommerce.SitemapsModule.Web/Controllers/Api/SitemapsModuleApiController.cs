@@ -43,7 +43,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         private readonly IPushNotificationManager _notifier;
         private readonly IBlobStorageProvider _blobStorageProvider;
         private readonly IBlobUrlResolver _blobUrlResolver;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
         /// <summary>
         /// 
@@ -68,7 +68,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             IPushNotificationManager notifier,
             IBlobStorageProvider blobStorageProvider,
             IBlobUrlResolver blobUrlResolver,
-            IHostingEnvironment hostingEnvironment)
+            IWebHostEnvironment hostingEnvironment)
         {
             _sitemapService = sitemapService;
             _sitemapItemService = sitemapItemService;
@@ -386,9 +386,9 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             }
         }
 
-        private static string MapPath(IHostingEnvironment hostEnv, string path)
+        private static string MapPath(IWebHostEnvironment hostEnv, string path)
         {
-            // TECHDEBT: this method is copied from VC.Platform.Web.Extensions.HostingEnviromentExtension.
+            // TODO: TECHDEBT: this method is copied from VC.Platform.Web.Extensions.HostingEnviromentExtension.
             //           It's probably better to use IPathMapper instead, once it'll be implemented somewhere.
 
             var result = hostEnv.WebRootPath;

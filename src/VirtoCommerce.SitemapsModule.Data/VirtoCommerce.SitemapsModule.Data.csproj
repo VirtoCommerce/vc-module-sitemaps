@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp2.2</TargetFramework>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <IsPackable>true</IsPackable>
         <noWarn>1591</noWarn>
     </PropertyGroup>
 
@@ -10,19 +11,21 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.3" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.3" />
-        <PackageReference Include="VirtoCommerce.CatalogModule.Core" Version="3.0.0-rc.1" />
-        <PackageReference Include="VirtoCommerce.ContentModule.Core" Version="3.0.0-rc.1" />
-        <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.0.0-rc.1" />
-        <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.0.0-rc0001" />
-        <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.0.0-rc0001" />
-        <PackageReference Include="VirtoCommerce.SearchModule.Core" Version="3.0.0-rc.1" />
-        <PackageReference Include="VirtoCommerce.StoreModule.Core" Version="3.0.0-rc.1" />
-        <PackageReference Include="VirtoCommerce.Tools" Version="3.0.0-rc.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.0-preview2.19525.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.0-preview2.19525.5">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="VirtoCommerce.CatalogModule.Core" Version="3.0.0-3-0-0-vp-733-cor0001" />
+        <PackageReference Include="VirtoCommerce.ContentModule.Core" Version="3.0.0-3-0-0-vp-851-co-0001" />
+        <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.0.0-3-0-0-vp-852-co-0001" />
+        <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.0.0-v3-feature-vp-7-0001" />
+        <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.0.0-v3-feature-vp-7-0001" />
+        <PackageReference Include="VirtoCommerce.SearchModule.Core" Version="3.0.0-3-0-0-vp-836-co-0001" />
+        <PackageReference Include="VirtoCommerce.StoreModule.Core" Version="3.0.0-3-0-0-vp-835-co-0001" />
+        <PackageReference Include="VirtoCommerce.Tools" Version="2.25.26-3-0-0-core3-0001" />
         <PackageReference Include="YamlDotNet" Version="5.2.1" />
         <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
-        <PackageReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
     </ItemGroup>
 
