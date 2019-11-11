@@ -21,7 +21,6 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Hangfire" Version="1.7.7" />
-        <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
         <PackageReference Include="System.IO.Packaging" Version="4.6.0" />
     </ItemGroup>
 

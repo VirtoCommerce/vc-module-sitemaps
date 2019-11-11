@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.0</TargetFramework>
@@ -22,8 +22,6 @@
         <PackageReference Include="VirtoCommerce.StoreModule.Core" Version="3.0.0-3-0-0-vp-835-co-0001" />
         <PackageReference Include="VirtoCommerce.Tools" Version="3.0.0-3-0-0-core3-0001" />
         <PackageReference Include="YamlDotNet" Version="5.2.1" />
-        <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
     </ItemGroup>
 
     <ItemGroup>
