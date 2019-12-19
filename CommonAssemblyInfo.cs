@@ -6,8 +6,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("VirtoCommerce Sitemaps Module")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 
-[assembly: AssemblyFileVersion("1.1.6.0")]
-[assembly: AssemblyVersion("1.1.6.0")]
+[assembly: AssemblyFileVersion("1.1.7.0")]
+[assembly: AssemblyVersion("1.1.7.0")]
 
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
