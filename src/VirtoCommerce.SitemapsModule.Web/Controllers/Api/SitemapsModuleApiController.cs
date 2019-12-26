@@ -9,6 +9,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using VirtoCommerce.Platform.Core.Assets;
@@ -134,6 +135,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         [HttpPost]
         [Route("")]
         [Authorize(ModuleConstants.Security.Permissions.Create)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         public async Task<ActionResult> AddSitemap([FromBody]Sitemap sitemap)
         {
             if (sitemap == null)
@@ -154,6 +156,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         [HttpPut]
         [Route("")]
         [Authorize(ModuleConstants.Security.Permissions.Update)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         public async Task<ActionResult> UpdateSitemap([FromBody]Sitemap sitemap)
         {
             if (sitemap == null)
@@ -174,6 +177,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         [HttpDelete]
         [Route("")]
         [Authorize(ModuleConstants.Security.Permissions.Delete)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         public async Task<ActionResult> DeleteSitemap(string[] ids)
         {
             if (ids == null)
@@ -213,6 +217,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         /// <returns></returns>
         [HttpPost]
         [Route("{sitemapId}/items")]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         public async Task<ActionResult> AddSitemapItems(string sitemapId, [FromBody]SitemapItem[] items)
         {
             if (string.IsNullOrEmpty(sitemapId))
@@ -240,6 +245,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         /// <returns></returns>
         [HttpDelete]
         [Route("items")]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         public async Task<ActionResult> RemoveSitemapItems(string[] itemIds)
         {
             if (itemIds == null)
