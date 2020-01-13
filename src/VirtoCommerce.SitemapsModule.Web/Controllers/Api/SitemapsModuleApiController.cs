@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
@@ -18,6 +15,7 @@ using VirtoCommerce.Platform.Core.Exceptions;
 using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.PushNotifications;
 using VirtoCommerce.Platform.Core.Security;
+using VirtoCommerce.SitemapsModule.Web.Extensions;
 using VirtoCommerce.SitemapsModule.Core;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Models.Search;
@@ -44,7 +42,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         private readonly IPushNotificationManager _notifier;
         private readonly IBlobStorageProvider _blobStorageProvider;
         private readonly IBlobUrlResolver _blobUrlResolver;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
         /// <summary>
         /// 
@@ -69,7 +67,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             IPushNotificationManager notifier,
             IBlobStorageProvider blobStorageProvider,
             IBlobUrlResolver blobUrlResolver,
-            IHostingEnvironment hostingEnvironment)
+            IWebHostEnvironment hostingEnvironment)
         {
             _sitemapService = sitemapService;
             _sitemapItemService = sitemapItemService;
@@ -337,7 +335,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             try
             {
                 var relativeUrl = $"tmp/sitemap-{storeId}.zip";
-                var localTmpFolder = MapPath(_hostingEnvironment, "~/App_Data/Uploads/tmp");
+                var localTmpFolder = _hostingEnvironment.MapPath("~/App_Data/Uploads/tmp");
                 var localTmpPath = Path.Combine(localTmpFolder, $"sitemap-{storeId}.zip");
                 if (!Directory.Exists(localTmpFolder))
                 {
@@ -390,25 +388,6 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                 var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(storeId, baseUrl, sitemapUrl, progressCallback);
                 stream.CopyTo(sitemapPartStream);
             }
-        }
-
-        private static string MapPath(IHostingEnvironment hostEnv, string path)
-        {
-            // TECHDEBT: this method is copied from VC.Platform.Web.Extensions.HostingEnviromentExtension.
-            //           It's probably better to use IPathMapper instead, once it'll be implemented somewhere.
-
-            var result = hostEnv.WebRootPath;
-
-            if (path.StartsWith("~/"))
-            {
-                result = Path.Combine(result, path.Replace("~/", string.Empty).Replace("/", "\\"));
-            }
-            else if (Path.IsPathRooted(path))
-            {
-                result = path;
-            }
-
-            return result;
         }
     }
 }
