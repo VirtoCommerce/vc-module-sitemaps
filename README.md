@@ -15,7 +15,8 @@ Virto Commerce provides multiple sitemap files, each sitemap file must include n
 In order to configure the store sitemaps navigate to More > 'Stores' > select the store and click the 'Sitemaps' widget. The 'Sitemaps' blade contain a list of sitemaps to be included into the sitemap index file.
 
 ![Sitemap blade](docs/media/screen-sitemaps-blade.png)
-### Add a new sitemap to a store
+
+### Add a New Sitemap to Store
 
 In order to add a new sitemap, click "Add sitemap" toolbar button. The blade "New sitemap" will appear. Each sitemap contains 2 required parameters: Sitemap location and Sitemap items location, and a list of items to be included in the sitemap file.
 
