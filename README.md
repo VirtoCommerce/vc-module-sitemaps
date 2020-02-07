@@ -72,20 +72,20 @@ Virto Commerce Sitemaps module has several settings, each of them influences the
 
 ### General settings
 
-1. Records limit** (default value: **10000**) - sets the maximum number of URLs record per sitemap file;
-1. ilename separator** (default value: **--**) - sets the sitemap location separator in case of sitemap items number exceeds the **Records limit** parameter value (i.e.: "products.xml" -> "products--1.xml" and "products--2.xml");
-1. Search bunch size** (default value: **1000**) - this parameter is using in long-term search processes (i.e. catalog search) to divide search requests and sets the search request bunch size parameter
-1. Export/Import description** (default value: **Export/Import sitemaps with all sitemap items**) - sets the description for platform export/import process.
+1. Records limit (default value: **10000**) - sets the maximum number of URLs record per sitemap file;
+1. ilename separator (default value: **--**) - sets the sitemap location separator in case of sitemap items number exceeds the **Records limit** parameter value (i.e.: "products.xml" -> "products--1.xml" and "products--2.xml");
+1. Search bunch size (default value: **1000**) - this parameter is using in long-term search processes (i.e. catalog search) to divide search requests and sets the search request bunch size parameter
+1. Export/Import description (default value: **Export/Import sitemaps with all sitemap items**) - sets the description for platform export/import process.
 
 ### Category links
 
-1. Category page priority** (default value: **0.7**) - sets the value of the sitemap **&lt;priority&gt;** parameter of catalog categories pages;
-1. Category page update frequency** (default value: **weekly**) - sets the value of the sitemap **&lt;changefreq&gt;** parameter of catalog categories pages.
+1. Category page priority (default value: **0.7**) - sets the value of the sitemap **&lt;priority&gt;** parameter of catalog categories pages;
+1. Category page update frequency (default value: **weekly**) - sets the value of the sitemap **&lt;changefreq&gt;** parameter of catalog categories pages.
 
 ### Product links
 
-1. Product page priority** (default value: **1.0**) - sets the value of the sitemap **&lt;priority&gt;** parameter of catalog products pages;
-1. Product page update frequency** (default value: **daily**) - sets the value of the sitemap **&lt;changefreq&gt;** parameter of catalog products pages.
+1. Product page priority (default value: **1.0**) - sets the value of the sitemap **&lt;priority&gt;** parameter of catalog products pages;
+1. Product page update frequency (default value: **daily**) - sets the value of the sitemap **&lt;changefreq&gt;** parameter of catalog products pages.
 
 ## License
 Copyright (c) Virtosoftware Ltd.  All rights reserved.
