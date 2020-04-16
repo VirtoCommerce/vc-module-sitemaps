@@ -1,31 +1,26 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
-    <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
-        <noWarn>1591</noWarn>
-        <IsPackable>false</IsPackable>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <OutputType>Library</OutputType>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <Compile Remove="dist\**" />
-      <Compile Remove="node_modules\**" />
-      <EmbeddedResource Remove="dist\**" />
-      <EmbeddedResource Remove="node_modules\**" />
-      <None Remove="dist\**" />
-      <None Remove="node_modules\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Hangfire" Version="1.7.9" />
-        <PackageReference Include="System.IO.Packaging" Version="4.7.0" />
-        <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.0.0-rc4" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\VirtoCommerce.SitemapsModule.Core\VirtoCommerce.SitemapsModule.Core.csproj" />
-        <ProjectReference Include="..\VirtoCommerce.SitemapsModule.Data\VirtoCommerce.SitemapsModule.Data.csproj" />
-    </ItemGroup>
-
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <noWarn>1591</noWarn>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="dist\**" />
+    <Compile Remove="node_modules\**" />
+    <EmbeddedResource Remove="dist\**" />
+    <EmbeddedResource Remove="node_modules\**" />
+    <None Remove="dist\**" />
+    <None Remove="node_modules\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Hangfire" Version="1.7.9" />
+    <PackageReference Include="System.IO.Packaging" Version="4.7.0" />
+    <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.0.0-rc5" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VirtoCommerce.SitemapsModule.Core\VirtoCommerce.SitemapsModule.Core.csproj" />
+    <ProjectReference Include="..\VirtoCommerce.SitemapsModule.Data\VirtoCommerce.SitemapsModule.Data.csproj" />
+  </ItemGroup>
 </Project>
