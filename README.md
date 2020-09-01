@@ -1,57 +1,41 @@
-# VirtoCommerce.Sitemaps
-VirtoCommerce.Sitemaps module represents sitemaps management system.
 
-# Use cases
-* Add a sitemap for a store
-![sitemaps-1](https://cloud.githubusercontent.com/assets/10347112/21457294/d4c051a4-c936-11e6-9580-41b23c6d06fe.png)
+# Overview
 
-* Add a sitemap items (categories, products, vendors, custom sitemap items, etc.) to a sitemap
-![sitemaps-2](https://cloud.githubusercontent.com/assets/10347112/21457310/f49e97c4-c936-11e6-9078-0ed84675fa04.png)
-![sitemaps-3](https://cloud.githubusercontent.com/assets/10347112/21457327/1d0ef938-c937-11e6-8fda-711b3ad170ce.png)
+Sitemaps are an easy way for webmasters to inform search engines about the pages on their sites that are available for crawling. In its simplest form, a Sitemap is an XML file that lists URLs for a site along with additional metadata about each URL (when it was last updated, how often it usually changes and how important it is, relative to other URLs in the site) so that search engines could crawl the site more intelligently.
 
-And after that:
-* Download a zip package with pregenerated sitemap XML files and place its content to store website manually
-* Get the sitemaps schema and generate sitemap index file and sitemap files on-the-fly by API call (recommended for small stores, where the number of catalog items/vendors is less than 500)
-* Get the sitemaps schema and pregenerate sitemap XML files by scheduled recurring job (recommended for big stores since catalog/vendor search is a long-term process and sitemaps generation may require tens of minutes)
+Web crawlers usually discover pages from links within the site and from other sites. Sitemaps supplement this data to allow crawlers, that support Sitemaps, to pick up all URLs in the Sitemap and learn about those URLs using the associated metadata. Using the Sitemap protocol does not guarantee that web pages are included in search engines, but provides hints for web crawlers to do a better job while crawling your site.
 
-# API calls
+Virto Commerce provides multiple sitemap files, each sitemap file must include no more than 10,000 URLs (by default, maximum value - 50000 URLs) and must be no larger than 50MB (52,428,800 bytes). Each sitemap file will be placed in a sitemap index file "sitemap.xml". In case of sitemap file has more than maximum records number, it would be separated to several sitemap files, i.e.: "products.xml" sitemap file with 15000 records would be transformed to "products--1.xml" (10000 records) and "products--2.xml" (5000 records). Each of these partial sitemap files would be included in sitemap index file too.
 
-```
-// Get a collection of sitemap location URLs
+## Key Features
 
-[GET] api/sitemaps/schema?storeId=...
-```
+1. Async Sitemap generator
+1. Support big catalogs 
+1. Export products and categories
+1. Rich API
 
-```
-// Get a stream contains a sitemap file XML data
+## Documentation
 
-[GET] api/sitemaps/generate?storeId=...&baseUrl=...&sitemapUrl=...
-```
+* [Sitemaps Module Document](/docs/index.md)
 
-# Documentation
-User guide: [Sitemaps](http://virtocommerce.com/docs/vc2userguide/sitemaps)
+* [View on GitHub](https://github.com/VirtoCommerce/vc-module-sitemaps/tree/dev)
 
-# Installation
-Installing the module:
-* Automatically: in VC Manager go to Configuration -> Modules -> Sitemaps module -> Install
-* Manually: download module zip package from https://github.com/VirtoCommerce/vc-module-sitemaps/releases. In VC Manager go to Configuration -> Modules -> Advanced -> upload module package -> Install.
+## Installation
 
-# Settings
-### General settings
-* **Records limit** (default value: **10000**) - sets the maximum number of URLs record per sitemap file
-* **Filename separator** (default value: **--**) - sets the sitemap location separator in case of sitemap items number exceeds the **Records limit** parameter value (i.e.: "products.xml" -> "products--1.xml" and "products--2.xml")
-* **Search bunch size** (default value: **1000**) - this parameter is using in long-term search processes (i.e. catalog search) to divide search requests and sets the search request bunch size parameter
-* **Export/Import description** (default value: **Export/Import sitemaps with all sitemap items**) - sets the description for platform export/import process
+1. Automatically: in VC Manager go to More -> Modules -> Sitemaps module -> Install;
 
-### Category links
-* **Category page priority** (default value: **0.7**) - sets the value of the sitemap **&lt;priority&gt;** parameter of catalog categories pages
-* **Category page update frequency** (default value: **weekly**) - sets the value of the sitemap **&lt;changefreq&gt;** parameter of catalog categories pages
+1. Manually: download module zip package from https://github.com/VirtoCommerce/vc-module-sitemaps/releases. In VC Manager go to More -> Modules -> Advanced -> upload module package -> Install.
 
-### Product links
-* **Product page priority** (default value: **1.0**) - sets the value of the sitemap **&lt;priority&gt;** parameter of catalog products pages
-* **Product page update frequency** (default value: **daily**) - sets the value of the sitemap **&lt;changefreq&gt;** parameter of catalog products pages
+## References
 
-# License
+* Deploy: https://virtocommerce.com/docs/latest/developer-guide/deploy-module-from-source-code/
+* Installation: https://www.virtocommerce.com/docs/latest/user-guide/modules/
+* Home: https://virtocommerce.com
+* Community: https://www.virtocommerce.org
+* [Download Latest Release](https://github.com/VirtoCommerce/vc-module-sitemaps/releases)
+
+## License
+
 Copyright (c) Virtosoftware Ltd.  All rights reserved.
 
 Licensed under the Virto Commerce Open Software License (the "License"); you
