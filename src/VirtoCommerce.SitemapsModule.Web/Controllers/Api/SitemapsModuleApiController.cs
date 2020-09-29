@@ -9,18 +9,20 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Exceptions;
 using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.PushNotifications;
 using VirtoCommerce.Platform.Core.Security;
-using VirtoCommerce.SitemapsModule.Web.Extensions;
 using VirtoCommerce.SitemapsModule.Core;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Models.Search;
 using VirtoCommerce.SitemapsModule.Core.Services;
 using VirtoCommerce.SitemapsModule.Data.Services;
+using VirtoCommerce.SitemapsModule.Web.Extensions;
 using VirtoCommerce.SitemapsModule.Web.Model.PushNotifications;
 using SystemFile = System.IO.File;
 
@@ -43,6 +45,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         private readonly IBlobStorageProvider _blobStorageProvider;
         private readonly IBlobUrlResolver _blobUrlResolver;
         private readonly IWebHostEnvironment _hostingEnvironment;
+        private readonly PlatformOptions _platformOptions;
 
         /// <summary>
         /// 
@@ -67,7 +70,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             IPushNotificationManager notifier,
             IBlobStorageProvider blobStorageProvider,
             IBlobUrlResolver blobUrlResolver,
-            IWebHostEnvironment hostingEnvironment)
+            IWebHostEnvironment hostingEnvironment, IOptions<PlatformOptions> platformOptions)
         {
             _sitemapService = sitemapService;
             _sitemapItemService = sitemapItemService;
@@ -79,6 +82,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             _blobStorageProvider = blobStorageProvider;
             _blobUrlResolver = blobUrlResolver;
             _hostingEnvironment = hostingEnvironment;
+            _platformOptions = platformOptions.Value;
         }
 
         /// <summary>
@@ -133,7 +137,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         [Route("")]
         [Authorize(ModuleConstants.Security.Permissions.Create)]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
-        public async Task<ActionResult> AddSitemap([FromBody]Sitemap sitemap)
+        public async Task<ActionResult> AddSitemap([FromBody] Sitemap sitemap)
         {
             if (sitemap == null)
             {
@@ -154,7 +158,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         [Route("")]
         [Authorize(ModuleConstants.Security.Permissions.Update)]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
-        public async Task<ActionResult> UpdateSitemap([FromBody]Sitemap sitemap)
+        public async Task<ActionResult> UpdateSitemap([FromBody] Sitemap sitemap)
         {
             if (sitemap == null)
             {
@@ -215,7 +219,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         [HttpPost]
         [Route("{sitemapId}/items")]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
-        public async Task<ActionResult> AddSitemapItems(string sitemapId, [FromBody]SitemapItem[] items)
+        public async Task<ActionResult> AddSitemapItems(string sitemapId, [FromBody] SitemapItem[] items)
         {
             if (string.IsNullOrEmpty(sitemapId))
             {
@@ -335,7 +339,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             try
             {
                 var relativeUrl = $"tmp/sitemap-{storeId}.zip";
-                var localTmpFolder = _hostingEnvironment.MapPath("~/App_Data/Uploads/tmp");
+                var localTmpFolder = _hostingEnvironment.MapPath(Path.Combine("~/", _platformOptions.LocalUploadFolderPath, "tmp"));
                 var localTmpPath = Path.Combine(localTmpFolder, $"sitemap-{storeId}.zip");
                 if (!Directory.Exists(localTmpFolder))
                 {
