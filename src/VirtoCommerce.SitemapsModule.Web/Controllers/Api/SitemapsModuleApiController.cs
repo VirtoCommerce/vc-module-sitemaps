@@ -29,7 +29,7 @@ using SystemFile = System.IO.File;
 namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     [Route("api/sitemaps")]
     [Authorize(ModuleConstants.Security.Permissions.Read)]
@@ -48,7 +48,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         private readonly PlatformOptions _platformOptions;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="sitemapService"></param>
         /// <param name="sitemapItemService"></param>
@@ -86,7 +86,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -105,7 +105,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -129,7 +129,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="sitemap"></param>
         /// <returns></returns>
@@ -150,7 +150,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="sitemap"></param>
         /// <returns></returns>
@@ -171,7 +171,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
@@ -192,7 +192,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -211,7 +211,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="sitemapId"></param>
         /// <param name="items"></param>
@@ -240,7 +240,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="itemIds"></param>
         /// <returns></returns>
@@ -260,7 +260,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="storeId"></param>
         /// <returns></returns>
@@ -278,7 +278,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="storeId"></param>
         /// <param name="baseUrl"></param>
@@ -294,7 +294,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="storeId"></param>
         /// <param name="baseUrl"></param>
@@ -317,7 +317,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="storeId"></param>
         /// <param name="baseUrl"></param>
@@ -341,36 +341,37 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                 var relativeUrl = $"tmp/sitemap-{storeId}.zip";
                 var localTmpFolder = _hostingEnvironment.MapPath(Path.Combine("~/", _platformOptions.LocalUploadFolderPath, "tmp"));
                 var localTmpPath = Path.Combine(localTmpFolder, $"sitemap-{storeId}.zip");
+
+                // Create directory if not exist
                 if (!Directory.Exists(localTmpFolder))
-                {
                     Directory.CreateDirectory(localTmpFolder);
-                }
 
-                //Import first to local tmp folder because Azure blob storage doesn't support some special file access mode 
-                using (var stream = SystemFile.Open(localTmpPath, FileMode.OpenOrCreate))
+                // Remove old file if exist
+                if (SystemFile.Exists(localTmpPath))
+                    SystemFile.Delete(localTmpPath);
+
+                //Import first to local tmp folder because Azure blob storage doesn't support some special file access mode
+                using (var stream = SystemFile.Open(localTmpPath, FileMode.CreateNew))
                 {
-                    using (var zipArchive = new ZipArchive(stream, ZipArchiveMode.Create, true))
-                    {
-                        await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, "sitemap.xml", SendNotificationWithProgressInfo);
+                    using var zipArchive = new ZipArchive(stream, ZipArchiveMode.Create, true);
 
-                        var sitemapUrls = await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId);
-                        foreach (var sitemapUrl in sitemapUrls)
-                        {
-                            if (!string.IsNullOrEmpty(sitemapUrl))
-                            {
-                                await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, sitemapUrl, SendNotificationWithProgressInfo);
-                            }
-                        }
+                    // Create default sitemap.xml
+                    await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, "sitemap.xml", SendNotificationWithProgressInfo);
+
+                    var sitemapUrls = await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId);
+                    foreach (var sitemapUrl in sitemapUrls.Where(url => !string.IsNullOrEmpty(url)))
+                    {
+                        await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, sitemapUrl, SendNotificationWithProgressInfo);
                     }
                 }
+
                 //Copy export data to blob provider for get public download url
-                using (var localStream = SystemFile.Open(localTmpPath, FileMode.Open))
-                using (var blobStream = _blobStorageProvider.OpenWrite(relativeUrl))
-                {
-                    localStream.CopyTo(blobStream);
-                    notification.DownloadUrl = _blobUrlResolver.GetAbsoluteUrl(relativeUrl);
-                    notification.Description = "Sitemap download finished";
-                }
+                using var localStream = SystemFile.Open(localTmpPath, FileMode.Open);
+                using var blobStream = _blobStorageProvider.OpenWrite(relativeUrl);
+                localStream.CopyTo(blobStream);
+
+                notification.DownloadUrl = _blobUrlResolver.GetAbsoluteUrl(relativeUrl);
+                notification.Description = "Sitemap download finished";
             }
             catch (Exception exception)
             {
@@ -387,11 +388,9 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         private async Task CreateSitemapPartAsync(ZipArchive zipArchive, string storeId, string baseUrl, string sitemapUrl, Action<ExportImportProgressInfo> progressCallback)
         {
             var sitemapPart = zipArchive.CreateEntry(sitemapUrl, CompressionLevel.Optimal);
-            using (var sitemapPartStream = sitemapPart.Open())
-            {
-                var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(storeId, baseUrl, sitemapUrl, progressCallback);
-                stream.CopyTo(sitemapPartStream);
-            }
+            using var sitemapPartStream = sitemapPart.Open();
+            var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(storeId, baseUrl, sitemapUrl, progressCallback);
+            stream.CopyTo(sitemapPartStream);
         }
     }
 }
