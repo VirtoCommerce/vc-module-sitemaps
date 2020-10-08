@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
@@ -326,7 +327,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         [ApiExplorerSettings(IgnoreApi = true)]
         public Task BackgroundDownload(string storeId, string baseUrl, SitemapDownloadNotification notification)
         {
-            if (storeId.IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
+            if (!Regex.IsMatch(storeId, "^[a-zA-Z0-9]+$")) // storeId.IndexOfAny(Path.GetInvalidFileNameChars()) != -1
             {
                 throw new ArgumentException($"Incorrect name of store {storeId}");
             }
