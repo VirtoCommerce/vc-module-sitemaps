@@ -324,7 +324,22 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         /// <param name="notification"></param>
         /// <returns></returns>
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task BackgroundDownload(string storeId, string baseUrl, SitemapDownloadNotification notification)
+        public Task BackgroundDownload(string storeId, string baseUrl, SitemapDownloadNotification notification)
+        {
+            if (storeId.IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
+            {
+                throw new ArgumentException($"Incorrect name of store {storeId}");
+            }
+
+            if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out var correctUri) || correctUri.Segments.Length > 1)
+            {
+                throw new ArgumentException($"Incorrect base URL {baseUrl}");
+            }
+
+            return InnerBackgroundDownload(storeId, baseUrl, notification);
+        }
+
+        private async Task InnerBackgroundDownload(string storeId, string baseUrl, SitemapDownloadNotification notification)
         {
             void SendNotificationWithProgressInfo(ExportImportProgressInfo c)
             {
@@ -352,27 +367,23 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
                 //Import first to local tmp folder because Azure blob storage doesn't support some special file access mode
                 using (var stream = SystemFile.Open(localTmpPath, FileMode.CreateNew))
+                using (var zipArchive = new ZipArchive(stream, ZipArchiveMode.Create, true))
                 {
-                    using (var zipArchive = new ZipArchive(stream, ZipArchiveMode.Create, true))
-                    {
-                        // Create default sitemap.xml
-                        await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, "sitemap.xml", SendNotificationWithProgressInfo);
+                    // Create default sitemap.xml
+                    await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, "sitemap.xml", SendNotificationWithProgressInfo);
 
-                        var sitemapUrls = await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId);
-                        foreach (var sitemapUrl in sitemapUrls.Where(url => !string.IsNullOrEmpty(url)))
-                        {
-                            await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, sitemapUrl, SendNotificationWithProgressInfo);
-                        }
+                    var sitemapUrls = await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId);
+                    foreach (var sitemapUrl in sitemapUrls.Where(url => !string.IsNullOrEmpty(url)))
+                    {
+                        await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, sitemapUrl, SendNotificationWithProgressInfo);
                     }
                 }
 
                 //Copy export data to blob provider for get public download url
                 using (var localStream = SystemFile.Open(localTmpPath, FileMode.Open))
+                using (var blobStream = _blobStorageProvider.OpenWrite(relativeUrl))
                 {
-                    using (var blobStream = _blobStorageProvider.OpenWrite(relativeUrl))
-                    {
-                        localStream.CopyTo(blobStream);
-                    }
+                    localStream.CopyTo(blobStream);
                 }
 
                 notification.DownloadUrl = _blobUrlResolver.GetAbsoluteUrl(relativeUrl);
