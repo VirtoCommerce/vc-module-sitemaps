@@ -353,22 +353,27 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                 //Import first to local tmp folder because Azure blob storage doesn't support some special file access mode
                 using (var stream = SystemFile.Open(localTmpPath, FileMode.CreateNew))
                 {
-                    using var zipArchive = new ZipArchive(stream, ZipArchiveMode.Create, true);
-
-                    // Create default sitemap.xml
-                    await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, "sitemap.xml", SendNotificationWithProgressInfo);
-
-                    var sitemapUrls = await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId);
-                    foreach (var sitemapUrl in sitemapUrls.Where(url => !string.IsNullOrEmpty(url)))
+                    using (var zipArchive = new ZipArchive(stream, ZipArchiveMode.Create, true))
                     {
-                        await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, sitemapUrl, SendNotificationWithProgressInfo);
+                        // Create default sitemap.xml
+                        await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, "sitemap.xml", SendNotificationWithProgressInfo);
+
+                        var sitemapUrls = await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId);
+                        foreach (var sitemapUrl in sitemapUrls.Where(url => !string.IsNullOrEmpty(url)))
+                        {
+                            await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, sitemapUrl, SendNotificationWithProgressInfo);
+                        }
                     }
                 }
 
                 //Copy export data to blob provider for get public download url
-                using var localStream = SystemFile.Open(localTmpPath, FileMode.Open);
-                using var blobStream = _blobStorageProvider.OpenWrite(relativeUrl);
-                localStream.CopyTo(blobStream);
+                using (var localStream = SystemFile.Open(localTmpPath, FileMode.Open))
+                {
+                    using (var blobStream = _blobStorageProvider.OpenWrite(relativeUrl))
+                    {
+                        localStream.CopyTo(blobStream);
+                    }
+                }
 
                 notification.DownloadUrl = _blobUrlResolver.GetAbsoluteUrl(relativeUrl);
                 notification.Description = "Sitemap download finished";
@@ -388,9 +393,11 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         private async Task CreateSitemapPartAsync(ZipArchive zipArchive, string storeId, string baseUrl, string sitemapUrl, Action<ExportImportProgressInfo> progressCallback)
         {
             var sitemapPart = zipArchive.CreateEntry(sitemapUrl, CompressionLevel.Optimal);
-            using var sitemapPartStream = sitemapPart.Open();
-            var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(storeId, baseUrl, sitemapUrl, progressCallback);
-            stream.CopyTo(sitemapPartStream);
+            using (var sitemapPartStream = sitemapPart.Open())
+            {
+                var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(storeId, baseUrl, sitemapUrl, progressCallback);
+                stream.CopyTo(sitemapPartStream);
+            }
         }
     }
 }
