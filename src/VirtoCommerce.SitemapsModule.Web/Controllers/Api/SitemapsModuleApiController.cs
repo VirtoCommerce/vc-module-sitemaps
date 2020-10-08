@@ -326,26 +326,17 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         [ApiExplorerSettings(IgnoreApi = true)]
         public Task BackgroundDownload(string storeId, string baseUrl, SitemapDownloadNotification notification)
         {
-            var validStoreId = GetValidStoreId(storeId);
+            if (storeId.IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
+            {
+                throw new ArgumentException($"Incorrect name of store {storeId}");
+            }
 
             if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out var correctUri) || correctUri.Segments.Length > 1)
             {
                 throw new ArgumentException($"Incorrect base URL {baseUrl}");
             }
 
-            return InnerBackgroundDownload(validStoreId, baseUrl, notification);
-        }
-
-        private string GetValidStoreId(string storeId)
-        {
-            if (storeId.IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
-            {
-                throw new ArgumentException($"Incorrect name of store {storeId}");
-            }
-            else
-            {
-                return storeId;
-            }
+            return InnerBackgroundDownload(storeId, baseUrl, notification);
         }
 
         private async Task InnerBackgroundDownload(string storeId, string baseUrl, SitemapDownloadNotification notification)
