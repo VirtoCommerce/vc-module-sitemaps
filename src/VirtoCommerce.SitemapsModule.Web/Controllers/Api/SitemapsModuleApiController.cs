@@ -336,7 +336,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                 throw new ArgumentException($"Incorrect name of store {storeId}");
             }
 
-            if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out var correctUri) || correctUri.Segments.Length > 1)
+            if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out var correctUri))
             {
                 throw new ArgumentException($"Incorrect base URL {baseUrl}");
             }
