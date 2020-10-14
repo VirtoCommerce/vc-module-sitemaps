@@ -331,7 +331,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             // sanitizer for Sonar Cube do not trust it, so we use Regex here with same logic. Check this out
             // https://community.sonarsource.com/t/help-sonarcloud-with-understanding-the-usage-of-untrusted-and-tainted-input/9873/7
             // Btw, we cannot move this to extansion or any method from here because sonar ignore any outer checks :(
-            if (!Regex.IsMatch(storeId, "^[a-zA-Z0-9]+$"))
+            if (!Regex.IsMatch(storeId, "^[a-zA-Z0-9-]+$"))
             {
                 throw new ArgumentException($"Incorrect name of store {storeId}");
             }
