@@ -61,6 +61,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         /// <param name="blobStorageProvider"></param>
         /// <param name="blobUrlResolver"></param>
         /// <param name="hostingEnvironment"></param>
+        /// <param name="platformOptions"></param>
         public SitemapsModuleApiController(
             ISitemapService sitemapService,
             ISitemapItemService sitemapItemService,
@@ -71,7 +72,8 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             IPushNotificationManager notifier,
             IBlobStorageProvider blobStorageProvider,
             IBlobUrlResolver blobUrlResolver,
-            IWebHostEnvironment hostingEnvironment, IOptions<PlatformOptions> platformOptions)
+            IWebHostEnvironment hostingEnvironment, 
+            IOptions<PlatformOptions> platformOptions)
         {
             _sitemapService = sitemapService;
             _sitemapItemService = sitemapItemService;
