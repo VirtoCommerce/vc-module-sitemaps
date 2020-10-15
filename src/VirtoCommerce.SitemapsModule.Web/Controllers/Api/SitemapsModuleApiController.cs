@@ -385,13 +385,14 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                 }
 
                 //Copy export data to blob provider for get public download url
-                using (var localStream = SystemFile.Open(localTmpPath, FileMode.Open))
+                using (var localStream = SystemFile.Open(localTmpPath, FileMode.Open, FileAccess.Read))
                 using (var blobStream = _blobStorageProvider.OpenWrite(relativeUrl))
                 {
                     localStream.CopyTo(blobStream);
                 }
 
-                notification.DownloadUrl = _blobUrlResolver.GetAbsoluteUrl(relativeUrl);
+                // Add unique key for every link to prevent browser caching
+                notification.DownloadUrl = $"{_blobUrlResolver.GetAbsoluteUrl(relativeUrl)}?v={Guid.NewGuid():N}";
                 notification.Description = "Sitemap download finished";
             }
             catch (Exception exception)
