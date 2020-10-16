@@ -394,7 +394,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                 }
 
                 // Add unique key for every link to prevent browser caching
-                notification.DownloadUrl = $"{_blobUrlResolver.GetAbsoluteUrl(relativeUrl)}?v={Guid.NewGuid():N}";
+                notification.DownloadUrl = $"{_blobUrlResolver.GetAbsoluteUrl(relativeUrl)}?v={DateTime.UtcNow.Ticks}";
                 notification.Description = "Sitemap download finished";
             }
             catch (Exception exception)
