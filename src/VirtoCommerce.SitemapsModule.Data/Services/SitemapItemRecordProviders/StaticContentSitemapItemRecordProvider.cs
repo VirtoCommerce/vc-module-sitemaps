@@ -31,92 +31,111 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         }
 
         #region ISitemapItemRecordProvider members
+
         public virtual async Task LoadSitemapItemRecordsAsync(Store store, Sitemap sitemap, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
         {
             var progressInfo = new ExportImportProgressInfo();
 
             var contentBasePath = $"Pages/{sitemap.StoreId}";
             var storageProvider = _blobStorageProviderFactory.CreateProvider(contentBasePath);
-            var options = new SitemapItemOptions();
-            var staticContentSitemapItems = sitemap.Items.Where(si => !string.IsNullOrEmpty(si.ObjectType) &&
-                                                                      (si.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem) ||
-                                                                       si.ObjectType.EqualsInvariant(SitemapItemTypes.Folder)))
-                                                                       .ToList();
+
+            var staticContentSitemapItems = sitemap.Items
+                .Where(si => !string.IsNullOrEmpty(si.ObjectType))
+                .Where(si => si.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem) || si.ObjectType.EqualsInvariant(SitemapItemTypes.Folder))
+                .ToList();
+
             var totalCount = staticContentSitemapItems.Count;
-            if (totalCount > 0)
+            if (totalCount <= 0)
             {
-                var processedCount = 0;
+                return;
+            }
 
-                var acceptedFilenameExtensions = SettingsManager.GetValue(ModuleConstants.Settings.General.AcceptedFilenameExtensions.Name, ".md,.html")
-                    .Split(',')
-                    .Select(i => i.Trim())
-                    .Where(i => !string.IsNullOrEmpty(i))
-                    .ToList();
+            var processedCount = 0;
 
-                progressInfo.Description = $"Content: Starting records generation  for {totalCount} pages";
-                progressCallback?.Invoke(progressInfo);
+            var acceptedFilenameExtensions = SettingsManager.GetValue(ModuleConstants.Settings.General.AcceptedFilenameExtensions.Name, ".md,.html")
+                .Split(',')
+                .Select(i => i.Trim())
+                .Where(i => !string.IsNullOrEmpty(i))
+                .ToList();
 
-                foreach (var sitemapItem in staticContentSitemapItems)
+            progressInfo.Description = $"Content: Starting records generation  for {totalCount} pages";
+            progressCallback?.Invoke(progressInfo);
+
+            foreach (var sitemapItem in staticContentSitemapItems)
+            {
+                var urls = new List<string>();
+                if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.Folder))
                 {
-                    var urls = new List<string>();
-                    if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.Folder))
+                    var searchResult = await storageProvider.SearchAsync(sitemapItem.UrlTemplate, null);
+                    var itemUrls = await GetItemUrls(storageProvider, searchResult);
+                    foreach (var itemUrl in itemUrls.Where(itemUrl => IsExtensionAllowed(acceptedFilenameExtensions, itemUrl)))
                     {
-                        var searchResult = await storageProvider.SearchAsync(sitemapItem.UrlTemplate, null);
-                        var itemUrls = await GetItemUrls(storageProvider, searchResult);
-                        foreach (var itemUrl in itemUrls)
-                        {
-                            var itemExtension = Path.GetExtension(itemUrl);
-                            if (!acceptedFilenameExtensions.Any() ||
-                                string.IsNullOrEmpty(itemExtension) ||
-                                acceptedFilenameExtensions.Contains(itemExtension, StringComparer.OrdinalIgnoreCase))
-                            {
-                                urls.Add(itemUrl);
-                            }
-                        }
+                        urls.Add(itemUrl);
                     }
-                    else if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem))
+                }
+                else if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem))
+                {
+                    var item = await storageProvider.GetBlobInfoAsync(sitemapItem.UrlTemplate);
+                    if (item != null && IsExtensionAllowed(acceptedFilenameExtensions, item.RelativeUrl))
                     {
-                        var item = await storageProvider.GetBlobInfoAsync(sitemapItem.UrlTemplate);
-                        if (item != null)
-                        {
-                            urls.Add(item.RelativeUrl);
-                        }
+                        urls.Add(item.RelativeUrl);
                     }
-                    totalCount = urls.Count;
+                }
 
-                    foreach (var url in urls)
+                totalCount = urls.Count;
+
+                foreach (var url in urls)
+                {
+                    using (var stream = storageProvider.OpenRead(url))
                     {
-                        using (var stream = storageProvider.OpenRead(url))
-                        {
-                            var content = stream.ReadToString();
-                            var frontMatterPermalink = new FrontMatterPermalink("/");
-                            if (content.TryParseJson(out var token))
-                            {
-                                if (token.HasValues && token.First["permalink"] != null)
-                                {
-                                    frontMatterPermalink = new FrontMatterPermalink(token.First["permalink"].ToString());
-                                }
-                            }
-                            else
-                            {
-                                var yamlHeader = ReadYamlHeader(content);
-                                yamlHeader.TryGetValue("permalink", out var permalinks);
-                                frontMatterPermalink = new FrontMatterPermalink(url.Replace(".md", ""));
-                                if (permalinks != null)
-                                {
-                                    frontMatterPermalink = new FrontMatterPermalink(permalinks.FirstOrDefault());
-                                }
-                            }
-                            sitemapItem.ItemsRecords.AddRange(GetSitemapItemRecords(store, options, frontMatterPermalink.ToUrl().TrimStart('/'), baseUrl));
-                            processedCount++;
-                            progressInfo.Description = $"Content: Have been generated records for {processedCount} of {totalCount} pages";
-                            progressCallback?.Invoke(progressInfo);
-                        }
+                        var content = stream.ReadToString();
+                        var frontMatterPermalink = GetPermalink(content, url);
+                        var urlTemplate = frontMatterPermalink.ToUrl().TrimStart('/');
+                        var records = base.GetSitemapItemRecords(store, new SitemapItemOptions(), urlTemplate, baseUrl);
+                        sitemapItem.ItemsRecords.AddRange(records);
                     }
+
+                    processedCount++;
+                    progressInfo.Description = $"Content: Have been generated records for {processedCount} of {totalCount} pages";
+                    progressCallback?.Invoke(progressInfo);
                 }
             }
         }
-        #endregion
+
+        private bool IsExtensionAllowed(IEnumerable<string> acceptedFilenameExtensions, string itemUrl)
+        {
+            if (!acceptedFilenameExtensions.Any())
+            {
+                return true;
+            }
+
+            var itemExtension = Path.GetExtension(itemUrl);
+            if (string.IsNullOrEmpty(itemExtension) || acceptedFilenameExtensions.Contains(itemExtension, StringComparer.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private FrontMatterPermalink GetPermalink(string content, string url)
+        {
+            if (content.TryParseJson(out var token) && token.HasValues && token.First["permalink"] != null)
+            {
+                return new FrontMatterPermalink(token.First["permalink"].ToString());
+            }
+
+            var yamlHeader = ReadYamlHeader(content);
+            yamlHeader.TryGetValue("permalink", out var permalinks);
+            if (permalinks != null)
+            {
+                return new FrontMatterPermalink(permalinks.FirstOrDefault());
+            }
+
+            return new FrontMatterPermalink(url.Replace(".md", ""));
+        }
+
+        #endregion ISitemapItemRecordProvider members
 
         private async static Task<ICollection<string>> GetItemUrls(IBlobContentStorageProvider storageProvider, GenericSearchResult<BlobEntry> searchResult)
         {
