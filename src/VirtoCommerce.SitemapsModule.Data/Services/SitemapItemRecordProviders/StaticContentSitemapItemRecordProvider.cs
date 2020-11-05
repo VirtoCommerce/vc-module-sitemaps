@@ -38,10 +38,12 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
             var contentBasePath = $"Pages/{sitemap.StoreId}";
             var storageProvider = _blobStorageProviderFactory.CreateProvider(contentBasePath);
-            var staticContentSitemapItems = sitemap.Items.Where(si => !string.IsNullOrEmpty(si.ObjectType) &&
-                                                                      (si.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem) ||
-                                                                       si.ObjectType.EqualsInvariant(SitemapItemTypes.Folder)))
-                                                                       .ToList();
+
+            var staticContentSitemapItems = sitemap.Items
+                .Where(si => !string.IsNullOrEmpty(si.ObjectType))
+                .Where(si => si.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem) || si.ObjectType.EqualsInvariant(SitemapItemTypes.Folder))
+                .ToList();
+
             var totalCount = staticContentSitemapItems.Count;
             if (totalCount <= 0)
             {
@@ -66,21 +68,15 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 {
                     var searchResult = await storageProvider.SearchAsync(sitemapItem.UrlTemplate, null);
                     var itemUrls = await GetItemUrls(storageProvider, searchResult);
-                    foreach (var itemUrl in itemUrls)
+                    foreach (var itemUrl in itemUrls.Where(itemUrl => IsExtensionAllowed(acceptedFilenameExtensions, itemUrl)))
                     {
-                        var itemExtension = Path.GetExtension(itemUrl);
-                        if (!acceptedFilenameExtensions.Any() ||
-                            string.IsNullOrEmpty(itemExtension) ||
-                            acceptedFilenameExtensions.Contains(itemExtension, StringComparer.OrdinalIgnoreCase))
-                        {
-                            urls.Add(itemUrl);
-                        }
+                        urls.Add(itemUrl);
                     }
                 }
                 else if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem))
                 {
                     var item = await storageProvider.GetBlobInfoAsync(sitemapItem.UrlTemplate);
-                    if (item != null)
+                    if (item != null && IsExtensionAllowed(acceptedFilenameExtensions, item.RelativeUrl))
                     {
                         urls.Add(item.RelativeUrl);
                     }
@@ -104,6 +100,22 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                     progressCallback?.Invoke(progressInfo);
                 }
             }
+        }
+
+        private bool IsExtensionAllowed(IEnumerable<string> acceptedFilenameExtensions, string itemUrl)
+        {
+            if (!acceptedFilenameExtensions.Any())
+            {
+                return true;
+            }
+
+            var itemExtension = Path.GetExtension(itemUrl);
+            if (string.IsNullOrEmpty(itemExtension) || acceptedFilenameExtensions.Contains(itemExtension, StringComparer.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private FrontMatterPermalink GetPermalink(string content, string url)
