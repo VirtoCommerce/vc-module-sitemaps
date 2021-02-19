@@ -28,7 +28,7 @@ namespace VirtoCommerce.SitemapsModule.Core
                 {
                     Name = "Sitemap.RecordsLimitPerFile",
                     GroupName = "Sitemap|General",
-                    ValueType = SettingValueType.Integer,
+                    ValueType = SettingValueType.PositiveInteger,
                     DefaultValue = 10000
                 };
 
@@ -44,7 +44,7 @@ namespace VirtoCommerce.SitemapsModule.Core
                 {
                     Name = "Sitemap.SearchBunchSize",
                     GroupName = "Sitemap|General",
-                    ValueType = SettingValueType.Integer,
+                    ValueType = SettingValueType.PositiveInteger,
                     DefaultValue = 500
                 };
 
