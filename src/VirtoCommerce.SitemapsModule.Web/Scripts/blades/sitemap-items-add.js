@@ -1,4 +1,4 @@
-﻿angular.module('virtoCommerce.sitemapsModule')
+angular.module('virtoCommerce.sitemapsModule')
 .controller('virtoCommerce.sitemapsModule.sitemapItemsAddController', ['$scope', 'platformWebApp.bladeNavigationService', 'virtoCommerce.sitemapsModule.sitemapApi', 'virtoCommerce.sitemapsModule.knownSitemapItemTypes', function ($scope, bladeNavigationService, sitemapApi, knownSitemapItemTypes) {
     var blade = $scope.blade;
     $scope.availableTypes = knownSitemapItemTypes.types;
@@ -113,7 +113,7 @@
         title: 'sitemapsModule.blades.addStaticContentItems.title',
         controller: 'virtoCommerce.sitemapsModule.staticContentItemSelectController',
         template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/static-content-items-select.tpl.html',
-        headIcon: 'fa-code',
+        headIcon: 'fa fa-code',
         breadcrumbs: null,
         currentEntity: {}
     }
