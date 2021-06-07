@@ -1,4 +1,4 @@
-﻿angular.module('virtoCommerce.sitemapsModule')
+angular.module('virtoCommerce.sitemapsModule')
 .controller('virtoCommerce.sitemapsModule.staticContentItemSelectController', ['$scope', '$timeout', 'virtoCommerce.contentModule.contentApi', 'platformWebApp.bladeNavigationService', 'platformWebApp.bladeUtils', 'platformWebApp.uiGridHelper',
 function ($scope, $timeout, staticContent, bladeNavigationService, bladeUtils, uiGridHelper) {
     var blade = $scope.blade;
@@ -97,7 +97,7 @@ function ($scope, $timeout, staticContent, bladeNavigationService, bladeUtils, u
             }
             blade.breadcrumbs = breadcrumbs;
         } else {
-            blade.breadcrumbs = [generateBreadcrumb(null, 'all')];
+            blade.breadcrumbs = [generateBreadcrumb(undefined, 'sitemapsModule.blades.addStaticContentItems.bread-crumb-top')];
         }
     }
 
