@@ -3,7 +3,7 @@
     <id>VirtoCommerce.Sitemaps</id>
     <version>3.8.0</version>
     <version-tag />
-    <platformVersion>3.60.0-alpha.11919</platformVersion>
+    <platformVersion>3.60.0</platformVersion>
     <title>Sitemaps module</title>
     <description>Sitemaps generation management for stores</description>
     <authors>
