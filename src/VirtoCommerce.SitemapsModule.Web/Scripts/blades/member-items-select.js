@@ -91,7 +91,7 @@ function ($scope, $timeout, members, dialogService, bladeUtils, uiGridHelper, me
             }
             blade.breadcrumbs = breadcrumbs;
         } else {
-            blade.breadcrumbs = [generateBreadcrumb(null, 'all')];
+            blade.breadcrumbs = [generateBreadcrumb(undefined, 'sitemapsModule.blades.addVendorItems.bread-crumb-top')];
         }
     }
 
