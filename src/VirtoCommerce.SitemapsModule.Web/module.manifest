@@ -26,7 +26,7 @@
         <dependency id="VirtoCommerce.Content" version="3.14.0" />
         <dependency id="VirtoCommerce.Customer" version="3.0.0" />
         <dependency id="VirtoCommerce.Store" version="3.0.0" />
-        <dependency id="VirtoCommerce.Assets" version="3.0.0" />
+        <dependency id="VirtoCommerce.Assets" version="1.0.0" />
     </dependencies>
     <groups>
         <group>commerce</group>
