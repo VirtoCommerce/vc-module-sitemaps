@@ -1,4 +1,4 @@
-﻿angular.module('virtoCommerce.customerModule')
+angular.module('virtoCommerce.customerModule')
 .controller('virtoCommerce.customerModule.memberItemSelectController', ['$scope', '$timeout', 'virtoCommerce.customerModule.members', 'platformWebApp.dialogService', 'platformWebApp.bladeUtils', 'platformWebApp.uiGridHelper', 'virtoCommerce.customerModule.memberTypesResolverService',
 function ($scope, $timeout, members, dialogService, bladeUtils, uiGridHelper, memberTypesResolverService) {
     $scope.uiGridConstants = uiGridHelper.uiGridConstants;
@@ -6,7 +6,7 @@ function ($scope, $timeout, members, dialogService, bladeUtils, uiGridHelper, me
     var blade = $scope.blade;
     blade.selectedItems = [];
 
-    blade.headIcon = 'fa-user';
+    blade.headIcon = 'fa fa-user';
     blade.currentEntity = {};
     blade.setSelectedNode = function (listItem) {
         $scope.selectedNodeId = listItem.id;
@@ -91,7 +91,7 @@ function ($scope, $timeout, members, dialogService, bladeUtils, uiGridHelper, me
             }
             blade.breadcrumbs = breadcrumbs;
         } else {
-            blade.breadcrumbs = [generateBreadcrumb(null, 'all')];
+            blade.breadcrumbs = [generateBreadcrumb(undefined, 'sitemapsModule.blades.addVendorItems.bread-crumb-top')];
         }
     }
 
