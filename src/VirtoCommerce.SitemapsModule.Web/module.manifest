@@ -22,7 +22,7 @@
     <moduleType>VirtoCommerce.SitemapsModule.Web.Module, VirtoCommerce.SitemapsModule.Web</moduleType>
     <dependencies>
         <dependency id="VirtoCommerce.Core" version="3.0.0" />
-        <dependency id="VirtoCommerce.Catalog" version="3.0.0" />
+        <dependency id="VirtoCommerce.Catalog" version="3.78.0" />
         <dependency id="VirtoCommerce.Content" version="3.14.0" />
         <dependency id="VirtoCommerce.Customer" version="3.0.0" />
         <dependency id="VirtoCommerce.Store" version="3.0.0" />
