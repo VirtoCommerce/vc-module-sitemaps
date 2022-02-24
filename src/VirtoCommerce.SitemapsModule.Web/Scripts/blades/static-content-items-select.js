@@ -16,15 +16,34 @@ function ($scope, $timeout, staticContent, bladeNavigationService, bladeUtils, u
             staticContentBlade.confirmChangesFn(sitemapItems, staticContentBlade);
         }
     }];
-
+    
     blade.refresh = function () {
         blade.isLoading = true;
-        staticContent.query({
+        var pagesPromise = staticContent.query({
             contentType: 'pages',
             storeId: blade.storeId,
             keyword: blade.searchKeyword,
             folderUrl: blade.currentEntity.url
-        }, function (data) {
+        }).$promise;
+
+        var promises = [pagesPromise];
+        
+        if (!blade.currentEntity.url) {
+            var blogsPromise = staticContent.query({
+                contentType: 'blogs',
+                storeId: blade.storeId,
+                keyword: blade.searchKeyword,
+                folderUrl: blade.currentEntity.url
+            }).$promise;
+
+            promises.unshift(blogsPromise);
+        }
+
+        window.Promise.all(promises).then(function(data) {
+            data = data.reduce(function(x, y) {
+                return x.concat(y);
+            });
+
             $scope.pageSettings.totalItems = data.length;
             _.each(data, function (x) {
                 x.id = x.url;
@@ -34,7 +53,7 @@ function ($scope, $timeout, staticContent, bladeNavigationService, bladeUtils, u
             $scope.listEntries = data;
             blade.isLoading = false;
             setBreadcrumbs();
-        }, function (error) {
+        }).catch(function(error) {
             bladeNavigationService.setError('Error ' + error.status, blade);
             blade.isLoading = false;
         });
