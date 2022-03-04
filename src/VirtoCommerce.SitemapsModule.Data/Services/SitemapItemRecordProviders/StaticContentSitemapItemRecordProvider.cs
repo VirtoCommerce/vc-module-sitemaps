@@ -37,7 +37,10 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             var progressInfo = new ExportImportProgressInfo();
 
             var contentBasePath = $"Pages/{sitemap.StoreId}";
-            var storageProvider = _blobStorageProviderFactory.CreateProvider(contentBasePath);
+            var blogsBasePath = $"{contentBasePath}/blogs";
+
+            var pagesStorageProvider = _blobStorageProviderFactory.CreateProvider(contentBasePath);
+            var blogsStorageProvider = _blobStorageProviderFactory.CreateProvider(blogsBasePath);
 
             var staticContentSitemapItems = sitemap.Items
                 .Where(si => !string.IsNullOrEmpty(si.ObjectType))
@@ -63,30 +66,40 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
             foreach (var sitemapItem in staticContentSitemapItems)
             {
-                var urls = new List<string>();
+                var urls = new Dictionary<string, IBlobContentStorageProvider>();
+
                 if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.Folder))
                 {
-                    var searchResult = await storageProvider.SearchAsync(sitemapItem.UrlTemplate, null);
-                    var itemUrls = await GetItemUrls(storageProvider, searchResult);
+                    var currentStorageProvider = pagesStorageProvider;
+
+                    var searchResult = await pagesStorageProvider.SearchAsync(sitemapItem.UrlTemplate, null);
+
+                    if (searchResult.TotalCount == 0)
+                    {
+                        searchResult = await blogsStorageProvider.SearchAsync(sitemapItem.UrlTemplate, null);
+                        currentStorageProvider = blogsStorageProvider;
+                    }
+
+                    var itemUrls = await GetItemUrls(pagesStorageProvider, searchResult);
                     foreach (var itemUrl in itemUrls.Where(itemUrl => IsExtensionAllowed(acceptedFilenameExtensions, itemUrl)))
                     {
-                        urls.Add(itemUrl);
+                        urls.Add(itemUrl, currentStorageProvider);
                     }
                 }
                 else if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem))
                 {
-                    var item = await storageProvider.GetBlobInfoAsync(sitemapItem.UrlTemplate);
+                    var item = await pagesStorageProvider.GetBlobInfoAsync(sitemapItem.UrlTemplate);
                     if (item != null && IsExtensionAllowed(acceptedFilenameExtensions, item.RelativeUrl))
                     {
-                        urls.Add(item.RelativeUrl);
+                        urls.Add(item.RelativeUrl, pagesStorageProvider);
                     }
                 }
 
                 totalCount = urls.Count;
 
-                foreach (var url in urls)
+                foreach (var (url, provider) in urls)
                 {
-                    using (var stream = storageProvider.OpenRead(url))
+                    await using (var stream = await provider.OpenReadAsync(url))
                     {
                         var content = stream.ReadToString();
                         var frontMatterPermalink = GetPermalink(content, url);
