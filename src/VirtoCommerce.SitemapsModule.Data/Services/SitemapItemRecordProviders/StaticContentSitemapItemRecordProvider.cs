@@ -67,6 +67,12 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.Folder))
                 {
                     var searchResult = await storageProvider.SearchAsync(sitemapItem.UrlTemplate, null);
+
+                    if (searchResult.TotalCount == 0)
+                    {
+                        searchResult = await storageProvider.SearchAsync("blogs/" + sitemapItem.UrlTemplate, null);
+                    }
+
                     var itemUrls = await GetItemUrls(storageProvider, searchResult);
                     foreach (var itemUrl in itemUrls.Where(itemUrl => IsExtensionAllowed(acceptedFilenameExtensions, itemUrl)))
                     {
