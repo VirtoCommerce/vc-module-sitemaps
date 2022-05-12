@@ -40,10 +40,12 @@ namespace VirtoCommerce.SitemapsModule.Web
         /// <param name="serviceCollection"></param>
         public void Initialize(IServiceCollection serviceCollection)
         {
-            var configuration = serviceCollection.BuildServiceProvider().GetRequiredService<IConfiguration>();
-            var connectionString = configuration.GetConnectionString("VirtoCommerce.Sitemaps") ??
-                                   configuration.GetConnectionString("VirtoCommerce");
-            serviceCollection.AddDbContext<SitemapDbContext>(options => options.UseSqlServer(connectionString));
+            serviceCollection.AddDbContext<SitemapDbContext>((provider, options) =>
+            {
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                options.UseSqlServer(configuration.GetConnectionString(ModuleInfo.Id) ?? configuration.GetConnectionString("VirtoCommerce"));
+            });
+
             serviceCollection.AddTransient<ISitemapRepository, SitemapRepository>();
             serviceCollection.AddTransient<Func<ISitemapRepository>>(provider =>
                 () => provider.CreateScope().ServiceProvider.GetRequiredService<ISitemapRepository>());
