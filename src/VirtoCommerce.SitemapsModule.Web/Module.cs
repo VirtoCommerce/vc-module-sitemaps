@@ -18,6 +18,7 @@ using VirtoCommerce.SitemapsModule.Data.ExportImport;
 using VirtoCommerce.SitemapsModule.Data.Repositories;
 using VirtoCommerce.SitemapsModule.Data.Services;
 using VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders;
+using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.Tools;
 
 namespace VirtoCommerce.SitemapsModule.Web
@@ -82,6 +83,7 @@ namespace VirtoCommerce.SitemapsModule.Web
 
             var settingsRegistrar = appBuilder.ApplicationServices.GetRequiredService<ISettingsRegistrar>();
             settingsRegistrar.RegisterSettings(ModuleConstants.Settings.AllSettings, ModuleInfo.Id);
+            settingsRegistrar.RegisterSettingsForType(ModuleConstants.Settings.StoreLevelSettings, nameof(Store));
 
             var allPermissions = ModuleConstants.Security.Permissions.AllPermissions.Select(permissionName => new Permission
             {

@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VirtoCommerce.CatalogModule.Core.Model;
@@ -10,11 +8,10 @@ using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.Settings;
-using VirtoCommerce.SearchModule.Core.Model;
+using VirtoCommerce.SitemapsModule.Core;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
 using VirtoCommerce.StoreModule.Core.Model;
-using VirtoCommerce.SitemapsModule.Core;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 {
@@ -62,8 +59,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         {
             var progressInfo = new ExportImportProgressInfo();
 
-            var productOptions = GetProductOptions();
-            var categoryOptions = GetCategoryOptions();
+            var productOptions = GetProductOptions(store);
+            var categoryOptions = GetCategoryOptions(store);
             var batchSize = SettingsManager.GetValue(ModuleConstants.Settings.General.SearchBunchSize.Name, (int)ModuleConstants.Settings.General.SearchBunchSize.DefaultValue);
 
             var categorySitemapItems = sitemap.Items.Where(x => x.ObjectType.EqualsInvariant(SitemapItemTypes.Category))
@@ -104,7 +101,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         protected virtual async Task LoadProductsSitemapItemRecordsAsync(Store store, Sitemap sitemap, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
         {
             var progressInfo = new ExportImportProgressInfo();
-            var productOptions = GetProductOptions();
+            var productOptions = GetProductOptions(store);
             var batchSize = SettingsManager.GetValue(ModuleConstants.Settings.General.SearchBunchSize.Name, (int)ModuleConstants.Settings.General.SearchBunchSize.DefaultValue);
 
             var skip = 0;
@@ -135,21 +132,36 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             }
         }
 
-        private SitemapItemOptions GetProductOptions()
+        private SitemapItemOptions GetStoreOptions(Store store)
         {
             return new SitemapItemOptions
             {
-                Priority = SettingsManager.GetValue(ModuleConstants.Settings.ProductLinks.ProductPagePriority.Name, 1.0M),
-                UpdateFrequency = SettingsManager.GetValue(ModuleConstants.Settings.ProductLinks.ProductPageUpdateFrequency.Name, UpdateFrequency.Daily)
+                Priority = store.Settings.GetSettingValue(ModuleConstants.Settings.BlogLinks.BlogPagePriority.Name, decimal.MinusOne),
+                UpdateFrequency = store.Settings.GetSettingValue(ModuleConstants.Settings.BlogLinks.BlogPageUpdateFrequency.Name, "")
             };
         }
 
-        private SitemapItemOptions GetCategoryOptions()
+        private SitemapItemOptions GetProductOptions(Store store)
         {
+            var storeOptions = GetStoreOptions(store);
             return new SitemapItemOptions
             {
-                Priority = SettingsManager.GetValue(ModuleConstants.Settings.CategoryLinks.CategoryPagePriority.Name, .7M),
-                UpdateFrequency = SettingsManager.GetValue(ModuleConstants.Settings.CategoryLinks.CategoryPageUpdateFrequency.Name, UpdateFrequency.Weekly)
+                Priority = storeOptions.Priority > -1 ?
+                    storeOptions.Priority : SettingsManager.GetValue(ModuleConstants.Settings.ProductLinks.ProductPagePriority.Name, 1.0M),
+                UpdateFrequency = !string.IsNullOrEmpty(storeOptions.UpdateFrequency) ?
+                    storeOptions.UpdateFrequency : SettingsManager.GetValue(ModuleConstants.Settings.ProductLinks.ProductPageUpdateFrequency.Name, UpdateFrequency.Daily)
+            };
+        }
+
+        private SitemapItemOptions GetCategoryOptions(Store store)
+        {
+            var storeOptions = GetStoreOptions(store);
+            return new SitemapItemOptions
+            {
+                Priority = storeOptions.Priority > -1 ?
+                    storeOptions.Priority : SettingsManager.GetValue(ModuleConstants.Settings.CategoryLinks.CategoryPagePriority.Name, 1.0M),
+                UpdateFrequency = !string.IsNullOrEmpty(storeOptions.UpdateFrequency) ?
+                    storeOptions.UpdateFrequency : SettingsManager.GetValue(ModuleConstants.Settings.CategoryLinks.CategoryPageUpdateFrequency.Name, UpdateFrequency.Daily)
             };
         }
 

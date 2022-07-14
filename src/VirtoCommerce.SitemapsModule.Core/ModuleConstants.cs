@@ -148,8 +148,45 @@ namespace VirtoCommerce.SitemapsModule.Core
                 }
             }
 
+            public static class BlogLinks
+            {
+                public static readonly SettingDescriptor BlogPageUpdateFrequency = new SettingDescriptor
+                {
+                    Name = "Sitemap.BlogPageUpdateFrequency",
+                    GroupName = "Sitemap|Sitemap Blog Links",
+                    ValueType = SettingValueType.ShortText,
+                    AllowedValues = new object[]
+                    {
+                        "always",
+                        "hourly",
+                        "daily",
+                        "weekly",
+                        "monthly",
+                        "yearly",
+                        "never"
+                    }
+                };
 
-            public static IEnumerable<SettingDescriptor> AllSettings => General.AllSettings.Concat(ProductLinks.AllSettings).Concat(CategoryLinks.AllSettings);
+                public static readonly SettingDescriptor BlogPagePriority = new SettingDescriptor
+                {
+                    Name = "Sitemap.BlogPagePriority",
+                    GroupName = "Sitemap|Sitemap Blog Links",
+                    ValueType = SettingValueType.Decimal
+                };
+
+                public static IEnumerable<SettingDescriptor> AllSettings
+                {
+                    get
+                    {
+                        yield return BlogPageUpdateFrequency;
+                        yield return BlogPagePriority;
+                    }
+                }
+            }
+
+            public static IEnumerable<SettingDescriptor> AllSettings => General.AllSettings.Concat(ProductLinks.AllSettings).Concat(CategoryLinks.AllSettings).Concat(BlogLinks.AllSettings);
+
+            public static IEnumerable<SettingDescriptor> StoreLevelSettings => BlogLinks.AllSettings;
         }
     }
 }
