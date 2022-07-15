@@ -132,7 +132,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             }
         }
 
-        private SitemapItemOptions GetStoreOptions(Store store)
+        private static SitemapItemOptions GetStoreOptions(Store store)
         {
             return new SitemapItemOptions
             {
@@ -159,9 +159,9 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             return new SitemapItemOptions
             {
                 Priority = storeOptions.Priority > -1 ?
-                    storeOptions.Priority : SettingsManager.GetValue(ModuleConstants.Settings.CategoryLinks.CategoryPagePriority.Name, 1.0M),
+                    storeOptions.Priority : SettingsManager.GetValue(ModuleConstants.Settings.CategoryLinks.CategoryPagePriority.Name, .7M),
                 UpdateFrequency = !string.IsNullOrEmpty(storeOptions.UpdateFrequency) ?
-                    storeOptions.UpdateFrequency : SettingsManager.GetValue(ModuleConstants.Settings.CategoryLinks.CategoryPageUpdateFrequency.Name, UpdateFrequency.Daily)
+                    storeOptions.UpdateFrequency : SettingsManager.GetValue(ModuleConstants.Settings.CategoryLinks.CategoryPageUpdateFrequency.Name, UpdateFrequency.Weekly)
             };
         }
 

@@ -24,6 +24,8 @@ namespace VirtoCommerce.SitemapsModule.Core
 
         public static class Settings
         {
+#pragma warning disable S3218
+
             public static class General
             {
                 public static readonly SettingDescriptor RecordsLimitPerFile = new SettingDescriptor
@@ -187,6 +189,8 @@ namespace VirtoCommerce.SitemapsModule.Core
             public static IEnumerable<SettingDescriptor> AllSettings => General.AllSettings.Concat(ProductLinks.AllSettings).Concat(CategoryLinks.AllSettings).Concat(BlogLinks.AllSettings);
 
             public static IEnumerable<SettingDescriptor> StoreLevelSettings => BlogLinks.AllSettings;
+
+#pragma warning restore S3218
         }
     }
 }
