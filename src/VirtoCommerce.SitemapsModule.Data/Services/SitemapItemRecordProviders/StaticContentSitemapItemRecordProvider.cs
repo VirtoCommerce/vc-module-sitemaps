@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using VirtoCommerce.ContentModule.Core.Services;
 using VirtoCommerce.AssetsModule.Core.Assets;
+using VirtoCommerce.ContentModule.Core.Services;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.Settings;
@@ -97,7 +97,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                         var content = stream.ReadToString();
                         var frontMatterPermalink = GetPermalink(content, url);
                         var urlTemplate = frontMatterPermalink.ToUrl().TrimStart('/');
-                        var records = base.GetSitemapItemRecords(store, new SitemapItemOptions(), urlTemplate, baseUrl);
+                        var blogOptions = GetBlogOptions(store);
+                        var records = base.GetSitemapItemRecords(store, blogOptions, urlTemplate, baseUrl);
                         sitemapItem.ItemsRecords.AddRange(records);
                     }
 
@@ -107,6 +108,21 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 }
             }
         }
+
+        private SitemapItemOptions GetBlogOptions(Store store)
+        {
+            var storeOptionPriority = store.Settings.GetSettingValue(ModuleConstants.Settings.BlogLinks.BlogPagePriority.Name, decimal.MinusOne);
+            var storeOptionUpdateFrequency = store.Settings.GetSettingValue(ModuleConstants.Settings.BlogLinks.BlogPageUpdateFrequency.Name, "");
+
+            return new SitemapItemOptions
+            {
+                Priority = storeOptionPriority > -1 ?
+                    storeOptionPriority : SettingsManager.GetValue(ModuleConstants.Settings.BlogLinks.BlogPagePriority.Name, .5M),
+                UpdateFrequency = !string.IsNullOrEmpty(storeOptionUpdateFrequency) ?
+                    storeOptionUpdateFrequency : SettingsManager.GetValue(ModuleConstants.Settings.BlogLinks.BlogPageUpdateFrequency.Name, UpdateFrequency.Weekly)
+            };
+        }
+
 
         private bool IsExtensionAllowed(IEnumerable<string> acceptedFilenameExtensions, string itemUrl)
         {

@@ -135,7 +135,7 @@ namespace VirtoCommerce.SitemapsModule.Core
                 public static readonly SettingDescriptor CategoryPagePriority = new SettingDescriptor
                 {
                     Name = "Sitemap.CategoryPagePriority",
-                    GroupName = "Sitemap|Product Links",
+                    GroupName = "Sitemap|Category Links",
                     ValueType = SettingValueType.Decimal,
                     DefaultValue = 0.7
                 };
@@ -155,7 +155,7 @@ namespace VirtoCommerce.SitemapsModule.Core
                 public static readonly SettingDescriptor BlogPageUpdateFrequency = new SettingDescriptor
                 {
                     Name = "Sitemap.BlogPageUpdateFrequency",
-                    GroupName = "Sitemap|Sitemap Blog Links",
+                    GroupName = "Sitemap|Sitemaps",
                     ValueType = SettingValueType.ShortText,
                     AllowedValues = new object[]
                     {
@@ -172,14 +172,66 @@ namespace VirtoCommerce.SitemapsModule.Core
                 public static readonly SettingDescriptor BlogPagePriority = new SettingDescriptor
                 {
                     Name = "Sitemap.BlogPagePriority",
-                    GroupName = "Sitemap|Sitemap Blog Links",
+                    GroupName = "Sitemap|Sitemaps",
                     ValueType = SettingValueType.Decimal
+                };
+
+                public static readonly SettingDescriptor CategoryPageUpdateFrequency = new SettingDescriptor
+                {
+                    Name = "Sitemap.CategoryPageUpdateFrequency",
+                    GroupName = "Sitemap|Sitemaps",
+                    ValueType = SettingValueType.ShortText,
+                    AllowedValues = new object[]
+                    {
+                        "always",
+                        "hourly",
+                        "daily",
+                        "weekly",
+                        "monthly",
+                        "yearly",
+                        "never"
+                    },
+                };
+
+                public static readonly SettingDescriptor CategoryPagePriority = new SettingDescriptor
+                {
+                    Name = "Sitemap.CategoryPagePriority",
+                    GroupName = "Sitemap|Sitemaps",
+                    ValueType = SettingValueType.Decimal,
+                };
+
+                public static readonly SettingDescriptor ProductPageUpdateFrequency = new SettingDescriptor
+                {
+                    Name = "Sitemap.ProductPageUpdateFrequency",
+                    GroupName = "Sitemap|Sitemaps",
+                    ValueType = SettingValueType.ShortText,
+                    AllowedValues = new object[]
+                    {
+                        "always",
+                        "hourly",
+                        "daily",
+                        "weekly",
+                        "monthly",
+                        "yearly",
+                        "never"
+                    },
+                };
+
+                public static readonly SettingDescriptor ProductPagePriority = new SettingDescriptor
+                {
+                    Name = "Sitemap.ProductPagePriority",
+                    GroupName = "Sitemap|Sitemaps",
+                    ValueType = SettingValueType.Decimal,
                 };
 
                 public static IEnumerable<SettingDescriptor> AllSettings
                 {
                     get
                     {
+                        yield return CategoryPageUpdateFrequency;
+                        yield return CategoryPagePriority;
+                        yield return ProductPageUpdateFrequency;
+                        yield return ProductPagePriority;
                         yield return BlogPageUpdateFrequency;
                         yield return BlogPagePriority;
                     }
