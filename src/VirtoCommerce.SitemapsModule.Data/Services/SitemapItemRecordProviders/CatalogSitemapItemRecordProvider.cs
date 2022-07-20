@@ -79,6 +79,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                     listEntrySearchCriteria.HideDirectLinkedCategories = true;
                     listEntrySearchCriteria.SearchInChildren = true;
                     listEntrySearchCriteria.WithHidden = false;
+                    listEntrySearchCriteria.SearchInVariations = true;
 
                     do
                     {
