@@ -58,13 +58,10 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         protected virtual async Task LoadCategoriesSitemapItemRecordsAsync(Store store, Sitemap sitemap, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
         {
             var progressInfo = new ExportImportProgressInfo();
-
-            var productOptions = GetProductOptions(store);
             var categoryOptions = GetCategoryOptions(store);
             var batchSize = SettingsManager.GetValue(ModuleConstants.Settings.General.SearchBunchSize.Name, (int)ModuleConstants.Settings.General.SearchBunchSize.DefaultValue);
 
-            var categorySitemapItems = sitemap.Items.Where(x => x.ObjectType.EqualsInvariant(SitemapItemTypes.Category))
-                                                    .ToList();
+            var categorySitemapItems = sitemap.Items.Where(x => x.ObjectType.EqualsInvariant(SitemapItemTypes.Category)).ToList();
             if (categorySitemapItems.Count > 0)
             {
                 progressInfo.Description = $"Catalog: Starting records generation for {categorySitemapItems.Count} category items";
@@ -133,36 +130,31 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             }
         }
 
-        private static SitemapItemOptions GetStoreOptions(Store store)
-        {
-            return new SitemapItemOptions
-            {
-                Priority = store.Settings.GetSettingValue(ModuleConstants.Settings.BlogLinks.BlogPagePriority.Name, decimal.MinusOne),
-                UpdateFrequency = store.Settings.GetSettingValue(ModuleConstants.Settings.BlogLinks.BlogPageUpdateFrequency.Name, "")
-            };
-        }
-
         private SitemapItemOptions GetProductOptions(Store store)
         {
-            var storeOptions = GetStoreOptions(store);
+            var storeOptionProductPriority = store.Settings.GetSettingValue(ModuleConstants.Settings.ProductLinks.ProductPagePriority.Name, decimal.MinusOne);
+            var storeOptionProductUpdateFrequency = store.Settings.GetSettingValue(ModuleConstants.Settings.ProductLinks.ProductPageUpdateFrequency.Name, "");
+
             return new SitemapItemOptions
             {
-                Priority = storeOptions.Priority > -1 ?
-                    storeOptions.Priority : SettingsManager.GetValue(ModuleConstants.Settings.ProductLinks.ProductPagePriority.Name, 1.0M),
-                UpdateFrequency = !string.IsNullOrEmpty(storeOptions.UpdateFrequency) ?
-                    storeOptions.UpdateFrequency : SettingsManager.GetValue(ModuleConstants.Settings.ProductLinks.ProductPageUpdateFrequency.Name, UpdateFrequency.Daily)
+                Priority = storeOptionProductPriority > -1 ?
+                    storeOptionProductPriority : SettingsManager.GetValue(ModuleConstants.Settings.ProductLinks.ProductPagePriority.Name, 1.0M),
+                UpdateFrequency = !string.IsNullOrEmpty(storeOptionProductUpdateFrequency) ?
+                    storeOptionProductUpdateFrequency : SettingsManager.GetValue(ModuleConstants.Settings.ProductLinks.ProductPageUpdateFrequency.Name, UpdateFrequency.Daily)
             };
         }
 
         private SitemapItemOptions GetCategoryOptions(Store store)
         {
-            var storeOptions = GetStoreOptions(store);
+            var storeOptionCategoryPriority = store.Settings.GetSettingValue(ModuleConstants.Settings.CategoryLinks.CategoryPagePriority.Name, decimal.MinusOne);
+            var storeOptionCategoryUpdateFrequency = store.Settings.GetSettingValue(ModuleConstants.Settings.CategoryLinks.CategoryPageUpdateFrequency.Name, "");
+
             return new SitemapItemOptions
             {
-                Priority = storeOptions.Priority > -1 ?
-                    storeOptions.Priority : SettingsManager.GetValue(ModuleConstants.Settings.CategoryLinks.CategoryPagePriority.Name, .7M),
-                UpdateFrequency = !string.IsNullOrEmpty(storeOptions.UpdateFrequency) ?
-                    storeOptions.UpdateFrequency : SettingsManager.GetValue(ModuleConstants.Settings.CategoryLinks.CategoryPageUpdateFrequency.Name, UpdateFrequency.Weekly)
+                Priority = storeOptionCategoryPriority > -1 ?
+                    storeOptionCategoryPriority : SettingsManager.GetValue(ModuleConstants.Settings.CategoryLinks.CategoryPagePriority.Name, .7M),
+                UpdateFrequency = !string.IsNullOrEmpty(storeOptionCategoryUpdateFrequency) ?
+                    storeOptionCategoryUpdateFrequency : SettingsManager.GetValue(ModuleConstants.Settings.CategoryLinks.CategoryPageUpdateFrequency.Name, UpdateFrequency.Weekly)
             };
         }
 
