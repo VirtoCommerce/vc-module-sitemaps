@@ -98,7 +98,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                         var frontMatterPermalink = GetPermalink(content, url);
                         frontMatterPermalink.FilePath = url;
                         var urlTemplate = frontMatterPermalink.ToUrl().TrimStart('/');
-                        var records = base.GetSitemapItemRecords(store, new SitemapItemOptions(), urlTemplate, baseUrl);
+                        var blogOptions = GetBlogOptions(store);
+                        var records = base.GetSitemapItemRecords(store, blogOptions, urlTemplate, baseUrl);
                         sitemapItem.ItemsRecords.AddRange(records);
                     }
 
@@ -108,6 +109,21 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 }
             }
         }
+
+        private SitemapItemOptions GetBlogOptions(Store store)
+        {
+            var storeOptionPriority = store.Settings.GetSettingValue(ModuleConstants.Settings.BlogLinks.BlogPagePriority.Name, decimal.MinusOne);
+            var storeOptionUpdateFrequency = store.Settings.GetSettingValue(ModuleConstants.Settings.BlogLinks.BlogPageUpdateFrequency.Name, "");
+
+            return new SitemapItemOptions
+            {
+                Priority = storeOptionPriority > -1 ?
+                    storeOptionPriority : SettingsManager.GetValue(ModuleConstants.Settings.BlogLinks.BlogPagePriority.Name, .5M),
+                UpdateFrequency = !string.IsNullOrEmpty(storeOptionUpdateFrequency) ?
+                    storeOptionUpdateFrequency : SettingsManager.GetValue(ModuleConstants.Settings.BlogLinks.BlogPageUpdateFrequency.Name, UpdateFrequency.Weekly)
+            };
+        }
+
 
         private static bool IsExtensionAllowed(IEnumerable<string> acceptedFilenameExtensions, string itemUrl)
         {
