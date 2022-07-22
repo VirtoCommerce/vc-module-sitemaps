@@ -24,6 +24,8 @@ namespace VirtoCommerce.SitemapsModule.Core
 
         public static class Settings
         {
+#pragma warning disable S3218
+
             public static class General
             {
                 public static readonly SettingDescriptor RecordsLimitPerFile = new SettingDescriptor
@@ -133,7 +135,7 @@ namespace VirtoCommerce.SitemapsModule.Core
                 public static readonly SettingDescriptor CategoryPagePriority = new SettingDescriptor
                 {
                     Name = "Sitemap.CategoryPagePriority",
-                    GroupName = "Sitemap|Product Links",
+                    GroupName = "Sitemap|Category Links",
                     ValueType = SettingValueType.Decimal,
                     DefaultValue = 0.7
                 };
@@ -148,8 +150,99 @@ namespace VirtoCommerce.SitemapsModule.Core
                 }
             }
 
+            public static class BlogLinks
+            {
+                public static readonly SettingDescriptor BlogPageUpdateFrequency = new SettingDescriptor
+                {
+                    Name = "Sitemap.BlogPageUpdateFrequency",
+                    GroupName = "Sitemap|Sitemaps",
+                    ValueType = SettingValueType.ShortText,
+                    AllowedValues = new object[]
+                    {
+                        "always",
+                        "hourly",
+                        "daily",
+                        "weekly",
+                        "monthly",
+                        "yearly",
+                        "never"
+                    }
+                };
 
-            public static IEnumerable<SettingDescriptor> AllSettings => General.AllSettings.Concat(ProductLinks.AllSettings).Concat(CategoryLinks.AllSettings);
+                public static readonly SettingDescriptor BlogPagePriority = new SettingDescriptor
+                {
+                    Name = "Sitemap.BlogPagePriority",
+                    GroupName = "Sitemap|Sitemaps",
+                    ValueType = SettingValueType.Decimal
+                };
+
+                public static readonly SettingDescriptor CategoryPageUpdateFrequency = new SettingDescriptor
+                {
+                    Name = "Sitemap.CategoryPageUpdateFrequency",
+                    GroupName = "Sitemap|Sitemaps",
+                    ValueType = SettingValueType.ShortText,
+                    AllowedValues = new object[]
+                    {
+                        "always",
+                        "hourly",
+                        "daily",
+                        "weekly",
+                        "monthly",
+                        "yearly",
+                        "never"
+                    },
+                };
+
+                public static readonly SettingDescriptor CategoryPagePriority = new SettingDescriptor
+                {
+                    Name = "Sitemap.CategoryPagePriority",
+                    GroupName = "Sitemap|Sitemaps",
+                    ValueType = SettingValueType.Decimal,
+                };
+
+                public static readonly SettingDescriptor ProductPageUpdateFrequency = new SettingDescriptor
+                {
+                    Name = "Sitemap.ProductPageUpdateFrequency",
+                    GroupName = "Sitemap|Sitemaps",
+                    ValueType = SettingValueType.ShortText,
+                    AllowedValues = new object[]
+                    {
+                        "always",
+                        "hourly",
+                        "daily",
+                        "weekly",
+                        "monthly",
+                        "yearly",
+                        "never"
+                    },
+                };
+
+                public static readonly SettingDescriptor ProductPagePriority = new SettingDescriptor
+                {
+                    Name = "Sitemap.ProductPagePriority",
+                    GroupName = "Sitemap|Sitemaps",
+                    ValueType = SettingValueType.Decimal,
+                };
+
+                public static IEnumerable<SettingDescriptor> AllSettings
+                {
+                    get
+                    {
+                        yield return CategoryPageUpdateFrequency;
+                        yield return CategoryPagePriority;
+                        yield return ProductPageUpdateFrequency;
+                        yield return ProductPagePriority;
+                        yield return BlogPageUpdateFrequency;
+                        yield return BlogPagePriority;
+                    }
+                }
+            }
+
+            public static IEnumerable<SettingDescriptor> AllSettings => General.AllSettings.Concat(ProductLinks.AllSettings).Concat(CategoryLinks.AllSettings).Concat(BlogLinks.AllSettings);
+
+            public static IEnumerable<SettingDescriptor> StoreLevelSettings => BlogLinks.AllSettings;
+
+#pragma warning restore S3218
         }
     }
 }
