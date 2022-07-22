@@ -96,6 +96,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                     {
                         var content = stream.ReadToString();
                         var frontMatterPermalink = GetPermalink(content, url);
+                        frontMatterPermalink.FilePath = url;
                         var urlTemplate = frontMatterPermalink.ToUrl().TrimStart('/');
                         var blogOptions = GetBlogOptions(store);
                         var records = base.GetSitemapItemRecords(store, blogOptions, urlTemplate, baseUrl);
@@ -124,7 +125,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         }
 
 
-        private bool IsExtensionAllowed(IEnumerable<string> acceptedFilenameExtensions, string itemUrl)
+        private static bool IsExtensionAllowed(IEnumerable<string> acceptedFilenameExtensions, string itemUrl)
         {
             if (!acceptedFilenameExtensions.Any())
             {
@@ -140,7 +141,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             return false;
         }
 
-        private FrontMatterPermalink GetPermalink(string content, string url)
+        private static FrontMatterPermalink GetPermalink(string content, string url)
         {
             if (content.TryParseJson(out var token) && token.HasValues && token.First["permalink"] != null)
             {
@@ -159,7 +160,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
         #endregion ISitemapItemRecordProvider members
 
-        private async static Task<ICollection<string>> GetItemUrls(IBlobContentStorageProvider storageProvider, GenericSearchResult<BlobEntry> searchResult)
+        private static async Task<ICollection<string>> GetItemUrls(IBlobContentStorageProvider storageProvider, GenericSearchResult<BlobEntry> searchResult)
         {
             var urls = new List<string>();
 
