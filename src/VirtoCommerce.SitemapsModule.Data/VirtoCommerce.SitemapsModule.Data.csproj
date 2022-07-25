@@ -19,10 +19,10 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-        <PackageReference Include="VirtoCommerce.CatalogModule.Core" Version="3.200.0" />
+        <PackageReference Include="VirtoCommerce.CatalogModule.Core" Version="3.222.0-alpha.1966-pt-8263" />
         <PackageReference Include="VirtoCommerce.ContentModule.Core" Version="3.200.0" />
         <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.200.0" />
-        <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.200.0" />
+        <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.207.0" />
         <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.200.0" />
         <PackageReference Include="VirtoCommerce.StoreModule.Core" Version="3.200.0" />
         <PackageReference Include="VirtoCommerce.Tools" Version="3.200.0" />
