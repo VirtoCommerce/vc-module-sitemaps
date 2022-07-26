@@ -1,4 +1,5 @@
 using System.Linq;
+using VirtoCommerce.CatalogModule.Core.Model.ListEntry;
 using VirtoCommerce.CoreModule.Core.Outlines;
 using VirtoCommerce.CoreModule.Core.Seo;
 using VirtoCommerce.Platform.Core.Common;
@@ -6,8 +7,9 @@ using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
 using VirtoCommerce.SitemapsModule.Data.Converters;
 using VirtoCommerce.SitemapsModule.Data.Extensions;
-using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.Tools;
+using VirtoCommerce.Tools.Models;
+using Store = VirtoCommerce.StoreModule.Core.Model.Store;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services
 {
@@ -36,10 +38,15 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 var hasOutlines = entity as IHasOutlines;
                 var seoInfos = seoSupport.SeoInfos?.Select(x => x.JsonConvert<Tools.Models.SeoInfo>());
                 seoInfos = seoInfos?.GetBestMatchingSeoInfos(toolsStore.Id, toolsStore.DefaultLanguage, language, null);
-                if (!seoInfos.IsNullOrEmpty())
+                if (toolsStore.SeoLinksType == SeoLinksType.None)
+                {
+                    slug = entity is ListEntryBase @base ? $"{@base.Type}/{entity.Id}" : entity.Id;
+                }
+                else if (!seoInfos.IsNullOrEmpty())
                 {
                     slug = seoInfos.Select(x => x.SemanticUrl).FirstOrDefault();
                 }
+
                 if (hasOutlines != null && !hasOutlines.Outlines.IsNullOrEmpty())
                 {
                     var outlines = hasOutlines.Outlines.Select(x => x.JsonConvert<Tools.Models.Outline>());
