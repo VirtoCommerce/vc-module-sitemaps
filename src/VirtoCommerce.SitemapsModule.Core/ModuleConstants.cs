@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Newtonsoft.Json;
 using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.SitemapsModule.Core
@@ -98,7 +99,8 @@ namespace VirtoCommerce.SitemapsModule.Core
                     Name = "Sitemap.ProductPagePriority",
                     GroupName = "Sitemap|Product Links",
                     ValueType = SettingValueType.Decimal,
-                    DefaultValue = 1.0
+                    DefaultValue = 1.0,
+                    IsRequired = true,
                 };
 
                 public static IEnumerable<SettingDescriptor> AllSettings
@@ -137,7 +139,8 @@ namespace VirtoCommerce.SitemapsModule.Core
                     Name = "Sitemap.CategoryPagePriority",
                     GroupName = "Sitemap|Category Links",
                     ValueType = SettingValueType.Decimal,
-                    DefaultValue = 0.7
+                    DefaultValue = 0.7,
+                    IsRequired = true,
                 };
 
                 public static IEnumerable<SettingDescriptor> AllSettings
@@ -173,7 +176,9 @@ namespace VirtoCommerce.SitemapsModule.Core
                 {
                     Name = "Sitemap.BlogPagePriority",
                     GroupName = "Sitemap|Sitemaps",
-                    ValueType = SettingValueType.Decimal
+                    ValueType = SettingValueType.Decimal,
+                    DefaultValue = 0.5,
+                    IsRequired = true,
                 };
 
                 public static readonly SettingDescriptor CategoryPageUpdateFrequency = new SettingDescriptor
@@ -198,6 +203,8 @@ namespace VirtoCommerce.SitemapsModule.Core
                     Name = "Sitemap.CategoryPagePriority",
                     GroupName = "Sitemap|Sitemaps",
                     ValueType = SettingValueType.Decimal,
+                    DefaultValue = 0.7,
+                    IsRequired = true,
                 };
 
                 public static readonly SettingDescriptor ProductPageUpdateFrequency = new SettingDescriptor
@@ -222,6 +229,8 @@ namespace VirtoCommerce.SitemapsModule.Core
                     Name = "Sitemap.ProductPagePriority",
                     GroupName = "Sitemap|Sitemaps",
                     ValueType = SettingValueType.Decimal,
+                    DefaultValue = 1.0,
+                    IsRequired = true,
                 };
 
                 public static IEnumerable<SettingDescriptor> AllSettings
