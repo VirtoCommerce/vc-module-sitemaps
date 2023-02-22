@@ -1,7 +1,6 @@
-﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace VirtoCommerce.SitemapsModule.Data.Migrations
+namespace VirtoCommerce.SitemapsModule.Data.SqlServer.Migrations
 {
     public partial class InitialSitemaps : Migration
     {

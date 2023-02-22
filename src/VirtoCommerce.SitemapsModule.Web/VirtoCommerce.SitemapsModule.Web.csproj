@@ -22,6 +22,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VirtoCommerce.SitemapsModule.Core\VirtoCommerce.SitemapsModule.Core.csproj" />
+    <ProjectReference Include="..\VirtoCommerce.SitemapsModule.Data.MySql\VirtoCommerce.SitemapsModule.Data.MySql.csproj" />
+    <ProjectReference Include="..\VirtoCommerce.SitemapsModule.Data.PostgreSql\VirtoCommerce.SitemapsModule.Data.PostgreSql.csproj" />
+    <ProjectReference Include="..\VirtoCommerce.SitemapsModule.Data.SqlServer\VirtoCommerce.SitemapsModule.Data.SqlServer.csproj" />
     <ProjectReference Include="..\VirtoCommerce.SitemapsModule.Data\VirtoCommerce.SitemapsModule.Data.csproj" />
   </ItemGroup>
 </Project>

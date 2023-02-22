@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace VirtoCommerce.SitemapsModule.Data.Migrations
+namespace VirtoCommerce.SitemapsModule.Data.SqlServer.Migrations
 {
     public partial class UpdateSitemapsV2 : Migration
     {
