@@ -1,11 +1,11 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <id>VirtoCommerce.Sitemaps</id>
   <version>3.208.0</version>
   <version-tag />
   <platformVersion>3.207.0</platformVersion>
-  <title>Sitemaps module</title>
-  <description>Sitemaps generation management for stores</description>
+  <title>Sitemap Generator</title>
+  <description>Simplifies the process of generating sitemaps for online stores</description>
   <authors>
     <author>Andrey Orlov</author>
   </authors>
@@ -16,7 +16,7 @@
   <iconUrl>Modules/$(VirtoCommerce.Sitemaps)/Content/logo.png</iconUrl>
   <requireLicenseAcceptance>false</requireLicenseAcceptance>
   <releaseNotes>First version.</releaseNotes>
-  <copyright>Copyright © 2011-2021 Virto Commerce. All rights reserved</copyright>
+  <copyright>Copyright © 2011-2023 Virto Commerce. All rights reserved</copyright>
   <tags>sitemaps</tags>
   <assemblyFile>VirtoCommerce.SitemapsModule.Web.dll</assemblyFile>
   <moduleType>VirtoCommerce.SitemapsModule.Web.Module, VirtoCommerce.SitemapsModule.Web</moduleType>

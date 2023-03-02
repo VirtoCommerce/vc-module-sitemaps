@@ -3,15 +3,16 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.EntityFrameworkCore.Migrations;
 using VirtoCommerce.SitemapsModule.Data.Repositories;
 
-namespace VirtoCommerce.SitemapsModule.Data.Migrations
+namespace VirtoCommerce.SitemapsModule.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SitemapDbContext))]
-    partial class SitemapDbContextModelSnapshot : ModelSnapshot
+    [Migration("20000000000000_UpdateSitemapsV2")]
+    partial class UpdateSitemapsV2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
