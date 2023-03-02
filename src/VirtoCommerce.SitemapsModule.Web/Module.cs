@@ -15,9 +15,12 @@ using VirtoCommerce.Platform.Data.Extensions;
 using VirtoCommerce.SitemapsModule.Core;
 using VirtoCommerce.SitemapsModule.Core.Services;
 using VirtoCommerce.SitemapsModule.Data.ExportImport;
+using VirtoCommerce.SitemapsModule.Data.MySql;
+using VirtoCommerce.SitemapsModule.Data.PostgreSql;
 using VirtoCommerce.SitemapsModule.Data.Repositories;
 using VirtoCommerce.SitemapsModule.Data.Services;
 using VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders;
+using VirtoCommerce.SitemapsModule.Data.SqlServer;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.Tools;
 
@@ -26,7 +29,7 @@ namespace VirtoCommerce.SitemapsModule.Web
     /// <summary>
     /// 
     /// </summary>
-    public class Module : IModule, IExportSupport, IImportSupport
+    public class Module : IModule, IExportSupport, IImportSupport, IHasConfiguration
     {
         private IApplicationBuilder _appBuilder;
 
@@ -36,6 +39,11 @@ namespace VirtoCommerce.SitemapsModule.Web
         public ManifestModuleInfo ModuleInfo { get; set; }
 
         /// <summary>
+        /// Provides access to application configuration.
+        /// </summary>
+        public IConfiguration Configuration { get; set; }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="serviceCollection"></param>
@@ -43,8 +51,21 @@ namespace VirtoCommerce.SitemapsModule.Web
         {
             serviceCollection.AddDbContext<SitemapDbContext>((provider, options) =>
             {
-                var configuration = provider.GetRequiredService<IConfiguration>();
-                options.UseSqlServer(configuration.GetConnectionString(ModuleInfo.Id) ?? configuration.GetConnectionString("VirtoCommerce"));
+                var databaseProvider = Configuration.GetValue("DatabaseProvider", "SqlServer");
+                var connectionString = Configuration.GetConnectionString(ModuleInfo.Id) ?? Configuration.GetConnectionString("VirtoCommerce");
+
+                switch (databaseProvider)
+                {
+                    case "MySql":
+                        options.UseMySqlDatabase(connectionString);
+                        break;
+                    case "PostgreSql":
+                        options.UsePostgreSqlDatabase(connectionString);
+                        break;
+                    default:
+                        options.UseSqlServerDatabase(connectionString);
+                        break;
+                }
             });
 
             serviceCollection.AddTransient<ISitemapRepository, SitemapRepository>();
@@ -75,9 +96,12 @@ namespace VirtoCommerce.SitemapsModule.Web
 
             using (var serviceScope = appBuilder.ApplicationServices.CreateScope())
             {
+                var databaseProvider = Configuration.GetValue("DatabaseProvider", "SqlServer");
                 var dbContext = serviceScope.ServiceProvider.GetRequiredService<SitemapDbContext>();
-                dbContext.Database.MigrateIfNotApplied(MigrationName.GetUpdateV2MigrationName(ModuleInfo.Id));
-                dbContext.Database.EnsureCreated();
+                if (databaseProvider == "SqlServer")
+                {
+                    dbContext.Database.MigrateIfNotApplied(MigrationName.GetUpdateV2MigrationName(ModuleInfo.Id));
+                }
                 dbContext.Database.Migrate();
             }
 
