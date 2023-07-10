@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using VirtoCommerce.CoreModule.Core.Seo;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
 using VirtoCommerce.StoreModule.Core.Model;
@@ -12,14 +11,12 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 {
     public abstract class SitemapItemRecordProviderBase
     {
-        protected SitemapItemRecordProviderBase(ISettingsManager settingsManager, ISitemapUrlBuilder urlBuilider)
-        {
-            SettingsManager = settingsManager;
-            UrlBuilder = urlBuilider;
-        }
+        private readonly ISitemapUrlBuilder _urlBuilder;
 
-        protected ISettingsManager SettingsManager { get; }
-        protected ISitemapUrlBuilder UrlBuilder { get; }
+        protected SitemapItemRecordProviderBase(ISitemapUrlBuilder urlBuilder)
+        {
+            _urlBuilder = urlBuilder;
+        }
 
         public ICollection<SitemapItemRecord> GetSitemapItemRecords(Store store, SitemapItemOptions options, string urlTemplate, string baseUrl, IEntity entity = null)
         {
@@ -27,28 +24,30 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
             var result = new SitemapItemRecord
             {
-                ModifiedDate = auditableEntity != null ? auditableEntity.ModifiedDate.Value : DateTime.UtcNow,
+                ModifiedDate = auditableEntity?.ModifiedDate ?? DateTime.UtcNow,
                 Priority = options.Priority,
                 UpdateFrequency = options.UpdateFrequency,
-                Url = UrlBuilder.BuildStoreUrl(store, store.DefaultLanguage, urlTemplate, baseUrl, entity)
+                Url = _urlBuilder.BuildStoreUrl(store, store.DefaultLanguage, urlTemplate, baseUrl, entity)
             };
+
             if (entity is ISeoSupport seoSupport)
             {
-                foreach (var seoInfo in seoSupport.SeoInfos.Where(x => x.IsActive))
+                foreach (var languageCode in seoSupport.SeoInfos.Where(x => x.IsActive).Select(x => x.LanguageCode))
                 {
-                    if (store.Languages.Contains(seoInfo.LanguageCode) && !store.DefaultLanguage.EqualsInvariant(seoInfo.LanguageCode))
+                    if (store.Languages.Contains(languageCode) && !store.DefaultLanguage.EqualsInvariant(languageCode))
                     {
                         var alternate = new SitemapItemAlternateLinkRecord
                         {
-                            Language = seoInfo.LanguageCode,
+                            Language = languageCode,
                             Type = "alternate",
-                            Url = UrlBuilder.BuildStoreUrl(store, seoInfo.LanguageCode, urlTemplate, baseUrl, entity)
+                            Url = _urlBuilder.BuildStoreUrl(store, languageCode, urlTemplate, baseUrl, entity)
                         };
                         result.Alternates.Add(alternate);
                     }
                 }
             }
-            return new[] { result }.ToList();
-        }       
+
+            return new List<SitemapItemRecord> { result };
+        }
     }
 }
