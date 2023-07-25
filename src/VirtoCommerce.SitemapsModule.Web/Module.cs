@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -26,30 +25,16 @@ using VirtoCommerce.Tools;
 
 namespace VirtoCommerce.SitemapsModule.Web
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class Module : IModule, IExportSupport, IImportSupport, IHasConfiguration
     {
         private IApplicationBuilder _appBuilder;
 
-        /// <summary>
-        /// 
-        /// </summary>
         public ManifestModuleInfo ModuleInfo { get; set; }
-
-        /// <summary>
-        /// Provides access to application configuration.
-        /// </summary>
         public IConfiguration Configuration { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="serviceCollection"></param>
         public void Initialize(IServiceCollection serviceCollection)
         {
-            serviceCollection.AddDbContext<SitemapDbContext>((provider, options) =>
+            serviceCollection.AddDbContext<SitemapDbContext>(options =>
             {
                 var databaseProvider = Configuration.GetValue("DatabaseProvider", "SqlServer");
                 var connectionString = Configuration.GetConnectionString(ModuleInfo.Id) ?? Configuration.GetConnectionString("VirtoCommerce");
@@ -69,8 +54,7 @@ namespace VirtoCommerce.SitemapsModule.Web
             });
 
             serviceCollection.AddTransient<ISitemapRepository, SitemapRepository>();
-            serviceCollection.AddTransient<Func<ISitemapRepository>>(provider =>
-                () => provider.CreateScope().ServiceProvider.GetRequiredService<ISitemapRepository>());
+            serviceCollection.AddTransient<Func<ISitemapRepository>>(provider => () => provider.CreateScope().ServiceProvider.GetRequiredService<ISitemapRepository>());
 
             serviceCollection.AddTransient<ISitemapService, SitemapService>();
             serviceCollection.AddTransient<ISitemapItemService, SitemapItemService>();
@@ -86,10 +70,6 @@ namespace VirtoCommerce.SitemapsModule.Web
             serviceCollection.AddTransient<SitemapExportImport>();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="appBuilder"></param>
         public void PostInitialize(IApplicationBuilder appBuilder)
         {
             _appBuilder = appBuilder;
@@ -109,31 +89,15 @@ namespace VirtoCommerce.SitemapsModule.Web
             settingsRegistrar.RegisterSettings(ModuleConstants.Settings.AllSettings, ModuleInfo.Id);
             settingsRegistrar.RegisterSettingsForType(ModuleConstants.Settings.StoreLevelSettings, nameof(Store));
 
-            var allPermissions = ModuleConstants.Security.Permissions.AllPermissions.Select(permissionName => new Permission
-            {
-                Name = permissionName,
-                GroupName = "Sitemaps",
-                ModuleId = ModuleInfo.Id
-            }).ToArray();
             var permissionsRegistrar = appBuilder.ApplicationServices.GetRequiredService<IPermissionsRegistrar>();
-            permissionsRegistrar.RegisterPermissions(allPermissions);
+            permissionsRegistrar.RegisterPermissions(ModuleInfo.Id, "Sitemaps", ModuleConstants.Security.Permissions.AllPermissions);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public void Uninstall()
         {
+            // Nothing to do here
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="outStream"></param>
-        /// <param name="options"></param>
-        /// <param name="progressCallback"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
         public async Task ExportAsync(Stream outStream, ExportImportOptions options, Action<ExportImportProgressInfo> progressCallback,
             ICancellationToken cancellationToken)
         {
@@ -141,14 +105,6 @@ namespace VirtoCommerce.SitemapsModule.Web
                 progressCallback, cancellationToken);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="inputStream"></param>
-        /// <param name="options"></param>
-        /// <param name="progressCallback"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
         public async Task ImportAsync(Stream inputStream, ExportImportOptions options, Action<ExportImportProgressInfo> progressCallback,
             ICancellationToken cancellationToken)
         {

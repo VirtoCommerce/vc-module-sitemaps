@@ -17,24 +17,18 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 {
     public class CatalogSitemapItemRecordProvider : SitemapItemRecordProviderBase, ISitemapItemRecordProvider
     {
-        private readonly ICategoryService _сategoryService;
+        private readonly ISettingsManager _settingsManager;
         private readonly IItemService _itemService;
         private readonly IListEntrySearchService _listEntrySearchService;
 
-        public CatalogSitemapItemRecordProvider(ISettingsManager settingsManager, ISitemapUrlBuilder urlBuilider)
-            : base(settingsManager, urlBuilider)
-        {
-        }
-
         public CatalogSitemapItemRecordProvider(
-            ICategoryService categoryService,
-            IItemService itemService,
-            IListEntrySearchService listEntrySearchService,
             ISitemapUrlBuilder urlBuilder,
-            ISettingsManager settingsManager)
-            : base(settingsManager, urlBuilder)
+            ISettingsManager settingsManager,
+            IItemService itemService,
+            IListEntrySearchService listEntrySearchService)
+            : base(urlBuilder)
         {
-            _сategoryService = categoryService;
+            _settingsManager = settingsManager;
             _itemService = itemService;
             _listEntrySearchService = listEntrySearchService;
         }
@@ -58,8 +52,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         protected virtual async Task LoadCategoriesSitemapItemRecordsAsync(Store store, Sitemap sitemap, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
         {
             var progressInfo = new ExportImportProgressInfo();
-            var categoryOptions = GetCategoryOptions(store);
-            var batchSize = SettingsManager.GetValue(ModuleConstants.Settings.General.SearchBunchSize.Name, (int)ModuleConstants.Settings.General.SearchBunchSize.DefaultValue);
+            var categoryOptions = await GetCategoryOptions(store);
+            var batchSize = await _settingsManager.GetValueAsync<int>(ModuleConstants.Settings.General.SearchBunchSize);
 
             var categorySitemapItems = sitemap.Items.Where(x => x.ObjectType.EqualsInvariant(SitemapItemTypes.Category)).ToList();
             if (categorySitemapItems.Count > 0)
@@ -69,7 +63,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
                 foreach (var categorySiteMapItem in categorySitemapItems)
                 {
-                    var totalCount = 0;
+                    int totalCount;
                     var listEntrySearchCriteria = AbstractTypeFactory<CatalogListEntrySearchCriteria>.TryCreateInstance();
                     listEntrySearchCriteria.CategoryId = categorySiteMapItem.ObjectId;
                     listEntrySearchCriteria.Take = batchSize;
@@ -87,7 +81,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                         {
                             categorySiteMapItem.ItemsRecords.AddRange(GetSitemapItemRecords(store, categoryOptions, sitemap.UrlTemplate, baseUrl, listEntry));
                         }
-                        progressInfo.Description = $"Catalog: Have been generated  { Math.Min(listEntrySearchCriteria.Skip, totalCount) } of {totalCount} records for category { categorySiteMapItem.Title } item";
+                        progressInfo.Description = $"Catalog: Have been generated  {Math.Min(listEntrySearchCriteria.Skip, totalCount)} of {totalCount} records for category {categorySiteMapItem.Title} item";
                         progressCallback?.Invoke(progressInfo);
 
                     }
@@ -99,8 +93,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         protected virtual async Task LoadProductsSitemapItemRecordsAsync(Store store, Sitemap sitemap, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
         {
             var progressInfo = new ExportImportProgressInfo();
-            var productOptions = GetProductOptions(store);
-            var batchSize = SettingsManager.GetValue(ModuleConstants.Settings.General.SearchBunchSize.Name, (int)ModuleConstants.Settings.General.SearchBunchSize.DefaultValue);
+            var productOptions = await GetProductOptions(store);
+            var batchSize = await _settingsManager.GetValueAsync<int>(ModuleConstants.Settings.General.SearchBunchSize);
 
             var skip = 0;
             var productSitemapItems = sitemap.Items.Where(x => x.ObjectType.EqualsInvariant(SitemapItemTypes.Product)).ToList();
@@ -112,7 +106,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 do
                 {
                     var productIds = productSitemapItems.Select(x => x.ObjectId).Skip(skip).Take(batchSize).ToArray();
-                    var products = (await _itemService.GetByIdsAsync(productIds, (ItemResponseGroup.Seo | ItemResponseGroup.Outlines).ToString())).Where(p => !p.IsActive.HasValue || p.IsActive.Value);
+                    var products = (await _itemService.GetAsync(productIds, (ItemResponseGroup.Seo | ItemResponseGroup.Outlines).ToString())).Where(p => !p.IsActive.HasValue || p.IsActive.Value);
                     skip += batchSize;
                     foreach (var product in products)
                     {
@@ -123,40 +117,43 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                             productSitemapItem.ItemsRecords.AddRange(itemRecords);
                         }
                     }
-                    progressInfo.Description = $"Catalog: Have been generated  { Math.Min(skip, productSitemapItems.Count) } of {productSitemapItems.Count} records for products items";
+                    progressInfo.Description = $"Catalog: Have been generated  {Math.Min(skip, productSitemapItems.Count)} of {productSitemapItems.Count} records for products items";
                     progressCallback?.Invoke(progressInfo);
                 }
                 while (skip < productSitemapItems.Count);
             }
         }
 
-        private SitemapItemOptions GetProductOptions(Store store)
+        private async Task<SitemapItemOptions> GetProductOptions(Store store)
         {
             var storeOptionProductPriority = store.Settings.GetSettingValue(ModuleConstants.Settings.ProductLinks.ProductPagePriority.Name, decimal.MinusOne);
             var storeOptionProductUpdateFrequency = store.Settings.GetSettingValue(ModuleConstants.Settings.ProductLinks.ProductPageUpdateFrequency.Name, "");
 
             return new SitemapItemOptions
             {
-                Priority = storeOptionProductPriority > -1 ?
-                    storeOptionProductPriority : SettingsManager.GetValue(ModuleConstants.Settings.ProductLinks.ProductPagePriority.Name, 1.0M),
-                UpdateFrequency = !string.IsNullOrEmpty(storeOptionProductUpdateFrequency) ?
-                    storeOptionProductUpdateFrequency : SettingsManager.GetValue(ModuleConstants.Settings.ProductLinks.ProductPageUpdateFrequency.Name, UpdateFrequency.Daily)
+                Priority = storeOptionProductPriority > -1
+                    ? storeOptionProductPriority
+                    : await _settingsManager.GetValueAsync<decimal>(ModuleConstants.Settings.ProductLinks.ProductPagePriority),
+                UpdateFrequency = !string.IsNullOrEmpty(storeOptionProductUpdateFrequency)
+                    ? storeOptionProductUpdateFrequency
+                    : await _settingsManager.GetValueAsync<string>(ModuleConstants.Settings.ProductLinks.ProductPageUpdateFrequency),
             };
         }
 
-        private SitemapItemOptions GetCategoryOptions(Store store)
+        private async Task<SitemapItemOptions> GetCategoryOptions(Store store)
         {
             var storeOptionCategoryPriority = store.Settings.GetSettingValue(ModuleConstants.Settings.CategoryLinks.CategoryPagePriority.Name, decimal.MinusOne);
             var storeOptionCategoryUpdateFrequency = store.Settings.GetSettingValue(ModuleConstants.Settings.CategoryLinks.CategoryPageUpdateFrequency.Name, "");
 
             return new SitemapItemOptions
             {
-                Priority = storeOptionCategoryPriority > -1 ?
-                    storeOptionCategoryPriority : SettingsManager.GetValue(ModuleConstants.Settings.CategoryLinks.CategoryPagePriority.Name, .7M),
-                UpdateFrequency = !string.IsNullOrEmpty(storeOptionCategoryUpdateFrequency) ?
-                    storeOptionCategoryUpdateFrequency : SettingsManager.GetValue(ModuleConstants.Settings.CategoryLinks.CategoryPageUpdateFrequency.Name, UpdateFrequency.Weekly)
+                Priority = storeOptionCategoryPriority > -1
+                    ? storeOptionCategoryPriority
+                    : await _settingsManager.GetValueAsync<decimal>(ModuleConstants.Settings.CategoryLinks.CategoryPagePriority),
+                UpdateFrequency = !string.IsNullOrEmpty(storeOptionCategoryUpdateFrequency)
+                    ? storeOptionCategoryUpdateFrequency
+                    : await _settingsManager.GetValueAsync<string>(ModuleConstants.Settings.CategoryLinks.CategoryPageUpdateFrequency),
             };
         }
-
     }
 }
