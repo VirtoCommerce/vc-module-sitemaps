@@ -98,7 +98,7 @@ namespace VirtoCommerce.SitemapsModule.Core
                     Name = "Sitemap.ProductPagePriority",
                     GroupName = "Sitemap|Product Links",
                     ValueType = SettingValueType.Decimal,
-                    DefaultValue = 1.0,
+                    DefaultValue = 1.0m,
                     IsRequired = true,
                 };
 
@@ -138,7 +138,7 @@ namespace VirtoCommerce.SitemapsModule.Core
                     Name = "Sitemap.CategoryPagePriority",
                     GroupName = "Sitemap|Category Links",
                     ValueType = SettingValueType.Decimal,
-                    DefaultValue = 0.7,
+                    DefaultValue = 0.7m,
                     IsRequired = true,
                 };
 
@@ -168,7 +168,8 @@ namespace VirtoCommerce.SitemapsModule.Core
                         "monthly",
                         "yearly",
                         "never"
-                    }
+                    },
+                    DefaultValue = "weekly",
                 };
 
                 public static readonly SettingDescriptor BlogPagePriority = new SettingDescriptor
@@ -176,7 +177,7 @@ namespace VirtoCommerce.SitemapsModule.Core
                     Name = "Sitemap.BlogPagePriority",
                     GroupName = "Sitemap|Sitemaps",
                     ValueType = SettingValueType.Decimal,
-                    DefaultValue = 0.5,
+                    DefaultValue = 0.5m,
                     IsRequired = true,
                 };
 
@@ -202,7 +203,7 @@ namespace VirtoCommerce.SitemapsModule.Core
                     Name = "Sitemap.CategoryPagePriority",
                     GroupName = "Sitemap|Sitemaps",
                     ValueType = SettingValueType.Decimal,
-                    DefaultValue = 0.7,
+                    DefaultValue = 0.7m,
                     IsRequired = true,
                 };
 
@@ -228,7 +229,7 @@ namespace VirtoCommerce.SitemapsModule.Core
                     Name = "Sitemap.ProductPagePriority",
                     GroupName = "Sitemap|Sitemaps",
                     ValueType = SettingValueType.Decimal,
-                    DefaultValue = 1.0,
+                    DefaultValue = 1.0m,
                     IsRequired = true,
                 };
 

@@ -21,16 +21,19 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 {
     public class StaticContentSitemapItemRecordProvider : SitemapItemRecordProviderBase, ISitemapItemRecordProvider
     {
+        private readonly ISettingsManager _settingsManager;
         private readonly IBlobContentStorageProviderFactory _blobStorageProviderFactory;
         private static readonly Regex _headerRegExp = new Regex(@"(?s:^---(.*?)---)");
 
-        public StaticContentSitemapItemRecordProvider(ISettingsManager settingsManager, ISitemapUrlBuilder urlBuilider, IBlobContentStorageProviderFactory blobStorageProviderFactory)
-            : base(settingsManager, urlBuilider)
+        public StaticContentSitemapItemRecordProvider(
+            ISitemapUrlBuilder urlBuilder,
+            ISettingsManager settingsManager,
+            IBlobContentStorageProviderFactory blobStorageProviderFactory)
+            : base(urlBuilder)
         {
+            _settingsManager = settingsManager;
             _blobStorageProviderFactory = blobStorageProviderFactory;
         }
-
-        #region ISitemapItemRecordProvider members
 
         public virtual async Task LoadSitemapItemRecordsAsync(Store store, Sitemap sitemap, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
         {
@@ -52,7 +55,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
             var processedCount = 0;
 
-            var acceptedFilenameExtensions = SettingsManager.GetValue(ModuleConstants.Settings.General.AcceptedFilenameExtensions.Name, ".md,.html")
+            var acceptedFilenameExtensions = (await _settingsManager.GetValueAsync<string>(ModuleConstants.Settings.General.AcceptedFilenameExtensions))
                 .Split(',')
                 .Select(i => i.Trim())
                 .Where(i => !string.IsNullOrEmpty(i))
@@ -92,14 +95,14 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
                 foreach (var url in urls)
                 {
-                    using (var stream = storageProvider.OpenRead(url))
+                    using (var stream = await storageProvider.OpenReadAsync(url))
                     {
                         var content = stream.ReadToString();
                         var frontMatterPermalink = GetPermalink(content, url);
                         frontMatterPermalink.FilePath = url;
                         var urlTemplate = frontMatterPermalink.ToUrl().TrimStart('/');
-                        var blogOptions = GetBlogOptions(store);
-                        var records = base.GetSitemapItemRecords(store, blogOptions, urlTemplate, baseUrl);
+                        var blogOptions = await GetBlogOptions(store);
+                        var records = GetSitemapItemRecords(store, blogOptions, urlTemplate, baseUrl);
                         sitemapItem.ItemsRecords.AddRange(records);
                     }
 
@@ -110,22 +113,24 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             }
         }
 
-        private SitemapItemOptions GetBlogOptions(Store store)
+
+        private async Task<SitemapItemOptions> GetBlogOptions(Store store)
         {
             var storeOptionPriority = store.Settings.GetSettingValue(ModuleConstants.Settings.BlogLinks.BlogPagePriority.Name, decimal.MinusOne);
             var storeOptionUpdateFrequency = store.Settings.GetSettingValue(ModuleConstants.Settings.BlogLinks.BlogPageUpdateFrequency.Name, "");
 
             return new SitemapItemOptions
             {
-                Priority = storeOptionPriority > -1 ?
-                    storeOptionPriority : SettingsManager.GetValue(ModuleConstants.Settings.BlogLinks.BlogPagePriority.Name, .5M),
-                UpdateFrequency = !string.IsNullOrEmpty(storeOptionUpdateFrequency) ?
-                    storeOptionUpdateFrequency : SettingsManager.GetValue(ModuleConstants.Settings.BlogLinks.BlogPageUpdateFrequency.Name, UpdateFrequency.Weekly)
+                Priority = storeOptionPriority > -1
+                    ? storeOptionPriority
+                    : await _settingsManager.GetValueAsync<decimal>(ModuleConstants.Settings.BlogLinks.BlogPagePriority),
+                UpdateFrequency = !string.IsNullOrEmpty(storeOptionUpdateFrequency)
+                    ? storeOptionUpdateFrequency
+                    : await _settingsManager.GetValueAsync<string>(ModuleConstants.Settings.BlogLinks.BlogPageUpdateFrequency),
             };
         }
 
-
-        private static bool IsExtensionAllowed(IEnumerable<string> acceptedFilenameExtensions, string itemUrl)
+        private static bool IsExtensionAllowed(IList<string> acceptedFilenameExtensions, string itemUrl)
         {
             if (!acceptedFilenameExtensions.Any())
             {
@@ -133,17 +138,13 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             }
 
             var itemExtension = Path.GetExtension(itemUrl);
-            if (string.IsNullOrEmpty(itemExtension) || acceptedFilenameExtensions.Contains(itemExtension, StringComparer.OrdinalIgnoreCase))
-            {
-                return true;
-            }
 
-            return false;
+            return string.IsNullOrEmpty(itemExtension) || acceptedFilenameExtensions.Contains(itemExtension, StringComparer.OrdinalIgnoreCase);
         }
 
         private static FrontMatterPermalink GetPermalink(string content, string url)
         {
-            if (content.TryParseJson(out var token) && token.HasValues && token.First["permalink"] != null)
+            if (content.TryParseJson(out var token) && token.HasValues && token.First?["permalink"] != null)
             {
                 return new FrontMatterPermalink(token.First["permalink"].ToString());
             }
@@ -157,8 +158,6 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
             return new FrontMatterPermalink(url.Replace(".md", ""));
         }
-
-        #endregion ISitemapItemRecordProvider members
 
         private static async Task<ICollection<string>> GetItemUrls(IBlobContentStorageProvider storageProvider, GenericSearchResult<BlobEntry> searchResult)
         {
@@ -182,7 +181,9 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             var retVal = new Dictionary<string, IEnumerable<string>>();
             var headerMatches = _headerRegExp.Matches(text);
             if (headerMatches.Count == 0)
+            {
                 return retVal;
+            }
 
             var input = new StringReader(headerMatches[0].Groups[1].Value);
             var yaml = new YamlStream();
@@ -196,8 +197,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 {
                     foreach (var entry in collection.Children)
                     {
-                        var node = entry.Key as YamlScalarNode;
-                        if (node != null)
+                        if (entry.Key is YamlScalarNode node)
                         {
                             retVal.Add(node.Value, GetYamlNodeValues(entry.Value));
                         }
