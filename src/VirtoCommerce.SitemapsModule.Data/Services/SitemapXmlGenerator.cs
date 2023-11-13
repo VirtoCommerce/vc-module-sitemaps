@@ -73,8 +73,9 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             var recordsLimitPerFile = await _settingsManager.GetValueAsync<int>(ModuleConstants.Settings.General.RecordsLimitPerFile);
 
             var xmlNamespaces = new XmlSerializerNamespaces();
-            xmlNamespaces.Add("", "https://www.sitemaps.org/schemas/sitemap/0.9");
+            //xmlNamespaces.Add("", "https://www.sitemaps.org/schemas/sitemap/0.9");
             xmlNamespaces.Add("xhtml", "https://www.w3.org/1999/xhtml");
+            xmlNamespaces.Add("image", "http://www.google.com/schemas/sitemap-image/1.1");
 
             var sitemapLocation = SitemapLocation.Parse(sitemapUrl, filenameSeparator);
             var store = await _storeService.GetByIdAsync(storeId, StoreResponseGroup.StoreInfo.ToString());
@@ -86,16 +87,20 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 });
 
                 var allStoreSitemaps = await LoadAllStoreSitemaps(store, baseUrl);
+
                 var sitemapIndexXmlRecord = new SitemapIndexXmlRecord();
+
                 foreach (var sitemap in allStoreSitemaps)
                 {
                     var xmlSiteMapRecords = sitemap.PagedLocations.Select(location => new SitemapIndexItemXmlRecord
                     {
                         //ModifiedDate = sitemap.Items.Select(x => x.ModifiedDate).OrderByDescending(x => x).FirstOrDefault()?.ToString("yyyy-MM-dd"),
-                        Url = _sitemapUrlBuilder.BuildStoreUrl(store, store.DefaultLanguage, location, baseUrl)
+                        Url = _sitemapUrlBuilder.BuildStoreUrl(store, store.DefaultLanguage, location, baseUrl),
                     }).ToList();
+
                     sitemapIndexXmlRecord.Sitemaps.AddRange(xmlSiteMapRecords);
                 }
+
                 var xmlSerializer = new XmlSerializer(sitemapIndexXmlRecord.GetType());
                 xmlSerializer.Serialize(stream, sitemapIndexXmlRecord, xmlNamespaces);
             }
@@ -106,12 +111,16 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 if (sitemap != null)
                 {
                     await LoadSitemapRecords(store, sitemap, baseUrl, progressCallback);
-                    var distinctRecords = sitemap.Items.SelectMany(x => x.ItemsRecords).GroupBy(x => x.Url).Select(x => x.FirstOrDefault());
+
+                    var distinctRecords = sitemap.Items.SelectMany(x => x.ItemsRecords);//.GroupBy(x => x.Url).Select(x => x.FirstOrDefault());
                     var sitemapItemRecords = distinctRecords.Skip((sitemapLocation.PageNumber - 1) * recordsLimitPerFile).Take(recordsLimitPerFile).ToArray();
+
                     var sitemapRecord = new SitemapXmlRecord
                     {
+                        xmlns = xmlNamespaces,
                         Items = sitemapItemRecords.Select(i => new SitemapItemXmlRecord().ToXmlModel(i)).ToList()
                     };
+
                     if (sitemapRecord.Items.Count > 0)
                     {
                         var xmlSerializer = new XmlSerializer(sitemapRecord.GetType());
@@ -123,10 +132,9 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             return stream;
         }
 
-
         private async Task<ICollection<Sitemap>> LoadAllStoreSitemaps(Store store, string baseUrl)
         {
-            var result = new List<Sitemap>();
+            var sitemaps = new List<Sitemap>();
             var sitemapSearchCriteria = new SitemapSearchCriteria
             {
                 StoreId = store.Id,
@@ -134,12 +142,15 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 Take = int.MaxValue
             };
             var sitemapSearchResult = await _sitemapSearchService.SearchAsync(sitemapSearchCriteria);
+
             foreach (var sitemap in sitemapSearchResult.Results)
             {
                 await LoadSitemapRecords(store, sitemap, baseUrl);
-                result.Add(sitemap);
+
+                sitemaps.Add(sitemap);
             }
-            return result;
+
+            return sitemaps;
         }
 
         private async Task LoadSitemapRecords(Store store, Sitemap sitemap, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
@@ -154,6 +165,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 Take = int.MaxValue
             };
             sitemap.Items = (await _sitemapItemSearchService.SearchAsync(sitemapItemSearchCriteria)).Results;
+
+            var imageUrls = new List<SitemapItemImageRecord>();
             foreach (var recordProvider in _sitemapItemRecordProviders)
             {
                 //Log exceptions to prevent fail whole sitemap.xml generation

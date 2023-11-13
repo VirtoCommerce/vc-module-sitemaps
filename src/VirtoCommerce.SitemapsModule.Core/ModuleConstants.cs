@@ -60,6 +60,14 @@ namespace VirtoCommerce.SitemapsModule.Core
                     DefaultValue = ".md,.html"
                 };
 
+                public static readonly SettingDescriptor IncludeImages = new SettingDescriptor
+                {
+                    Name = "Sitemap.IncludeImages",
+                    GroupName = "Sitemap|General",
+                    ValueType = SettingValueType.Boolean,
+                    DefaultValue = false
+                };
+
                 public static IEnumerable<SettingDescriptor> AllSettings
                 {
                     get
@@ -68,6 +76,7 @@ namespace VirtoCommerce.SitemapsModule.Core
                         yield return FilenameSeparator;
                         yield return SearchBunchSize;
                         yield return AcceptedFilenameExtensions;
+                        yield return IncludeImages;
                     }
                 }
             }

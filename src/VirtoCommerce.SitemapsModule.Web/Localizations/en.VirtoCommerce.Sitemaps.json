@@ -152,6 +152,10 @@
       "title": "Accepted static content file extensions",
       "description": "This field contains the comma separated list of static content filename extensions which will be included to the sitemap. I.e.: .md,.html"
     },
+    "Sitemap.IncludeImages": {
+      "title": "Should include images in sitemap",
+      "description": "This check indicates whether images should be included in sitemap generation"
+    },
     "Sitemap.ProductPageUpdateFrequency": {
       "title": "Product page update frequency",
       "description": "How frequently the product page is likely to change. This value provides general information to search engines and may not correlate exactly to how often they crawl the page."

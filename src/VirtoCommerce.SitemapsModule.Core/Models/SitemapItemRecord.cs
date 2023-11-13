@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace VirtoCommerce.SitemapsModule.Core.Models
@@ -17,6 +16,8 @@ namespace VirtoCommerce.SitemapsModule.Core.Models
 
         public ICollection<SitemapItemAlternateLinkRecord> Alternates { get; set; } = new List<SitemapItemAlternateLinkRecord>();
 
+        public ICollection<SitemapItemImageRecord> Images { get; set; } = new List<SitemapItemImageRecord>();
+
         #region ICloneable members
 
         public virtual object Clone()
@@ -24,6 +25,7 @@ namespace VirtoCommerce.SitemapsModule.Core.Models
             var result = MemberwiseClone() as SitemapItemRecord;
 
             result.Alternates = Alternates?.Select(x => x.Clone()).OfType<SitemapItemAlternateLinkRecord>().ToList();
+            result.Images = Images?.Select(x => x.Clone()).OfType<SitemapItemImageRecord>().ToList();
 
             return result;
         }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using VirtoCommerce.Platform.Core.Common;
 
@@ -27,6 +26,7 @@ namespace VirtoCommerce.SitemapsModule.Core.Models
         public virtual object Clone()
         {
             var result = MemberwiseClone() as SitemapItem;
+
             result.ItemsRecords = ItemsRecords?.Select(x => x.Clone()).OfType<SitemapItemRecord>().ToList();
 
             return result;
