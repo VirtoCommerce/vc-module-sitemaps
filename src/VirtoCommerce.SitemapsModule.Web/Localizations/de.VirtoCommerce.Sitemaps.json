@@ -119,38 +119,42 @@
         "sitemaps:delete": "Zugriff auf eine Sitemap löschen"
     },
 
-    "settings": {
-        "Sitemap.RecordsLimitPerFile": {
-            "title": "Datensatzbegrenzung",
-            "description": "Aufzeichnungslimit für jede Sitemap-Datei Beachten Sie, dass Suchmaschinen-Crawler Sitepaketdateien akzeptieren, die weniger als 50000 URL-Datensätze enthalten und die Dateigröße weniger als 10 MB beträgt"
-        },
-        "Sitemap.FilenameSeparator": {
-            "title": "Dateinamens-Trennzeichen",
-            "description": "Das Trennzeichen für den Dateinamen der Sitemap und dessen Teil im Falle der Anzahl der Sitemap-Elemente ist größer als die Anzahl der Datensätze pro Datei"
-        },
-        "Sitemap.SearchBunchSize": {
-            "title": "Suche Gruppengröße",
-            "description": "Die Bündelgröße für Suchelemente (z. B. Katalogsuche)"
-        },
-        "Sitemap.AcceptedFilenameExtensions": {
-            "title": "Akzeptierte Dateierweiterungen für statische Inhalte",
-            "description": "Dieses Feld enthält die durch Kommas getrennte Liste der Dateinamenerweiterungen für statische Inhalte, die in der Sitemap enthalten sind. Zum Beispiel: .md,.html"
-        },
-        "Sitemap.ProductPageUpdateFrequency": {
-            "title": "Aktualisierungshäufigkeit der Produktseite",
-            "description": "Gibt an, wie häufig sich die Produktseite ändern wird. Dieser Wert stellt allgemeine Informationen für Suchmaschinen bereit und korreliert möglicherweise nicht genau mit der Häufigkeit, mit der die Seiten gecrawlt werden."
-        },
-        "Sitemap.ProductPagePriority": {
-            "title": "Priorität der Produktseite",
-            "description": "Die Priorität der URL relativ zu anderen URLs auf der Website. Gültige Werte liegen zwischen 0,0 und 1,0. Dieser Wert wirkt sich nicht darauf aus, wie Seiten mit Seiten auf anderen Websites verglichen werden. Dadurch können die Suchmaschinen nur erfahren, welche Seiten für die Crawler am wichtigsten sind."
-        },
-        "Sitemap.CategoryPageUpdateFrequency": {
-            "title": "Aktualisierungshäufigkeit der Kategorieseite",
-            "description": "Gibt an, wie häufig sich die Kategorieseite ändern wird. Dieser Wert stellt allgemeine Informationen für Suchmaschinen bereit und korreliert möglicherweise nicht genau mit der Häufigkeit, mit der die Seiten gecrawlt werden."
-        },
-        "Sitemap.CategoryPagePriority": {
-            "title": "Kategorieseitenpriorität",
-            "description": "Die Priorität der URL relativ zu anderen URLs auf der Website. Gültige Werte liegen zwischen 0,0 und 1,0. Dieser Wert wirkt sich nicht darauf aus, wie Seiten mit Seiten auf anderen Websites verglichen werden. Dadurch können die Suchmaschinen nur erfahren, welche Seiten für die Crawler am wichtigsten sind."
-        }
+  "settings": {
+    "Sitemap.RecordsLimitPerFile": {
+      "title": "Datensatzbegrenzung",
+      "description": "Aufzeichnungslimit für jede Sitemap-Datei Beachten Sie, dass Suchmaschinen-Crawler Sitepaketdateien akzeptieren, die weniger als 50000 URL-Datensätze enthalten und die Dateigröße weniger als 10 MB beträgt"
+    },
+    "Sitemap.FilenameSeparator": {
+      "title": "Dateinamens-Trennzeichen",
+      "description": "Das Trennzeichen für den Dateinamen der Sitemap und dessen Teil im Falle der Anzahl der Sitemap-Elemente ist größer als die Anzahl der Datensätze pro Datei"
+    },
+    "Sitemap.SearchBunchSize": {
+      "title": "Suche Gruppengröße",
+      "description": "Die Bündelgröße für Suchelemente (z. B. Katalogsuche)"
+    },
+    "Sitemap.AcceptedFilenameExtensions": {
+      "title": "Akzeptierte Dateierweiterungen für statische Inhalte",
+      "description": "Dieses Feld enthält die durch Kommas getrennte Liste der Dateinamenerweiterungen für statische Inhalte, die in der Sitemap enthalten sind. Zum Beispiel: .md,.html"
+    },
+    "Sitemap.IncludeImages": {
+      "title": "Sollte Bilder in die Sitemap aufnehmen",
+      "description": "Diese Prüfung gibt an, ob Bilder in die Sitemap-Generierung einbezogen werden sollen"
+    },
+    "Sitemap.ProductPageUpdateFrequency": {
+      "title": "Aktualisierungshäufigkeit der Produktseite",
+      "description": "Gibt an, wie häufig sich die Produktseite ändern wird. Dieser Wert stellt allgemeine Informationen für Suchmaschinen bereit und korreliert möglicherweise nicht genau mit der Häufigkeit, mit der die Seiten gecrawlt werden."
+    },
+    "Sitemap.ProductPagePriority": {
+      "title": "Priorität der Produktseite",
+      "description": "Die Priorität der URL relativ zu anderen URLs auf der Website. Gültige Werte liegen zwischen 0,0 und 1,0. Dieser Wert wirkt sich nicht darauf aus, wie Seiten mit Seiten auf anderen Websites verglichen werden. Dadurch können die Suchmaschinen nur erfahren, welche Seiten für die Crawler am wichtigsten sind."
+    },
+    "Sitemap.CategoryPageUpdateFrequency": {
+      "title": "Aktualisierungshäufigkeit der Kategorieseite",
+      "description": "Gibt an, wie häufig sich die Kategorieseite ändern wird. Dieser Wert stellt allgemeine Informationen für Suchmaschinen bereit und korreliert möglicherweise nicht genau mit der Häufigkeit, mit der die Seiten gecrawlt werden."
+    },
+    "Sitemap.CategoryPagePriority": {
+      "title": "Kategorieseitenpriorität",
+      "description": "Die Priorität der URL relativ zu anderen URLs auf der Website. Gültige Werte liegen zwischen 0,0 und 1,0. Dieser Wert wirkt sich nicht darauf aus, wie Seiten mit Seiten auf anderen Websites verglichen werden. Dadurch können die Suchmaschinen nur erfahren, welche Seiten für die Crawler am wichtigsten sind."
     }
+  }
 }
