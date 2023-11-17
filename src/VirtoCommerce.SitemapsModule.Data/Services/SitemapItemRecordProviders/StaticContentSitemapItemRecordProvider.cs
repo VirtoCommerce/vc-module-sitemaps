@@ -116,8 +116,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
         private async Task<SitemapItemOptions> GetBlogOptions(Store store)
         {
-            var storeOptionPriority = store.Settings.GetSettingValue(ModuleConstants.Settings.BlogLinks.BlogPagePriority.Name, decimal.MinusOne);
-            var storeOptionUpdateFrequency = store.Settings.GetSettingValue(ModuleConstants.Settings.BlogLinks.BlogPageUpdateFrequency.Name, "");
+            var storeOptionPriority = store.Settings.GetValue<decimal>(ModuleConstants.Settings.BlogLinks.BlogPagePriority);
+            var storeOptionUpdateFrequency = store.Settings.GetValue<string>(ModuleConstants.Settings.BlogLinks.BlogPageUpdateFrequency);
 
             return new SitemapItemOptions
             {

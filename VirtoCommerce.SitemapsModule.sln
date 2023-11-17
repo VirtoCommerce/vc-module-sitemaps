@@ -15,11 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.SitemapsModul
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.SitemapsModule.Tests", "tests\VirtoCommerce.SitemapsModule.Tests\VirtoCommerce.SitemapsModule.Tests.csproj", "{605F0F47-F54B-4E73-A773-6F83BF04655E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.SitemapsModule.Data.SqlServer", "src\VirtoCommerce.SitemapsModule.Data.SqlServer\VirtoCommerce.SitemapsModule.Data.SqlServer.csproj", "{A38E681B-6284-4513-9744-26DBB2995B17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.SitemapsModule.Data.SqlServer", "src\VirtoCommerce.SitemapsModule.Data.SqlServer\VirtoCommerce.SitemapsModule.Data.SqlServer.csproj", "{A38E681B-6284-4513-9744-26DBB2995B17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.SitemapsModule.Data.MySql", "src\VirtoCommerce.SitemapsModule.Data.MySql\VirtoCommerce.SitemapsModule.Data.MySql.csproj", "{26B459FA-2646-44CE-B8C4-95F354962E73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.SitemapsModule.Data.MySql", "src\VirtoCommerce.SitemapsModule.Data.MySql\VirtoCommerce.SitemapsModule.Data.MySql.csproj", "{26B459FA-2646-44CE-B8C4-95F354962E73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.SitemapsModule.Data.PostgreSql", "src\VirtoCommerce.SitemapsModule.Data.PostgreSql\VirtoCommerce.SitemapsModule.Data.PostgreSql.csproj", "{B86F9860-5EEE-47AE-9608-96DCEB332DCB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.SitemapsModule.Data.PostgreSql", "src\VirtoCommerce.SitemapsModule.Data.PostgreSql\VirtoCommerce.SitemapsModule.Data.PostgreSql.csproj", "{B86F9860-5EEE-47AE-9608-96DCEB332DCB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
