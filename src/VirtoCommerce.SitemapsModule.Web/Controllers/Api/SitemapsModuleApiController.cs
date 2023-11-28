@@ -11,8 +11,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using VirtoCommerce.Platform.Core;
 using VirtoCommerce.AssetsModule.Core.Assets;
+using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Exceptions;
 using VirtoCommerce.Platform.Core.ExportImport;
@@ -72,7 +72,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             IPushNotificationManager notifier,
             IBlobStorageProvider blobStorageProvider,
             IBlobUrlResolver blobUrlResolver,
-            IWebHostEnvironment hostingEnvironment, 
+            IWebHostEnvironment hostingEnvironment,
             IOptions<PlatformOptions> platformOptions)
         {
             _sitemapService = sitemapService;
@@ -276,7 +276,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                 return BadRequest("storeId is empty");
             }
 
-            var sitemapUrls = await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId);
+            var sitemapUrls = await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId, string.Empty);
             return Ok(sitemapUrls);
         }
 
@@ -379,7 +379,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                     // Create default sitemap.xml
                     await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, "sitemap.xml", SendNotificationWithProgressInfo);
 
-                    var sitemapUrls = await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId);
+                    var sitemapUrls = await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId, baseUrl);
                     foreach (var sitemapUrl in sitemapUrls.Where(url => !string.IsNullOrEmpty(url)))
                     {
                         await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, sitemapUrl, SendNotificationWithProgressInfo);
@@ -390,7 +390,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                 using (var localStream = SystemFile.Open(localTmpPath, FileMode.Open, FileAccess.Read))
                 using (var blobStream = _blobStorageProvider.OpenWrite(relativeUrl))
                 {
-                    localStream.CopyTo(blobStream);
+                    await localStream.CopyToAsync(blobStream);
                 }
 
                 // Add unique key for every link to prevent browser caching
@@ -415,7 +415,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             using (var sitemapPartStream = sitemapPart.Open())
             {
                 var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(storeId, baseUrl, sitemapUrl, progressCallback);
-                stream.CopyTo(sitemapPartStream);
+                await stream.CopyToAsync(sitemapPartStream);
             }
         }
     }
