@@ -112,7 +112,23 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 {
                     await LoadSitemapRecords(store, sitemap, baseUrl, progressCallback);
 
-                    var distinctRecords = sitemap.Items.SelectMany(x => x.ItemsRecords);//.GroupBy(x => x.Url).Select(x => x.FirstOrDefault());
+                    var requiredItems = new List<SitemapItemRecord>();
+
+                    switch (sitemap.SitemapMode)
+                    {
+                        case SitemapContentMode.OnlyCategories:
+                            requiredItems = sitemap.Items.SelectMany(x => x.ItemsRecords).Where(x => x.ObjectType == "category").ToList();
+                            break;
+                        case SitemapContentMode.OnlyProducts:
+                            requiredItems = sitemap.Items.SelectMany(x => x.ItemsRecords).Where(x => x.ObjectType == "product").ToList();
+                            break;
+                        case SitemapContentMode.Full:
+                        default:
+                            requiredItems = sitemap.Items.SelectMany(x => x.ItemsRecords).ToList();
+                            break;
+                    }
+
+                    var distinctRecords = requiredItems;//.GroupBy(x => x.Url).Select(x => x.FirstOrDefault());
                     var sitemapItemRecords = distinctRecords.Skip((sitemapLocation.PageNumber - 1) * recordsLimitPerFile).Take(recordsLimitPerFile).ToArray();
 
                     var sitemapRecord = new SitemapXmlRecord

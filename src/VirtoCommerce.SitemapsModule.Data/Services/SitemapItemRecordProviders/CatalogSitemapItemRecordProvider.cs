@@ -114,6 +114,11 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                                 }
                             }
 
+                            foreach(var record in itemRecords)
+                            {
+                                record.ObjectType = listEntry is ProductListEntry ? "product" : "category";
+                            }
+
                             categorySiteMapItem.ItemsRecords.AddRange(itemRecords);
                         }
                         progressInfo.Description = $"Catalog: Have been generated  {Math.Min(listEntrySearchCriteria.Skip, totalCount)} of {totalCount} records for category {categorySiteMapItem.Title} item";

@@ -31,14 +31,20 @@
           "sitemapSitemapLocationExistErrorMessage": "This sitemap location is already used",
           "labelSitemapItemsLocation": "Sitemap items location",
           "descriptionSitemapItemsLocation": "To generate a sitemap item URL can be used the next patterns: {slug} - will be replaced with SEO semantic URL part constructed depend on store SEO 'Links settings' rules. E.g /my-page/{slug}",
-          "labelSitemapItems": "Sitemap items"
+          "labelSitemapItems": "Sitemap items",
+          "sitemapMode": "Sitemap mode"
+        },
+        "sitemapModes": {
+          "sitemapFullMode": "Full",
+          "sitemapOnlyCategoriesMode": "Only categories",
+          "sitemapOnlyProductsMode": "Only products"
         },
         "gridHeaders": {
           "img": "Pic.",
           "title": "Title",
           "type": "Type"
         },
-        "noSitemapsIemsMessage": "There are no sitemap items yet"
+        "noSitemapsItemsMessage": "There are no sitemap items yet"
       },
       "addItems": {
         "title": "Add items",

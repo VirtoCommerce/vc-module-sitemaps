@@ -13,28 +13,34 @@
                 },
                 "noSitemapsMessage": "Es gibt keine Sitemaps noch"
             },
-            "sitemap": {
-                "newSitemapTitle": "Neue sitemap",
-                "toolbar": {
-                    "addItems": "Einträge hinzufügen",
-                    "removeItems": "Artikel entfernen"
-                },
-                "formSitemap": {
-                    "labelSitemapLocation": "Sitemap Standort",
-                    "descriptionSitemapLocation": "Die Sitemap-Standort sollte eine relative Sitemap-URL sein, die im Kontext der Index-Sitemap eindeutig ist, d. H .: 'categories / electronics.xml', 'products.xml', etc. Bitte vermeiden Sie die Verwendung von 'sitemap.xml' im Sitemappfad.",
-                    "sitemapIndexErrorMessage": "Bitte vermeiden Sie die Verwendung von 'sitemap.xml' als Sitemap",
-                    "sitemapSitemapLocationExistErrorMessage": "Diese Sitemap Standort wird bereits verwendet",
-                    "labelSitemapItemsLocation": "Sitemap Artikellage",
-                    "descriptionSitemapItemsLocation": "Zur Erzeugung einer Sitemap-Item-URL können die nächsten Muster verwendet werden: {language} - wird durch Sprachcode ersetzt (d.h. en-US), {slug} - wird durch SEO semantischen URL-Teil ersetzt",
-                    "labelSitemapItems": "Sitemap Reihen"
-                },
-                "gridHeaders": {
-                    "img": "Bild",
-                    "title": "Titel",
-                    "type": "Typ"
-                },
-                "noSitemapsIemsMessage": "Es gibt noch keine Sitemap"
+          "sitemap": {
+            "newSitemapTitle": "Neue sitemap",
+            "toolbar": {
+              "addItems": "Einträge hinzufügen",
+              "removeItems": "Artikel entfernen"
             },
+            "formSitemap": {
+              "labelSitemapLocation": "Sitemap Standort",
+              "descriptionSitemapLocation": "Die Sitemap-Standort sollte eine relative Sitemap-URL sein, die im Kontext der Index-Sitemap eindeutig ist, d. H .: 'categories / electronics.xml', 'products.xml', etc. Bitte vermeiden Sie die Verwendung von 'sitemap.xml' im Sitemappfad.",
+              "sitemapIndexErrorMessage": "Bitte vermeiden Sie die Verwendung von 'sitemap.xml' als Sitemap",
+              "sitemapSitemapLocationExistErrorMessage": "Diese Sitemap Standort wird bereits verwendet",
+              "labelSitemapItemsLocation": "Sitemap Artikellage",
+              "descriptionSitemapItemsLocation": "Zur Erzeugung einer Sitemap-Item-URL können die nächsten Muster verwendet werden: {language} - wird durch Sprachcode ersetzt (d.h. en-US), {slug} - wird durch SEO semantischen URL-Teil ersetzt",
+              "labelSitemapItems": "Sitemap Reihen",
+              "sitemapMode": "Sitemap-Modus"
+            },
+            "sitemapModes": {
+              "sitemapFullMode": "Vollständige Sitemap",
+              "sitemapOnlyCategoriesMode": "Nur Kategorien",
+              "sitemapOnlyProductsMode": "Nur Produkte"
+            },
+            "gridHeaders": {
+              "img": "Bild",
+              "title": "Titel",
+              "type": "Typ"
+            },
+            "noSitemapsItemsMessage": "Es gibt noch keine Sitemap"
+          },
             "addItems": {
                 "title": "Einträge hinzufügen",
                 "addCatalogItem": {

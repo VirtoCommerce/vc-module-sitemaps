@@ -14,6 +14,8 @@ namespace VirtoCommerce.SitemapsModule.Core.Models
 
         public decimal Priority { get; set; }
 
+        public string ObjectType { get; set; }
+
         public ICollection<SitemapItemAlternateLinkRecord> Alternates { get; set; } = new List<SitemapItemAlternateLinkRecord>();
 
         public ICollection<SitemapItemImageRecord> Images { get; set; } = new List<SitemapItemImageRecord>();
