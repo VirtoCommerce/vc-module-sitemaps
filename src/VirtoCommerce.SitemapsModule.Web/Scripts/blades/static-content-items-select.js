@@ -23,17 +23,17 @@ function ($scope, $timeout, staticContent, bladeNavigationService, bladeUtils, u
             contentType: 'pages',
             storeId: blade.storeId,
             keyword: blade.searchKeyword,
-            folderUrl: blade.currentEntity.url
+            folderUrl: blade.currentEntity.relativeUrl
         }).$promise;
 
         var promises = [pagesPromise];
         
-        if (!blade.currentEntity.url) {
+        if (!blade.currentEntity.relativeUrl) {
             var blogsPromise = staticContent.query({
                 contentType: 'blogs',
                 storeId: blade.storeId,
                 keyword: blade.searchKeyword,
-                folderUrl: blade.currentEntity.url
+                folderUrl: blade.currentEntity.relativeUrl
             }).$promise;
 
             promises.unshift(blogsPromise);
