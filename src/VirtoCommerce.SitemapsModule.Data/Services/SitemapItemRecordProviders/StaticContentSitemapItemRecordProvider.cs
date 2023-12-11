@@ -67,17 +67,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
                 if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.Folder))
                 {
-                    var criteria = AbstractTypeFactory<FilterItemsCriteria>.TryCreateInstance();
-                    criteria.ContentType = PagesContentType;
-                    criteria.StoreId = sitemap.StoreId;
-                    criteria.FolderUrl = sitemapItem.UrlTemplate;
-
-                    var searchResult = await _contentFileService.FilterItemsAsync(criteria);
-
-                    foreach (var file in searchResult.Where(file => IsExtensionAllowed(allowedExtensions, file.RelativeUrl)))
-                    {
-                        validSitemapItems.Add(file.RelativeUrl);
-                    }
+                    await LoadPagesRecursivly(sitemap.StoreId, sitemapItem.UrlTemplate, allowedExtensions, validSitemapItems);
                 }
                 else if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem) &&
                     IsExtensionAllowed(allowedExtensions, sitemapItem.UrlTemplate) &&
@@ -107,6 +97,27 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                     progressInfo.Description = $"Content: Have been generated records for {processedCount} of {totalCount} pages";
                     progressCallback?.Invoke(progressInfo);
                 }
+            }
+        }
+
+        private async Task LoadPagesRecursivly(string storeId, string folrderUrl, List<string> allowedExtensions, List<string> validSitemapItems)
+        {
+            var criteria = AbstractTypeFactory<FilterItemsCriteria>.TryCreateInstance();
+            criteria.ContentType = PagesContentType;
+            criteria.StoreId = storeId;
+            criteria.FolderUrl = folrderUrl;
+
+            var searchResult = await _contentFileService.FilterItemsAsync(criteria);
+
+            foreach (var file in searchResult.Where(file => file.Type == "blob" && IsExtensionAllowed(allowedExtensions, file.RelativeUrl)))
+            {
+                validSitemapItems.Add(file.RelativeUrl);
+            }
+
+            // Load Pages from SubFolders
+            foreach (var folder in searchResult.Where(file => file.Type == "folder"))
+            {
+                await LoadPagesRecursivly(storeId, folder.RelativeUrl, allowedExtensions, validSitemapItems);
             }
         }
 
