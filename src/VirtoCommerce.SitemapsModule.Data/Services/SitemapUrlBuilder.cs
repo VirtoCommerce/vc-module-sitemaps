@@ -26,6 +26,10 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
         public virtual string BuildStoreUrl(Store store, string language, string urlTemplate, string baseUrl, IEntity entity = null)
         {
             var toolsStore = store.ToToolsStore(baseUrl);
+            if (!string.IsNullOrEmpty(baseUrl))
+            {
+                toolsStore.Url = baseUrl;
+            }
 
             var seoSupport = entity as ISeoSupport;
 

@@ -90,7 +90,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                         {
                             // If images need to be included - run a search for picked products to get variations with images
                             var productIds = result.Results.Where(x => x is ProductListEntry).Select(x => x.Id).ToArray();
-                            products = await SearchProductsWithVariations(batchSize, productIds);
+                            products = await SearchProductsWithVariations(productIds);
                         }
 
                         foreach (var listEntry in result.Results)
@@ -152,7 +152,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             }
         }
 
-        private async Task<List<CatalogProduct>> SearchProductsWithVariations(int batchSize, string[] productIds = null, ProductSearchCriteria searchCriteria = null, Action<ExportImportProgressInfo> progressCallback = null)
+        private async Task<List<CatalogProduct>> SearchProductsWithVariations(string[] productIds = null)
         {
             var products = (await _itemService.GetAsync(productIds, (ItemResponseGroup.Seo | ItemResponseGroup.Outlines | ItemResponseGroup.WithImages).ToString()))
     .Where(p => !p.IsActive.HasValue || p.IsActive.Value).ToList();
@@ -171,15 +171,17 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         /// <returns></returns>
         private async Task LoadProductsWithImages(Store store, Sitemap sitemap, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
         {
-            var batchSize = await _settingsManager.GetValueAsync<int>(ModuleConstants.Settings.General.SearchBunchSize);
-
             var productSitemapItems = sitemap.Items.Where(x => x.ObjectType.EqualsInvariant(SitemapItemTypes.Product)).ToList();
 
             var productOptions = GetProductOptions(store);
 
             var productIds = productSitemapItems.Select(x => x.ObjectId).ToArray();
 
-            var products = await SearchProductsWithVariations(batchSize, productIds);
+            var products = await SearchProductsWithVariations(productIds);
+
+            var progressInfo = new ExportImportProgressInfo();
+
+            var count = 0;
 
             foreach (var product in products)
             {
@@ -202,6 +204,10 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
                     productSitemapItem.ItemsRecords.AddRange(itemRecords);
                 }
+
+                count++;
+                progressInfo.Description = $"Catalog: Have been generated  {count} of {products.Count} records for products items";
+                progressCallback?.Invoke(progressInfo);
             }
         }
 

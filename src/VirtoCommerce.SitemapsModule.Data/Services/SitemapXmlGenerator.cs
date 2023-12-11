@@ -46,7 +46,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             _storeService = storeService;
         }
 
-        public virtual async Task<ICollection<string>> GetSitemapUrlsAsync(string storeId)
+        public virtual async Task<ICollection<string>> GetSitemapUrlsAsync(string storeId, string baseUrl)
         {
             if (string.IsNullOrEmpty(storeId))
             {
@@ -56,7 +56,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             var sitemapUrls = new List<string>();
             var store = await _storeService.GetByIdAsync(storeId, StoreResponseGroup.StoreInfo.ToString());
 
-            var sitemaps = await LoadAllStoreSitemaps(store, "");
+            var sitemaps = await LoadStoreSitemaps(store, baseUrl);
             foreach (var sitemap in sitemaps)
             {
                 sitemapUrls.AddRange(sitemap.PagedLocations);
@@ -73,7 +73,6 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             var recordsLimitPerFile = await _settingsManager.GetValueAsync<int>(ModuleConstants.Settings.General.RecordsLimitPerFile);
 
             var xmlNamespaces = new XmlSerializerNamespaces();
-            //xmlNamespaces.Add("", "https://www.sitemaps.org/schemas/sitemap/0.9");
             xmlNamespaces.Add("xhtml", "https://www.w3.org/1999/xhtml");
             xmlNamespaces.Add("image", "http://www.google.com/schemas/sitemap-image/1.1");
 
@@ -86,15 +85,14 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                     Description = "Creating sitemap.xml..."
                 });
 
-                var allStoreSitemaps = await LoadAllStoreSitemaps(store, baseUrl);
+                var storeSitemaps = await LoadStoreSitemaps(store, baseUrl);
 
                 var sitemapIndexXmlRecord = new SitemapIndexXmlRecord();
 
-                foreach (var sitemap in allStoreSitemaps)
+                foreach (var sitemap in storeSitemaps)
                 {
                     var xmlSiteMapRecords = sitemap.PagedLocations.Select(location => new SitemapIndexItemXmlRecord
                     {
-                        //ModifiedDate = sitemap.Items.Select(x => x.ModifiedDate).OrderByDescending(x => x).FirstOrDefault()?.ToString("yyyy-MM-dd"),
                         Url = _sitemapUrlBuilder.BuildStoreUrl(store, store.DefaultLanguage, location, baseUrl),
                     }).ToList();
 
@@ -128,8 +126,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                             break;
                     }
 
-                    var distinctRecords = requiredItems;//.GroupBy(x => x.Url).Select(x => x.FirstOrDefault());
-                    var sitemapItemRecords = distinctRecords.Skip((sitemapLocation.PageNumber - 1) * recordsLimitPerFile).Take(recordsLimitPerFile).ToArray();
+                    var sitemapItemRecords = requiredItems.Skip((sitemapLocation.PageNumber - 1) * recordsLimitPerFile).Take(recordsLimitPerFile).ToArray();
 
                     var sitemapRecord = new SitemapXmlRecord
                     {
@@ -148,17 +145,18 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             return stream;
         }
 
-        private async Task<ICollection<Sitemap>> LoadAllStoreSitemaps(Store store, string baseUrl)
+        private async Task<ICollection<Sitemap>> LoadStoreSitemaps(Store store, string baseUrl)
         {
-            var sitemaps = new List<Sitemap>();
             var sitemapSearchCriteria = new SitemapSearchCriteria
             {
                 StoreId = store.Id,
                 Skip = 0,
                 Take = int.MaxValue
             };
+
             var sitemapSearchResult = await _sitemapSearchService.SearchAsync(sitemapSearchCriteria);
 
+            var sitemaps = new List<Sitemap>();
             foreach (var sitemap in sitemapSearchResult.Results)
             {
                 await LoadSitemapRecords(store, sitemap, baseUrl);
@@ -182,7 +180,6 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             };
             sitemap.Items = (await _sitemapItemSearchService.SearchAsync(sitemapItemSearchCriteria)).Results;
 
-            var imageUrls = new List<SitemapItemImageRecord>();
             foreach (var recordProvider in _sitemapItemRecordProviders)
             {
                 //Log exceptions to prevent fail whole sitemap.xml generation

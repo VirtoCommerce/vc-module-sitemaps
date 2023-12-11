@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VirtoCommerce.AssetsModule.Core.Assets;
+using VirtoCommerce.ContentModule.Core.Model;
 using VirtoCommerce.ContentModule.Core.Services;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.ExportImport;
@@ -13,95 +14,81 @@ using VirtoCommerce.SitemapsModule.Core;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
 using VirtoCommerce.SitemapsModule.Data.Extensions;
-using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.Tools;
 using YamlDotNet.RepresentationModel;
+using Store = VirtoCommerce.StoreModule.Core.Model.Store;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 {
     public class StaticContentSitemapItemRecordProvider : SitemapItemRecordProviderBase, ISitemapItemRecordProvider
     {
-        private readonly ISettingsManager _settingsManager;
-        private readonly IBlobContentStorageProviderFactory _blobStorageProviderFactory;
+        private const string PagesContentType = "pages";
         private static readonly Regex _headerRegExp = new Regex(@"(?s:^---(.*?)---)");
+
+        private readonly ISettingsManager _settingsManager;
+        private readonly IContentFileService _contentFileService;
+        private readonly IContentService _contentService;
 
         public StaticContentSitemapItemRecordProvider(
             ISitemapUrlBuilder urlBuilder,
             ISettingsManager settingsManager,
-            IBlobContentStorageProviderFactory blobStorageProviderFactory)
+            IContentService contentService,
+            IContentFileService contentFileService)
             : base(urlBuilder)
         {
             _settingsManager = settingsManager;
-            _blobStorageProviderFactory = blobStorageProviderFactory;
+            _contentService = contentService;
+            _contentFileService = contentFileService;
         }
 
         public virtual async Task LoadSitemapItemRecordsAsync(Store store, Sitemap sitemap, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
         {
             var progressInfo = new ExportImportProgressInfo();
 
-            var contentBasePath = $"Pages/{sitemap.StoreId}";
-            var storageProvider = _blobStorageProviderFactory.CreateProvider(contentBasePath);
-
-            var staticContentSitemapItems = sitemap.Items
-                .Where(si => !string.IsNullOrEmpty(si.ObjectType))
-                .Where(si => si.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem) || si.ObjectType.EqualsInvariant(SitemapItemTypes.Folder))
-                .ToList();
+            var staticContentSitemapItems = GetStaticContentSitemapItems(sitemap);
 
             var totalCount = staticContentSitemapItems.Count;
-            if (totalCount <= 0)
+            if (totalCount == 0)
             {
                 return;
             }
 
             var processedCount = 0;
 
-            var acceptedFilenameExtensions = (await _settingsManager.GetValueAsync<string>(ModuleConstants.Settings.General.AcceptedFilenameExtensions))
-                .Split(',')
-                .Select(i => i.Trim())
-                .Where(i => !string.IsNullOrEmpty(i))
-                .ToList();
+            var allowedExtensions = await GetAllowedExtensions();
+            var blogOptions = await GetBlogOptions(store);
 
             progressInfo.Description = $"Content: Starting records generation  for {totalCount} pages";
             progressCallback?.Invoke(progressInfo);
 
             foreach (var sitemapItem in staticContentSitemapItems)
             {
-                var urls = new List<string>();
+                var validSitemapItems = new List<string>();
+
                 if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.Folder))
                 {
-                    var searchResult = await storageProvider.SearchAsync(sitemapItem.UrlTemplate, null);
-
-                    if (searchResult.TotalCount == 0)
-                    {
-                        searchResult = await storageProvider.SearchAsync("blogs/" + sitemapItem.UrlTemplate, null);
-                    }
-
-                    var itemUrls = await GetItemUrls(storageProvider, searchResult);
-                    foreach (var itemUrl in itemUrls.Where(itemUrl => IsExtensionAllowed(acceptedFilenameExtensions, itemUrl)))
-                    {
-                        urls.Add(itemUrl);
-                    }
+                    await LoadPagesRecursivly(sitemap.StoreId, sitemapItem.UrlTemplate, allowedExtensions, validSitemapItems);
                 }
-                else if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem))
+                else if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem) &&
+                    IsExtensionAllowed(allowedExtensions, sitemapItem.UrlTemplate) &&
+                    await _contentService.ItemExistsAsync(PagesContentType, sitemap.StoreId, sitemapItem.UrlTemplate))
                 {
-                    var item = await storageProvider.GetBlobInfoAsync(sitemapItem.UrlTemplate);
-                    if (item != null && IsExtensionAllowed(acceptedFilenameExtensions, item.RelativeUrl))
-                    {
-                        urls.Add(item.RelativeUrl);
-                    }
+                    validSitemapItems.Add(sitemapItem.UrlTemplate);
                 }
 
-                totalCount = urls.Count;
+                totalCount = validSitemapItems.Count;
 
-                foreach (var url in urls)
+                foreach (var url in validSitemapItems)
                 {
-                    using (var stream = await storageProvider.OpenReadAsync(url))
+                    var contentFile = await _contentService.GetFileAsync(PagesContentType, sitemap.StoreId, url);
+
+                    using (var stream = await _contentService.GetItemStreamAsync(PagesContentType, sitemap.StoreId, url))
                     {
                         var content = stream.ReadToString();
-                        var frontMatterPermalink = GetPermalink(content, url);
-                        frontMatterPermalink.FilePath = url;
+
+                        var frontMatterPermalink = GetPermalink(content, url, contentFile.Url);
                         var urlTemplate = frontMatterPermalink.ToUrl().TrimStart('/');
-                        var blogOptions = await GetBlogOptions(store);
+
                         var records = GetSitemapItemRecords(store, blogOptions, urlTemplate, baseUrl);
                         sitemapItem.ItemsRecords.AddRange(records);
                     }
@@ -113,6 +100,43 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             }
         }
 
+        private async Task LoadPagesRecursivly(string storeId, string folrderUrl, List<string> allowedExtensions, List<string> validSitemapItems)
+        {
+            var criteria = AbstractTypeFactory<FilterItemsCriteria>.TryCreateInstance();
+            criteria.ContentType = PagesContentType;
+            criteria.StoreId = storeId;
+            criteria.FolderUrl = folrderUrl;
+
+            var searchResult = await _contentFileService.FilterItemsAsync(criteria);
+
+            foreach (var file in searchResult.Where(file => file.Type == "blob" && IsExtensionAllowed(allowedExtensions, file.RelativeUrl)))
+            {
+                validSitemapItems.Add(file.RelativeUrl);
+            }
+
+            // Load Pages from SubFolders
+            foreach (var folder in searchResult.Where(file => file.Type == "folder"))
+            {
+                await LoadPagesRecursivly(storeId, folder.RelativeUrl, allowedExtensions, validSitemapItems);
+            }
+        }
+
+        private static List<SitemapItem> GetStaticContentSitemapItems(Sitemap sitemap)
+        {
+            return sitemap.Items
+                            .Where(si => !string.IsNullOrEmpty(si.ObjectType))
+                            .Where(si => si.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem) || si.ObjectType.EqualsInvariant(SitemapItemTypes.Folder))
+                            .ToList();
+        }
+
+        private async Task<List<string>> GetAllowedExtensions()
+        {
+            return (await _settingsManager.GetValueAsync<string>(ModuleConstants.Settings.General.AcceptedFilenameExtensions))
+                            .Split(',')
+                            .Select(i => i.Trim())
+                            .Where(i => !string.IsNullOrEmpty(i))
+                            .ToList();
+        }
 
         private async Task<SitemapItemOptions> GetBlogOptions(Store store)
         {
@@ -142,7 +166,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             return string.IsNullOrEmpty(itemExtension) || acceptedFilenameExtensions.Contains(itemExtension, StringComparer.OrdinalIgnoreCase);
         }
 
-        private static FrontMatterPermalink GetPermalink(string content, string url)
+        private static FrontMatterPermalink GetPermalink(string content, string url, string filePath)
         {
             if (content.TryParseJson(out var token) && token.HasValues && token.First?["permalink"] != null)
             {
@@ -153,10 +177,10 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             yamlHeader.TryGetValue("permalink", out var permalinks);
             if (permalinks != null)
             {
-                return new FrontMatterPermalink(permalinks.FirstOrDefault());
+                return new FrontMatterPermalink(permalinks.FirstOrDefault()) { FilePath = filePath };
             }
 
-            return new FrontMatterPermalink(url.Replace(".md", ""));
+            return new FrontMatterPermalink(url.Replace(".md", "")) { FilePath = filePath };
         }
 
         private static async Task<ICollection<string>> GetItemUrls(IBlobContentStorageProvider storageProvider, GenericSearchResult<BlobEntry> searchResult)
@@ -224,3 +248,4 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         }
     }
 }
+;
