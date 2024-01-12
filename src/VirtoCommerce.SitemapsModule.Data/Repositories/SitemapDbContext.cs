@@ -2,10 +2,11 @@ using System.Reflection;
 using EntityFrameworkCore.Triggers;
 using Microsoft.EntityFrameworkCore;
 using VirtoCommerce.SitemapsModule.Data.Models;
+using VirtoCommerce.Platform.Data.Infrastructure;
 
 namespace VirtoCommerce.SitemapsModule.Data.Repositories
 {
-    public class SitemapDbContext : DbContextWithTriggers
+    public class SitemapDbContext : DbContextBase
     {
         public SitemapDbContext(DbContextOptions<SitemapDbContext> options)
             : base(options)
