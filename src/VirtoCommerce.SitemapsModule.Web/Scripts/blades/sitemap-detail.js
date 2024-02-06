@@ -1,4 +1,6 @@
-﻿angular.module('virtoCommerce.sitemapsModule').controller('virtoCommerce.sitemapsModule.sitemapDetailController', ['$scope', 'platformWebApp.bladeUtils', 'platformWebApp.uiGridHelper', 'platformWebApp.bladeNavigationService', 'virtoCommerce.sitemapsModule.sitemapApi', 'platformWebApp.dialogService', function ($scope, bladeUtils, uiGridHelper, bladeNavigationService, sitemapApi, dialogService) {
+angular.module('virtoCommerce.sitemapsModule').controller('virtoCommerce.sitemapsModule.sitemapDetailController',
+    ['$scope', 'platformWebApp.bladeUtils', 'platformWebApp.uiGridHelper', 'platformWebApp.bladeNavigationService', 'virtoCommerce.sitemapsModule.sitemapApi', 'platformWebApp.dialogService',
+        function ($scope, bladeUtils, uiGridHelper, bladeNavigationService, sitemapApi, dialogService) {
     var blade = $scope.blade;
     blade.updatePermission = 'sitemaps:update';
 
@@ -93,6 +95,7 @@
 
     if (blade.isNew) {
         blade.title = 'sitemapsModule.blades.sitemap.newSitemapTitle';
+        blade.currentEntity.sitemapMode = 'Full';
         initializeBlade(blade.currentEntity);
     } else {
         blade.title = blade.currentEntity.location;

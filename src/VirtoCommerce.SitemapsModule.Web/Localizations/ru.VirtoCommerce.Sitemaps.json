@@ -18,28 +18,34 @@
                 },
                 "noSitemapsMessage": "Пока нет sitemaps"
             },
-            "sitemap": {
-                "newSitemapTitle": "Новый sitemap",
-                "toolbar": {
-                    "addItems": "Добавить элементы",
-                    "removeItems": "Удалить элементы"
-                },
-                "formSitemap": {
-                    "labelSitemapLocation": "Местонахождение Sitemap",
-                    "descriptionSitemapLocation": "Местонахождение Sitemap должно быть уникальным относительно URL-адреса sitemap в контексте индекса sitemap, то есть: 'категории/электроника.xml', 'продукты.xml' и т.д. Пожалуйста, избегайте использования 'sitemap.xml' в пути к sitemap.",
-                    "sitemapIndexErrorMessage": "Пожалуйста, не используйте \"sitemap.xml\" как адрес местонахождения sitemap",
-                    "sitemapSitemapLocationExistErrorMessage": "Это местонахождение sitemap уже используется",
-                    "labelSitemapItemsLocation": "Местонахождение элементов Sitemap",
-                    "descriptionSitemapItemsLocation": "Для создания URL-адреса элементов sitemap могут быть использованы следующие шаблоны: {slug} - будет заменен частью семантической SEO в URL-адресе, построенной в зависимости от SEO правил 'Настроек ссылок'. Например, /моя-страница/{slug}",
-                    "labelSitemapItems": "Элементы Sitemap"
-                },
-                "gridHeaders": {
-                    "img": "Изображение",
-                    "title": "Заголовок",
-                    "type": "Тип"
-                },
-                "noSitemapsIemsMessage": "Пока нет элементов sitemap"
+          "sitemap": {
+            "newSitemapTitle": "Новый sitemap",
+            "toolbar": {
+              "addItems": "Добавить элементы",
+              "removeItems": "Удалить элементы"
             },
+            "formSitemap": {
+              "labelSitemapLocation": "Местонахождение Sitemap",
+              "descriptionSitemapLocation": "Местонахождение Sitemap должно быть уникальным относительно URL-адреса sitemap в контексте индекса sitemap, то есть: 'категории/электроника.xml', 'продукты.xml' и т.д. Пожалуйста, избегайте использования 'sitemap.xml' в пути к sitemap.",
+              "sitemapIndexErrorMessage": "Пожалуйста, не используйте \"sitemap.xml\" как адрес местонахождения sitemap",
+              "sitemapSitemapLocationExistErrorMessage": "Это местонахождение sitemap уже используется",
+              "labelSitemapItemsLocation": "Местонахождение элементов Sitemap",
+              "descriptionSitemapItemsLocation": "Для создания URL-адреса элементов sitemap могут быть использованы следующие шаблоны: {slug} - будет заменен частью семантической SEO в URL-адресе, построенной в зависимости от SEO правил 'Настроек ссылок'. Например, /моя-страница/{slug}",
+              "labelSitemapItems": "Элементы Sitemap",
+              "sitemapMode": "Режим контента Sitemap"
+            },
+            "sitemapModes": {
+              "sitemapFullMode": "Полный Sitemap",
+              "sitemapOnlyCategoriesMode": "Только категории",
+              "sitemapOnlyProductsMode": "Только продукты"
+            },
+            "gridHeaders": {
+              "img": "Изображение",
+              "title": "Заголовок",
+              "type": "Тип"
+            },
+            "noSitemapsItemsMessage": "Пока нет элементов sitemap"
+          },
             "addItems": {
                 "title": "Добавить элементы",
                 "addCatalogItem": {
