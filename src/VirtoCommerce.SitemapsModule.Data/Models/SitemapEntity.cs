@@ -24,6 +24,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
         [NotMapped]
         public int TotalItemsCount { get; set; }
 
+        public int SitemapMode { get; set; }
+
         #region Navigation Properties
 
         public virtual ObservableCollection<SitemapItemEntity> Items { get; set; }
@@ -48,6 +50,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
             sitemap.StoreId = StoreId;
             sitemap.UrlTemplate = UrlTemplate;
             sitemap.TotalItemsCount = TotalItemsCount;
+
+            sitemap.SitemapMode = (SitemapContentMode)SitemapMode;
 
             return sitemap;
         }
@@ -75,6 +79,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
             StoreId = sitemap.StoreId;
             UrlTemplate = sitemap.UrlTemplate;
 
+            SitemapMode = (int)sitemap.SitemapMode;
+
             return this;
         }
 
@@ -88,6 +94,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Models
             sitemapEntity.Filename = Filename;
             sitemapEntity.StoreId = StoreId;
             sitemapEntity.UrlTemplate = UrlTemplate;
+            sitemapEntity.SitemapMode = SitemapMode;
         }
     }
 }

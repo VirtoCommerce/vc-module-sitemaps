@@ -24,9 +24,9 @@ namespace VirtoCommerce.SitemapsModule.Core.Models
 
         public int TotalItemsCount { get; set; }
 
+        public SitemapContentMode SitemapMode { get; set; }
+
         public ICollection<string> PagedLocations { get; set; }
-
-
 
         #region ICloneable members
 
