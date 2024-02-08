@@ -32,10 +32,10 @@
               "labelSitemapItemsLocation": "Местонахождение элементов Sitemap",
               "descriptionSitemapItemsLocation": "Для создания URL-адреса элементов sitemap могут быть использованы следующие шаблоны: {slug} - будет заменен частью семантической SEO в URL-адресе, построенной в зависимости от SEO правил 'Настроек ссылок'. Например, /моя-страница/{slug}",
               "labelSitemapItems": "Элементы Sitemap",
-              "sitemapMode": "Режим контента Sitemap"
+              "sitemapMode": "Экспортировать элементы каталога"
             },
             "sitemapModes": {
-              "sitemapFullMode": "Полный Sitemap",
+              "sitemapFullMode": "Категории и продукты",
               "sitemapOnlyCategoriesMode": "Только категории",
               "sitemapOnlyProductsMode": "Только продукты"
             },

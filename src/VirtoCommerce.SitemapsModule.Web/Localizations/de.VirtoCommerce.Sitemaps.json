@@ -27,10 +27,10 @@
               "labelSitemapItemsLocation": "Sitemap Artikellage",
               "descriptionSitemapItemsLocation": "Zur Erzeugung einer Sitemap-Item-URL können die nächsten Muster verwendet werden: {language} - wird durch Sprachcode ersetzt (d.h. en-US), {slug} - wird durch SEO semantischen URL-Teil ersetzt",
               "labelSitemapItems": "Sitemap Reihen",
-              "sitemapMode": "Sitemap-Modus"
+              "sitemapMode": "Katalogelemente exportieren"
             },
             "sitemapModes": {
-              "sitemapFullMode": "Vollständige Sitemap",
+              "sitemapFullMode": "Kategorien und Produkte",
               "sitemapOnlyCategoriesMode": "Nur Kategorien",
               "sitemapOnlyProductsMode": "Nur Produkte"
             },
