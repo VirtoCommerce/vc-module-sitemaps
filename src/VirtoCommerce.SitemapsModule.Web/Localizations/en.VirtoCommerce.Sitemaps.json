@@ -32,10 +32,10 @@
           "labelSitemapItemsLocation": "Sitemap items location",
           "descriptionSitemapItemsLocation": "To generate a sitemap item URL can be used the next patterns: {slug} - will be replaced with SEO semantic URL part constructed depend on store SEO 'Links settings' rules. E.g /my-page/{slug}",
           "labelSitemapItems": "Sitemap items",
-          "sitemapMode": "Sitemap mode"
+          "sitemapMode": "Export catalog items"
         },
         "sitemapModes": {
-          "sitemapFullMode": "Full",
+          "sitemapFullMode": "Сategories and products",
           "sitemapOnlyCategoriesMode": "Only categories",
           "sitemapOnlyProductsMode": "Only products"
         },
