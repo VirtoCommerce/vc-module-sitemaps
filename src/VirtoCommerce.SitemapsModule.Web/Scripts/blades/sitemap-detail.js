@@ -64,7 +64,7 @@ angular.module('virtoCommerce.sitemapsModule').controller('virtoCommerce.sitemap
 
             $scope.hasCatalogItems = function () {
                 return blade.currentEntities && blade.currentEntities.some(function (entity) {
-                    return entity.objectType === "product" || entity.objectType === "category";
+                    return entity.objectType === "category";
                 });
             }
 
