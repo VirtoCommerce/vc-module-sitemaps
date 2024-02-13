@@ -57,13 +57,13 @@ jobs:
 
     steps:
 
-      - name: Set up Node 18
-        uses: actions/setup-node@v3
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
         with:
-            node-version: '18'
+            node-version: '20'
 
       - name: Set up Java 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -73,7 +73,7 @@ jobs:
         run: |
           echo "RELEASE_STATUS=true" >> $GITHUB_ENV
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
