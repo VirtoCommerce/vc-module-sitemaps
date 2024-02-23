@@ -191,13 +191,13 @@ jobs:
           fi
 
       - name: Setup Git Credentials
-        if: ${{ (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master') && github.event_name != 'workflow_dispatch' }}
+        if: ${{ (github.ref == 'refs/heads/dev' && github.event_name != 'workflow_dispatch') || github.ref == 'refs/heads/master' }}
         uses: VirtoCommerce/vc-github-actions/setup-git-credentials-github@master
         with: 
           githubToken: ${{ secrets.REPO_TOKEN }}
         
       - name: Publish Manifest
-        if: ${{ (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master') && github.event_name != 'workflow_dispatch' }}
+        if: ${{ (github.ref == 'refs/heads/dev' && github.event_name != 'workflow_dispatch') || github.ref == 'refs/heads/master' }}
         uses: VirtoCommerce/vc-github-actions/publish-manifest@master
         with:
           packageUrl: ${{ steps.artifactUrl.outputs.download_url }}

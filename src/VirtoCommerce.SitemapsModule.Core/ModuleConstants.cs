@@ -17,7 +17,7 @@ namespace VirtoCommerce.SitemapsModule.Core
                 public const string Update = "sitemaps:update";
                 public const string Delete = "sitemaps:delete";
 
-                public static readonly string[] AllPermissions = { Access, Create, Read, Update, Delete };
+                public static readonly string[] AllPermissions = [Access, Create, Read, Update, Delete];
             }
         }
 
@@ -67,9 +67,8 @@ namespace VirtoCommerce.SitemapsModule.Core
                     Name = "Sitemap.ProductPageUpdateFrequency",
                     GroupName = "Sitemap",
                     ValueType = SettingValueType.ShortText,
-                    IsDictionary = true,
-                    AllowedValues = new object[]
-                    {
+                    AllowedValues =
+                    [
                         "always",
                         "hourly",
                         "daily",
@@ -77,7 +76,7 @@ namespace VirtoCommerce.SitemapsModule.Core
                         "monthly",
                         "yearly",
                         "never"
-                    },
+                    ],
                     DefaultValue = "daily"
                 };
 
@@ -106,9 +105,8 @@ namespace VirtoCommerce.SitemapsModule.Core
                     Name = "Sitemap.CategoryPageUpdateFrequency",
                     GroupName = "Sitemap",
                     ValueType = SettingValueType.ShortText,
-                    IsDictionary = true,
-                    AllowedValues = new object[]
-                    {
+                    AllowedValues =
+                    [
                         "always",
                         "hourly",
                         "daily",
@@ -116,7 +114,7 @@ namespace VirtoCommerce.SitemapsModule.Core
                         "monthly",
                         "yearly",
                         "never"
-                    },
+                    ],
                     DefaultValue = "weekly"
                 };
 
@@ -137,8 +135,8 @@ namespace VirtoCommerce.SitemapsModule.Core
                     Name = "Sitemap.BlogPageUpdateFrequency",
                     GroupName = "Sitemap",
                     ValueType = SettingValueType.ShortText,
-                    AllowedValues = new object[]
-                    {
+                    AllowedValues =
+                    [
                         "always",
                         "hourly",
                         "daily",
@@ -146,7 +144,7 @@ namespace VirtoCommerce.SitemapsModule.Core
                         "monthly",
                         "yearly",
                         "never"
-                    },
+                    ],
                     DefaultValue = "weekly",
                 };
 
