@@ -23,6 +23,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
     public class StaticContentSitemapItemRecordProvider : SitemapItemRecordProviderBase, ISitemapItemRecordProvider
     {
         private const string PagesContentType = "pages";
+        private const string BlogsContentType = "blogs";
         private static readonly Regex _headerRegExp = new Regex(@"(?s:^---(.*?)---)");
 
         private readonly ISettingsManager _settingsManager;
@@ -108,6 +109,12 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             criteria.FolderUrl = folrderUrl;
 
             var searchResult = await _contentFileService.FilterItemsAsync(criteria);
+            //In case if we not find any content in the pages try to search in the blogs
+            if(!searchResult.Any())
+            {
+                criteria.ContentType = BlogsContentType;
+                searchResult = await _contentFileService.FilterItemsAsync(criteria);
+            }
 
             foreach (var file in searchResult.Where(file => file.Type == "blob" && IsExtensionAllowed(allowedExtensions, file.RelativeUrl)))
             {
