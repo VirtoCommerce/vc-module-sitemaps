@@ -81,22 +81,35 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
                 foreach (var url in validSitemapItems)
                 {
-                    var contentFile = await _contentService.GetFileAsync(PagesContentType, sitemap.StoreId, url);
-
-                    using (var stream = await _contentService.GetItemStreamAsync(PagesContentType, sitemap.StoreId, url))
+                    ContentFile contentFile = null;
+                    var contentType = PagesContentType;
+                    if (await _contentService.ItemExistsAsync(PagesContentType, sitemap.StoreId, url))
                     {
-                        var content = stream.ReadToString();
-
-                        var frontMatterPermalink = GetPermalink(content, url, contentFile.Url);
-                        var urlTemplate = frontMatterPermalink.ToUrl().TrimStart('/');
-
-                        var records = GetSitemapItemRecords(store, blogOptions, urlTemplate, baseUrl);
-                        sitemapItem.ItemsRecords.AddRange(records);
+                        contentFile = await _contentService.GetFileAsync(PagesContentType, sitemap.StoreId, url);
+                    }
+                    else if (await _contentService.ItemExistsAsync(BlogsContentType, sitemap.StoreId, url))
+                    {
+                        contentType = BlogsContentType;
+                        contentFile = await _contentService.GetFileAsync(BlogsContentType, sitemap.StoreId, url);
                     }
 
-                    processedCount++;
-                    progressInfo.Description = $"Content: Have been generated records for {processedCount} of {totalCount} pages";
-                    progressCallback?.Invoke(progressInfo);
+                    if (contentFile != null)
+                    {
+                        using (var stream = await _contentService.GetItemStreamAsync(contentType, sitemap.StoreId, url))
+                        {
+                            var content = stream.ReadToString();
+
+                            var frontMatterPermalink = GetPermalink(content, url, contentFile.Url);
+                            var urlTemplate = frontMatterPermalink.ToUrl().TrimStart('/');
+
+                            var records = GetSitemapItemRecords(store, blogOptions, urlTemplate, baseUrl);
+                            sitemapItem.ItemsRecords.AddRange(records);
+                        }
+
+                        processedCount++;
+                        progressInfo.Description = $"Content: Have been generated records for {processedCount} of {totalCount} pages";
+                        progressCallback?.Invoke(progressInfo);
+                    }
                 }
             }
         }
