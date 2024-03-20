@@ -23,6 +23,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
     public class StaticContentSitemapItemRecordProvider : SitemapItemRecordProviderBase, ISitemapItemRecordProvider
     {
         private const string PagesContentType = "pages";
+        private const string BlogsContentType = "blogs";
         private static readonly Regex _headerRegExp = new Regex(@"(?s:^---(.*?)---)");
 
         private readonly ISettingsManager _settingsManager;
@@ -80,22 +81,35 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
                 foreach (var url in validSitemapItems)
                 {
-                    var contentFile = await _contentService.GetFileAsync(PagesContentType, sitemap.StoreId, url);
-
-                    using (var stream = await _contentService.GetItemStreamAsync(PagesContentType, sitemap.StoreId, url))
+                    ContentFile contentFile = null;
+                    var contentType = PagesContentType;
+                    if (await _contentService.ItemExistsAsync(PagesContentType, sitemap.StoreId, url))
                     {
-                        var content = stream.ReadToString();
-
-                        var frontMatterPermalink = GetPermalink(content, url, contentFile.Url);
-                        var urlTemplate = frontMatterPermalink.ToUrl().TrimStart('/');
-
-                        var records = GetSitemapItemRecords(store, blogOptions, urlTemplate, baseUrl);
-                        sitemapItem.ItemsRecords.AddRange(records);
+                        contentFile = await _contentService.GetFileAsync(PagesContentType, sitemap.StoreId, url);
+                    }
+                    else if (await _contentService.ItemExistsAsync(BlogsContentType, sitemap.StoreId, url))
+                    {
+                        contentType = BlogsContentType;
+                        contentFile = await _contentService.GetFileAsync(BlogsContentType, sitemap.StoreId, url);
                     }
 
-                    processedCount++;
-                    progressInfo.Description = $"Content: Have been generated records for {processedCount} of {totalCount} pages";
-                    progressCallback?.Invoke(progressInfo);
+                    if (contentFile != null)
+                    {
+                        using (var stream = await _contentService.GetItemStreamAsync(contentType, sitemap.StoreId, url))
+                        {
+                            var content = stream.ReadToString();
+
+                            var frontMatterPermalink = GetPermalink(content, url, contentFile.Url);
+                            var urlTemplate = frontMatterPermalink.ToUrl().TrimStart('/');
+
+                            var records = GetSitemapItemRecords(store, blogOptions, urlTemplate, baseUrl);
+                            sitemapItem.ItemsRecords.AddRange(records);
+                        }
+
+                        processedCount++;
+                        progressInfo.Description = $"Content: Have been generated records for {processedCount} of {totalCount} pages";
+                        progressCallback?.Invoke(progressInfo);
+                    }
                 }
             }
         }
@@ -108,6 +122,12 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             criteria.FolderUrl = folrderUrl;
 
             var searchResult = await _contentFileService.FilterItemsAsync(criteria);
+            //In case if we not find any content in the pages try to search in the blogs
+            if(!searchResult.Any())
+            {
+                criteria.ContentType = BlogsContentType;
+                searchResult = await _contentFileService.FilterItemsAsync(criteria);
+            }
 
             foreach (var file in searchResult.Where(file => file.Type == "blob" && IsExtensionAllowed(allowedExtensions, file.RelativeUrl)))
             {
