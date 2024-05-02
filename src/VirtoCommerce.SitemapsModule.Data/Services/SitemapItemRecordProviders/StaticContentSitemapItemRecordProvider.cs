@@ -116,7 +116,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 searchResult = await _contentFileService.FilterItemsAsync(criteria);
             }
 
-            foreach (var file in searchResult.Where(file => file.Type == "blob" && IsExtensionAllowed(allowedExtensions, file.RelativeUrl)))
+            foreach (var file in searchResult.Where(file => file.Type != "folder" && IsExtensionAllowed(allowedExtensions, file.RelativeUrl)))
             {
                 validSitemapItems.Add(file.RelativeUrl);
             }
