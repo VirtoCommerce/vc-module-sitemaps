@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.ContentModule.Core.Model;
 using VirtoCommerce.ContentModule.Core.Services;
@@ -123,7 +124,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
             var searchResult = await _contentFileService.FilterItemsAsync(criteria);
             //In case if we not find any content in the pages try to search in the blogs
-            if(!searchResult.Any())
+            if (!searchResult.Any())
             {
                 criteria.ContentType = BlogsContentType;
                 searchResult = await _contentFileService.FilterItemsAsync(criteria);
@@ -188,9 +189,16 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
         private static FrontMatterPermalink GetPermalink(string content, string url, string filePath)
         {
-            if (content.TryParseJson(out var token) && token.HasValues && token.First?["permalink"] != null)
+            if (content.TryParseJson(out var token) && token.HasValues)
             {
-                return new FrontMatterPermalink(token.First["permalink"].ToString());
+                if (token is JArray array && array.First?["permalink"] != null)
+                {
+                    return new FrontMatterPermalink(array.First["permalink"].ToString());
+                }
+                if (token["settings"] != null && token["settings"]?["permalink"] != null)
+                {
+                    return new FrontMatterPermalink(token["settings"]["permalink"].ToString());
+                }
             }
 
             var yamlHeader = ReadYamlHeader(content);
