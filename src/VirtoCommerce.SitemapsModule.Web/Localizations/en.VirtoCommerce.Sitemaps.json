@@ -103,7 +103,8 @@
           "total": "Total",
           "processed": "Processed",
           "errors-count": "Errors count",
-          "errors": "Errors"
+          "errors": "Errors",
+          "download-url": "Download url"
         }
       }
     },
