@@ -1,4 +1,4 @@
-﻿<div class="blade-content">
+<div class="blade-content">
     <div class="blade-inner">
         <div class="inner-block">
             <div class="form">
@@ -33,7 +33,7 @@
                         <p ng-repeat="error in blade.notification.errors track by $index" class="error">{{error}}</p>
                     </div>
                 </div>
-                <p class="text" ng-if="blade.notification.downloadUrl">{{ 'catalog.blades.catalog-CSV-export.labels.download-url' | translate }}: <a href="{{ blade.notification.downloadUrl }}" target="_blank" ng-bind="blade.notification.downloadUrl"></a></p>
+                <p class="text" ng-if="blade.notification.downloadUrl">{{ 'sitemapsModule.blades.download.labels.download-url' | translate }}: <a href="{{ blade.notification.downloadUrl }}" target="_blank" ng-bind="blade.notification.downloadUrl"></a></p>
             </div>
         </div>
     </div>
