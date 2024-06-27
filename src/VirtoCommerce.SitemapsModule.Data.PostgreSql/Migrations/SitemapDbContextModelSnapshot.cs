@@ -17,7 +17,7 @@ namespace VirtoCommerce.SitemapsModule.Data.PostgreSql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -47,6 +47,9 @@ namespace VirtoCommerce.SitemapsModule.Data.PostgreSql.Migrations
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("SitemapMode")
+                        .HasColumnType("integer");
 
                     b.Property<string>("StoreId")
                         .IsRequired()
