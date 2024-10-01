@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <id>VirtoCommerce.Sitemaps</id>
-  <version>3.807.0</version>
+  <version>3.808.0</version>
   <version-tag />
 
-  <platformVersion>3.825.0</platformVersion>
+  <platformVersion>3.853.0</platformVersion>
   <dependencies>
-    <dependency id="VirtoCommerce.Assets" version="3.800.0" />
-    <dependency id="VirtoCommerce.Catalog" version="3.800.0" />
-    <dependency id="VirtoCommerce.Content" version="3.800.0" />
-    <dependency id="VirtoCommerce.Core" version="3.800.0" />
-    <dependency id="VirtoCommerce.Customer" version="3.800.0" />
-    <dependency id="VirtoCommerce.Store" version="3.800.0" />
+    <dependency id="VirtoCommerce.Assets" version="3.808.0" />
+    <dependency id="VirtoCommerce.Catalog" version="3.822.0" />
+    <dependency id="VirtoCommerce.Content" version="3.823.0" />
+    <dependency id="VirtoCommerce.Core" version="3.808.0" />
+    <dependency id="VirtoCommerce.Customer" version="3.817.0" />
+    <dependency id="VirtoCommerce.Store" version="3.809.0" />
   </dependencies>
 
   <title>Sitemap Generator</title>
@@ -22,7 +22,7 @@
   <owners>
     <owner>Virto Commerce</owner>
   </owners>
-  <projectUrl>https://virtocommerce.com/apps/extensions/automatic-sitemaps-module</projectUrl>
+  <projectUrl>https://github.com/VirtoCommerce/vc-module-sitemaps</projectUrl>
   <iconUrl>Modules/$(VirtoCommerce.Sitemaps)/Content/logo.png</iconUrl>
   <requireLicenseAcceptance>false</requireLicenseAcceptance>
   <releaseNotes>First version.</releaseNotes>
