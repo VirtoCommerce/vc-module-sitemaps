@@ -417,11 +417,13 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                 _notifier.Send(notification);
             }
 
+            var uniqueFileName = $"sitemap-{DateTime.UtcNow:yyyy-MM-dd}-{Guid.NewGuid()}.zip";
+
             try
             {
-                var relativeUrl = $"tmp/sitemap-{storeId}.zip";
+                var relativeUrl = $"tmp/{uniqueFileName}";
                 var localTmpFolder = _hostingEnvironment.MapPath(Path.Combine("~/", _platformOptions.LocalUploadFolderPath, "tmp"));
-                var localTmpPath = Path.Combine(localTmpFolder, $"sitemap-{storeId}.zip");
+                var localTmpPath = Path.Combine(localTmpFolder, uniqueFileName);
 
                 // Create directory if not exist
                 if (!Directory.Exists(localTmpFolder))
