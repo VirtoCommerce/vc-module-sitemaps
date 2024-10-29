@@ -15,19 +15,16 @@ namespace VirtoCommerce.SitemapsModule.Data.BackgroundJobs;
 public class SitemapExportToAssetsJob
 {
     private readonly ISitemapXmlGenerator _sitemapXmlGenerator;
-    private readonly ISettingsManager _settingsManager;
     private readonly IStoreSearchService _storeSearchService;
     private readonly IBlobStorageProvider _blobStorageProvider;
     private readonly ILogger<SitemapExportToAssetsJob> _logger;
 
     public SitemapExportToAssetsJob(ISitemapXmlGenerator sitemapXmlGenerator,
-        ISettingsManager settingsManager,
         IStoreSearchService storeSearchService,
         IBlobStorageProvider blobStorageProvider,
         ILogger<SitemapExportToAssetsJob> logger)
     {
         _sitemapXmlGenerator = sitemapXmlGenerator;
-        _settingsManager = settingsManager;
         _storeSearchService = storeSearchService;
         _blobStorageProvider = blobStorageProvider;
         _logger = logger;
@@ -65,10 +62,6 @@ public class SitemapExportToAssetsJob
         var isEnabled = store.Settings.GetValue<bool>(Core.ModuleConstants.Settings.General.EnableExportToAssetsJob);
         if (isEnabled)
         {
-            //var outputAssetFolderTemplate = store.Settings.GetValue<string>(Core.ModuleConstants.Settings.General.AssetsOutputFolder);
-
-            //if (!string.IsNullOrEmpty(outputAssetFolderTemplate))
-            //{
             var outputAssetFolder = string.Format(Core.ModuleConstants.StoreAssetsOutputFolderTemplate, store.Id);
 
             _logger.LogInformation("Starting export {sitemapUrl} for store {storeId} to {outputAssetFolder}.", Core.ModuleConstants.SitemapXmlFileName, store.Id, outputAssetFolder); // Log success
@@ -81,7 +74,6 @@ public class SitemapExportToAssetsJob
 
                 await ExportSitemapPartAsync(store, outputAssetFolder, sitemapUrl);
             }
-            //}
         }
     }
 
