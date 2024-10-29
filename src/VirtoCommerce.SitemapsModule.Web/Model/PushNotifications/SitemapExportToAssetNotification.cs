@@ -5,8 +5,9 @@ using VirtoCommerce.Platform.Core.PushNotifications;
 
 namespace VirtoCommerce.SitemapsModule.Web.Model.PushNotifications
 {
+
     /// <summary>
-    /// 
+    /// Represents a notification about the sitemap export to asset.
     /// </summary>
     public class SitemapExportToAssetNotification : PushNotification
     {
