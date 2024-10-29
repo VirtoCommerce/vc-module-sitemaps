@@ -35,8 +35,6 @@ public class SitemapExportToAssetsJob
     {
         var searchCriteria = AbstractTypeFactory<StoreSearchCriteria>.TryCreateInstance();
 
-        searchCriteria.Take = 20;
-
         await foreach (var searchResult in _storeSearchService.SearchBatchesAsync(searchCriteria))
         {
             foreach (var store in searchResult.Results.Where(x => x.Settings.GetValue<bool>(Core.ModuleConstants.Settings.General.EnableExportToAssetsJob)))
