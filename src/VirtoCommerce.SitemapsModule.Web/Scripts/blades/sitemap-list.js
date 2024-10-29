@@ -60,7 +60,8 @@ angular.module('virtoCommerce.sitemapsModule').controller('virtoCommerce.sitemap
             executeMethod: showExportToStoreAssetsDialog,
             canExecuteMethod: function () {
                 return !blade.isLoading && $scope.pageSettings.totalItems > 0;
-            }
+            },
+            permission: 'sitemaps:exportToStoreAssets'
         },
         {
             name: "platform.commands.delete", icon: 'fa fa-trash-o',
@@ -150,8 +151,6 @@ angular.module('virtoCommerce.sitemapsModule').controller('virtoCommerce.sitemap
                     baseUrl: baseUrl
                 };
                 bladeNavigationService.showBlade(newBlade, blade);
-
-                //$window.open('api/sitemaps/download?storeId=' + blade.store.id + '&baseUrl=' + baseUrl, '_blank');
             }
         });
     }
@@ -163,7 +162,4 @@ angular.module('virtoCommerce.sitemapsModule').controller('virtoCommerce.sitemap
         });
         bladeUtils.initializePagination($scope);
     };
-
-    //No need to call this because page 'pageSettings.currentPage' is watched!!! It would trigger subsequent duplicated req...
-    //blade.refresh();
 }]);

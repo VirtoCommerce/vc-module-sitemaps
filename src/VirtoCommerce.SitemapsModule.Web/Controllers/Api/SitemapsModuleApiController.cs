@@ -363,7 +363,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task BackgroundExportToAssets(string storeId, string baseUrl, SitemapExportToAssetNotification notification)
+        public Task BackgroundExportToAssets(string storeId, string baseUrl, SitemapExportToAssetNotification notification)
         {
             if (!Regex.IsMatch(storeId, "^[a-zA-Z0-9-]+$"))
             {
@@ -375,7 +375,11 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                 throw new ArgumentException($"Incorrect base URL {baseUrl}");
             }
 
+            return InnerBackgroundExportToAssets(storeId, baseUrl, notification);
+        }
 
+        private async Task InnerBackgroundExportToAssets(string storeId, string baseUrl, SitemapExportToAssetNotification notification)
+        {
             void SendNotificationWithProgressInfo(ExportImportProgressInfo c)
             {
                 notification.Description = c.Description;

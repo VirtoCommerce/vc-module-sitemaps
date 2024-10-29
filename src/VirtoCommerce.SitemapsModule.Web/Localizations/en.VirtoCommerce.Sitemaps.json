@@ -153,7 +153,8 @@
     "sitemaps:create": "Access to create a sitemap",
     "sitemaps:read": "Access to view a sitemap details",
     "sitemaps:update": "Access to update a sitemap",
-    "sitemaps:delete": "Access to delete a sitemap"
+    "sitemaps:delete": "Access to delete a sitemap",
+    "sitemaps:exportToStoreAssets": "Allows to run manuall export to store assets"
   },
   "settings": {
     "Sitemap.RecordsLimitPerFile": {
@@ -201,8 +202,8 @@
       "description": "The priority of URL relative to other URLs on site. Valid values range from 0.0 to 1.0. This value does not affect how pages are compared to pages on other sites — it only lets the search engines know which pages deem most important for the crawlers."
     },
     "Sitemap.ExportToAssets.EnableExportToAssetsJob": {
-      "title": "Enable export sitemap files to store assets folder by schedule",
-      "description": "This check indicates whether the export to assets store assets folder should be enabled"
+      "title": "Enable export sitemap files by job",
+      "description": "This check indicates whether the export to assets store assets folder should be enabled. Save all sitemap artefacts to stores/{storeId}/sitemap asset folder."
     },
     "Sitemap.ExportToAssets.JobCronExpression": {
       "title": "Export to assets cron expression",
