@@ -5,7 +5,8 @@
         "title": "Sitemaps",
         "subtitle": "Verwalten von sitemaps, um sie in den Index sitemap.xml aufzunehmen",
         "toolbar": {
-          "download": "Sitemaps herunterladen"
+          "download": "Als ZIP herunterladen",
+          "exportToStoreAssets": "In Store-Assets exportieren"
         },
         "gridHeaders": {
           "location": "Lage",
@@ -99,8 +100,19 @@
           "errors": "Fehler",
           "download-url": "URL herunterladen"
         }
-      }
-    },
+      },
+      "exportToStoreAssets": {
+        "title": "Sitemap in Store-Assets exportieren",
+        "labels": {
+          "start": "Start",
+          "end": "Ende",
+          "total": "Gesamt",
+          "processed": "Verarbeitet",
+          "errors-count": "Fehleranzahl",
+          "errors": "Fehler",
+          "download-url": "Sie können die sitemap.xml unter folgendem URL finden"
+        }
+      },
     "contextMenu": {
       "manage": "Verwalten",
       "remove": "Entfernen"
@@ -128,15 +140,14 @@
       "filenameNotUnique": "Sitemap Mit dieser Dateiname ist bereits vorhanden"
     }
   },
-
   "permissions": {
     "sitemaps:access": "Zugriff zum Öffnen eines Sitemaps-Blades",
     "sitemaps:create": "Zugriff zum Erstellen einer Sitemap",
     "sitemaps:read": "Zugriff, um eine Sitemap-Details anzuzeigen",
     "sitemaps:update": "Zugriff auf eine Sitemap aktualisieren",
-    "sitemaps:delete": "Zugriff auf eine Sitemap löschen"
+    "sitemaps:delete": "Zugriff auf eine Sitemap löschen",
+    "sitemaps:exportToStoreAssets": "Ermöglicht den manuellen Export in Store-Assets"
   },
-
   "settings": {
     "Sitemap.RecordsLimitPerFile": {
       "title": "Datensatzbegrenzung",
@@ -173,6 +184,14 @@
     "Sitemap.CategoryPagePriority": {
       "title": "Kategorieseitenpriorität",
       "description": "Die Priorität der URL relativ zu anderen URLs auf der Website. Gültige Werte liegen zwischen 0,0 und 1,0. Dieser Wert wirkt sich nicht darauf aus, wie Seiten mit Seiten auf anderen Websites verglichen werden. Dadurch können die Suchmaschinen nur erfahren, welche Seiten für die Crawler am wichtigsten sind."
+    },
+    "Sitemap.ExportToAssets.EnableExportToAssetsJob": {
+      "title": "Export von Sitemap-Dateien per Job aktivieren",
+      "description": "Diese Überprüfung zeigt an, ob der Export in den Store-Assets-Ordner aktiviert werden soll. Speichern Sie alle Sitemap-Artefakte im Ordner stores/{storeId}/sitemap asset."
+    },
+    "Sitemap.ExportToAssets.JobCronExpression": {
+      "title": "Cron-Ausdruck für den Export in Assets",
+      "description": "Der Cron-Ausdruck für den Export von Sitemap-Dateien in den Store-Assets-Ordner nach Zeitplan. Standardmäßig '0 0 * * *' täglich um 00:00."
     }
   }
 }
