@@ -34,7 +34,7 @@ public class SitemapExportToAssetsJob
     {
         var searchCriteria = AbstractTypeFactory<StoreSearchCriteria>.TryCreateInstance();
 
-        searchCriteria.Take = 10;
+        searchCriteria.Take = 20;
 
         await foreach (var searchResult in _storeSearchService.SearchBatchesAsync(searchCriteria))
         {
