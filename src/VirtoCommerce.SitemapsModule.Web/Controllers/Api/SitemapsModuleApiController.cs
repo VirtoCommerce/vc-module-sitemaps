@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -318,7 +317,6 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
             return Ok(notification);
         }
-
         /// <summary>
         ///
         /// </summary>
@@ -346,6 +344,74 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             return InnerBackgroundDownload(storeId, baseUrl, notification);
         }
 
+        [HttpGet]
+        [Route("exportToStoreAssets")]
+        [Authorize(ModuleConstants.Security.Permissions.ExportToStoreAssets)]
+        public async Task<ActionResult<SitemapDownloadNotification>> ExportToStoreAssets(string storeId, string baseUrl)
+        {
+            var notification = new SitemapExportToAssetNotification(_userNameResolver.GetCurrentUserName())
+            {
+                Title = "Exporting sitemaps to store assets",
+                Description = "Processing exporting sitemaps to store assets..."
+            };
+
+            await _notifier.SendAsync(notification);
+
+            BackgroundJob.Enqueue(() => BackgroundExportToAssets(storeId, baseUrl, notification));
+
+            return Ok(notification);
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task BackgroundExportToAssets(string storeId, string baseUrl, SitemapExportToAssetNotification notification)
+        {
+            if (!Regex.IsMatch(storeId, "^[a-zA-Z0-9-]+$"))
+            {
+                throw new ArgumentException($"Incorrect name of store {storeId}");
+            }
+
+            if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out var correctUri))
+            {
+                throw new ArgumentException($"Incorrect base URL {baseUrl}");
+            }
+
+
+            void SendNotificationWithProgressInfo(ExportImportProgressInfo c)
+            {
+                notification.Description = c.Description;
+                notification.ProcessedCount = c.ProcessedCount;
+                notification.TotalCount = c.TotalCount;
+                notification.Errors = c.Errors?.ToList() ?? [];
+
+                _notifier.Send(notification);
+            }
+
+            var outputAssetFolder = string.Format(Core.ModuleConstants.StoreAssetsOutputFolderTemplate, storeId);
+
+            try
+            {
+                var sitemapXmlBlobInfo = await ExportSitemapPartAsync(storeId, baseUrl, outputAssetFolder, ModuleConstants.SitemapXmlFileName, SendNotificationWithProgressInfo);
+
+                foreach (var sitemapUrl in await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId, baseUrl))
+                {
+                    await ExportSitemapPartAsync(storeId, baseUrl, outputAssetFolder, sitemapUrl, SendNotificationWithProgressInfo);
+                }
+
+                notification.Description = "Sitemap export to store assets finished";
+                notification.SitemapXmlUrl = sitemapXmlBlobInfo.Url;
+            }
+            catch (Exception exception)
+            {
+                notification.Description = "Sitemap export to store assets failed";
+                notification.Errors.Add(exception.ExpandExceptionMessage());
+            }
+            finally
+            {
+                notification.Finished = DateTime.UtcNow;
+                await _notifier.SendAsync(notification);
+            }
+        }
+
         private async Task InnerBackgroundDownload(string storeId, string baseUrl, SitemapDownloadNotification notification)
         {
             void SendNotificationWithProgressInfo(ExportImportProgressInfo c)
@@ -353,7 +419,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                 notification.Description = c.Description;
                 notification.ProcessedCount = c.ProcessedCount;
                 notification.TotalCount = c.TotalCount;
-                notification.Errors = c.Errors?.ToList() ?? new List<string>();
+                notification.Errors = c.Errors?.ToList() ?? [];
 
                 _notifier.Send(notification);
             }
@@ -366,18 +432,22 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
                 // Create directory if not exist
                 if (!Directory.Exists(localTmpFolder))
+                {
                     Directory.CreateDirectory(localTmpFolder);
+                }
 
                 // Remove old file if exist
                 if (SystemFile.Exists(localTmpPath))
+                {
                     SystemFile.Delete(localTmpPath);
+                }
 
                 //Import first to local tmp folder because Azure blob storage doesn't support some special file access mode
                 using (var stream = SystemFile.Open(localTmpPath, FileMode.CreateNew))
                 using (var zipArchive = new ZipArchive(stream, ZipArchiveMode.Create, true))
                 {
                     // Create default sitemap.xml
-                    await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, "sitemap.xml", SendNotificationWithProgressInfo);
+                    await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, ModuleConstants.SitemapXmlFileName, SendNotificationWithProgressInfo);
 
                     var sitemapUrls = await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId, baseUrl);
                     foreach (var sitemapUrl in sitemapUrls.Where(url => !string.IsNullOrEmpty(url)))
@@ -412,11 +482,20 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         private async Task CreateSitemapPartAsync(ZipArchive zipArchive, string storeId, string baseUrl, string sitemapUrl, Action<ExportImportProgressInfo> progressCallback)
         {
             var sitemapPart = zipArchive.CreateEntry(sitemapUrl, CompressionLevel.Optimal);
-            using (var sitemapPartStream = sitemapPart.Open())
-            {
-                var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(storeId, baseUrl, sitemapUrl, progressCallback);
-                await stream.CopyToAsync(sitemapPartStream);
-            }
+            using var sitemapPartStream = sitemapPart.Open();
+            using var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(storeId, baseUrl, sitemapUrl, progressCallback);
+            await stream.CopyToAsync(sitemapPartStream);
+        }
+
+        private async Task<BlobInfo> ExportSitemapPartAsync(string storeId, string storeUrl, string outputAssetFolder, string sitemapUrl, Action<ExportImportProgressInfo> progressCallback)
+        {
+            var relativeUrl = $"{outputAssetFolder.Trim('/')}/{sitemapUrl.Trim('/')}";
+
+            using var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(storeId, storeUrl, sitemapUrl, progressCallback);
+            using var blobStream = _blobStorageProvider.OpenWrite(relativeUrl);
+            await stream.CopyToAsync(blobStream);
+
+            return await _blobStorageProvider.GetBlobInfoAsync(relativeUrl);
         }
     }
 }

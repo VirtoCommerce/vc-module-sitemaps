@@ -78,11 +78,11 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
 
             var sitemapLocation = SitemapLocation.Parse(sitemapUrl, filenameSeparator);
             var store = await _storeService.GetByIdAsync(storeId, StoreResponseGroup.StoreInfo.ToString());
-            if (sitemapLocation.Location.EqualsInvariant("sitemap.xml"))
+            if (sitemapLocation.Location.EqualsInvariant(ModuleConstants.SitemapXmlFileName))
             {
                 progressCallback?.Invoke(new ExportImportProgressInfo
                 {
-                    Description = "Creating sitemap.xml..."
+                    Description = $"Creating {ModuleConstants.SitemapXmlFileName}..."
                 });
 
                 var storeSitemaps = await LoadStoreSitemaps(store, baseUrl);
