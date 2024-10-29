@@ -383,7 +383,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
             try
             {
-                var sitemapXmlBlobInfo = await ExportSitemapPartAsync(storeId, baseUrl, outputAssetFolder, ModuleConstants.SitemapXmlFileName, SendNotificationWithProgressInfo);
+                var sitemapXmlBlobInfo = await ExportSitemapPartAsync(storeId, baseUrl, outputAssetFolder, ModuleConstants.SitemapFileName, SendNotificationWithProgressInfo);
 
                 foreach (var sitemapUrl in await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId, baseUrl))
                 {
@@ -442,7 +442,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
                 using (var zipArchive = new ZipArchive(stream, ZipArchiveMode.Create, true))
                 {
                     // Create default sitemap.xml
-                    await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, ModuleConstants.SitemapXmlFileName, SendNotificationWithProgressInfo);
+                    await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, ModuleConstants.SitemapFileName, SendNotificationWithProgressInfo);
 
                     var sitemapUrls = await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId, baseUrl);
                     foreach (var sitemapUrl in sitemapUrls.Where(url => !string.IsNullOrEmpty(url)))

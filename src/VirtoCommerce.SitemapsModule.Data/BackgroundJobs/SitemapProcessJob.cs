@@ -64,9 +64,9 @@ public class SitemapExportToAssetsJob
         {
             var outputAssetFolder = string.Format(Core.ModuleConstants.StoreAssetsOutputFolderTemplate, store.Id);
 
-            _logger.LogInformation("Starting export {sitemapUrl} for store {storeId} to {outputAssetFolder}.", Core.ModuleConstants.SitemapXmlFileName, store.Id, outputAssetFolder); // Log success
+            _logger.LogInformation("Starting export {sitemapUrl} for store {storeId} to {outputAssetFolder}.", Core.ModuleConstants.SitemapFileName, store.Id, outputAssetFolder); // Log success
 
-            await ExportSitemapPartAsync(store, outputAssetFolder, Core.ModuleConstants.SitemapXmlFileName);
+            await ExportSitemapPartAsync(store, outputAssetFolder, Core.ModuleConstants.SitemapFileName);
 
             foreach (var sitemapUrl in await _sitemapXmlGenerator.GetSitemapUrlsAsync(store.Id, store.Url))
             {

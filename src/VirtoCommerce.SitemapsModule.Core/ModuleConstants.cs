@@ -7,7 +7,7 @@ namespace VirtoCommerce.SitemapsModule.Core
     [ExcludeFromCodeCoverage]
     public static class ModuleConstants
     {
-        public const string SitemapXmlFileName = "sitemap.xml";
+        public const string SitemapFileName = "sitemap.xml";
         public const string StoreAssetsOutputFolderTemplate = "stores/{0}/sitemap";
 
         public static class Security
@@ -66,7 +66,7 @@ namespace VirtoCommerce.SitemapsModule.Core
                 public static SettingDescriptor ExportToAssetsJobCronExpression { get; } = new()
                 {
                     Name = "Sitemap.ExportToAssets.JobCronExpression",
-                    GroupName = "Sitemap|Export To Assets",
+                    GroupName = "Sitemap|Export to assets",
                     ValueType = SettingValueType.ShortText,
                     DefaultValue = "0 0 * * *",
                 };
@@ -74,7 +74,7 @@ namespace VirtoCommerce.SitemapsModule.Core
                 public static SettingDescriptor EnableExportToAssetsJob { get; } = new()
                 {
                     Name = "Sitemap.ExportToAssets.EnableExportToAssetsJob",
-                    GroupName = "Sitemap|Export To Assets",
+                    GroupName = "Sitemap|Export to assets",
                     ValueType = SettingValueType.Boolean,
                     DefaultValue = false,
                 };
