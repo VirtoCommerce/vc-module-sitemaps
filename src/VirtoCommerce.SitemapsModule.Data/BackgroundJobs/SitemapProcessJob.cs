@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
 using Microsoft.Extensions.Logging;
@@ -38,7 +39,7 @@ public class SitemapExportToAssetsJob
 
         await foreach (var searchResult in _storeSearchService.SearchBatchesAsync(searchCriteria))
         {
-            foreach (var store in searchResult.Results)
+            foreach (var store in searchResult.Results.Where(x => x.Settings.GetValue<bool>(Core.ModuleConstants.Settings.General.EnableExportToAssetsJob)))
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -57,23 +58,17 @@ public class SitemapExportToAssetsJob
 
     protected virtual async Task ProcessStore(Store store)
     {
-        ArgumentNullException.ThrowIfNull(store);
+        var outputAssetFolder = string.Format(Core.ModuleConstants.StoreAssetsOutputFolderTemplate, store.Id);
 
-        var isEnabled = store.Settings.GetValue<bool>(Core.ModuleConstants.Settings.General.EnableExportToAssetsJob);
-        if (isEnabled)
+        _logger.LogInformation("Starting export {sitemapUrl} for store {storeId} to {outputAssetFolder}.", Core.ModuleConstants.SitemapFileName, store.Id, outputAssetFolder); // Log success
+
+        await ExportSitemapPartAsync(store, outputAssetFolder, Core.ModuleConstants.SitemapFileName);
+
+        foreach (var sitemapUrl in await _sitemapXmlGenerator.GetSitemapUrlsAsync(store.Id, store.Url))
         {
-            var outputAssetFolder = string.Format(Core.ModuleConstants.StoreAssetsOutputFolderTemplate, store.Id);
+            _logger.LogInformation("Starting export {sitemapUrl} for store {storeId} to {outputAssetFolder}.", sitemapUrl, store.Id, outputAssetFolder); // Log success
 
-            _logger.LogInformation("Starting export {sitemapUrl} for store {storeId} to {outputAssetFolder}.", Core.ModuleConstants.SitemapFileName, store.Id, outputAssetFolder); // Log success
-
-            await ExportSitemapPartAsync(store, outputAssetFolder, Core.ModuleConstants.SitemapFileName);
-
-            foreach (var sitemapUrl in await _sitemapXmlGenerator.GetSitemapUrlsAsync(store.Id, store.Url))
-            {
-                _logger.LogInformation("Starting export {sitemapUrl} for store {storeId} to {outputAssetFolder}.", sitemapUrl, store.Id, outputAssetFolder); // Log success
-
-                await ExportSitemapPartAsync(store, outputAssetFolder, sitemapUrl);
-            }
+            await ExportSitemapPartAsync(store, outputAssetFolder, sitemapUrl);
         }
     }
 
