@@ -12,7 +12,6 @@ using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.PushNotifications;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SitemapsModule.Core;
-using VirtoCommerce.SitemapsModule.Data.Extensions;
 using VirtoCommerce.SitemapsModule.Data.Model.PushNotifications;
 using VirtoCommerce.SitemapsModule.Data.Services;
 using VirtoCommerce.StoreModule.Core.Model;
@@ -95,25 +94,15 @@ public class SitemapExportToAssetsJob
 
     private async Task InnerBackgroundExportToAssets(string storeId, string baseUrl, SitemapExportToAssetNotification notification)
     {
-        void SendNotificationWithProgressInfo(ExportImportProgressInfo c)
-        {
-            notification.Description = c.Description;
-            notification.ProcessedCount = c.ProcessedCount;
-            notification.TotalCount = c.TotalCount;
-            notification.Errors = c.Errors?.ToList() ?? [];
-
-            _notifier.Send(notification);
-        }
-
         var outputAssetFolder = string.Format(Core.ModuleConstants.StoreAssetsOutputFolderTemplate, storeId);
 
         try
         {
-            var sitemapXmlBlobInfo = await ExportSitemapPartAsync(storeId, baseUrl, outputAssetFolder, ModuleConstants.SitemapFileName, SendNotificationWithProgressInfo);
+            var sitemapXmlBlobInfo = await ExportSitemapPartAsync(storeId, baseUrl, outputAssetFolder, ModuleConstants.SitemapFileName, progress => SendProgressNotification(notification, progress));
 
             foreach (var sitemapUrl in await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId, baseUrl))
             {
-                await ExportSitemapPartAsync(storeId, baseUrl, outputAssetFolder, sitemapUrl, SendNotificationWithProgressInfo);
+                await ExportSitemapPartAsync(storeId, baseUrl, outputAssetFolder, sitemapUrl, progress => SendProgressNotification(notification, progress));
             }
 
             notification.Description = "Sitemap export to store assets finished";
@@ -133,15 +122,6 @@ public class SitemapExportToAssetsJob
 
     private async Task InnerBackgroundDownload(string storeId, string baseUrl, string localTmpFolder, SitemapDownloadNotification notification)
     {
-        void SendNotificationWithProgressInfo(ExportImportProgressInfo c)
-        {
-            notification.Description = c.Description;
-            notification.ProcessedCount = c.ProcessedCount;
-            notification.TotalCount = c.TotalCount;
-            notification.Errors = c.Errors?.ToList() ?? [];
-
-            _notifier.Send(notification);
-        }
         var uniqueFileName = $"sitemap-{DateTime.UtcNow:yyyy-MM-dd}-{Guid.NewGuid()}.zip";
 
         try
@@ -166,12 +146,12 @@ public class SitemapExportToAssetsJob
             using (var zipArchive = new ZipArchive(stream, ZipArchiveMode.Create, true))
             {
                 // Create default sitemap.xml
-                await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, ModuleConstants.SitemapFileName, SendNotificationWithProgressInfo);
+                await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, ModuleConstants.SitemapFileName, progress => SendProgressNotification(notification, progress));
 
                 var sitemapUrls = await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId, baseUrl);
                 foreach (var sitemapUrl in sitemapUrls.Where(url => !string.IsNullOrEmpty(url)))
                 {
-                    await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, sitemapUrl, SendNotificationWithProgressInfo);
+                    await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, sitemapUrl, progress => SendProgressNotification(notification, progress));
                 }
             }
 
@@ -217,6 +197,7 @@ public class SitemapExportToAssetsJob
     private async Task CreateSitemapPartAsync(ZipArchive zipArchive, string storeId, string baseUrl, string sitemapUrl, Action<ExportImportProgressInfo> progressCallback)
     {
         var sitemapPart = zipArchive.CreateEntry(sitemapUrl, CompressionLevel.Optimal);
+
         using var sitemapPartStream = sitemapPart.Open();
         using var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(storeId, baseUrl, sitemapUrl, progressCallback);
         await stream.CopyToAsync(sitemapPartStream);
@@ -224,12 +205,22 @@ public class SitemapExportToAssetsJob
 
     private async Task<BlobInfo> ExportSitemapPartAsync(string storeId, string storeUrl, string outputAssetFolder, string sitemapUrl, Action<ExportImportProgressInfo> progressCallback)
     {
-        var relativeUrl = RelativePathUtils.Combine(outputAssetFolder, sitemapUrl);
+        var relativeUrl = $"{outputAssetFolder.Trim('/')}/{sitemapUrl.Trim('/')}";
 
         using var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(storeId, storeUrl, sitemapUrl, progressCallback);
         using var blobStream = _blobStorageProvider.OpenWrite(relativeUrl);
         await stream.CopyToAsync(blobStream);
 
         return await _blobStorageProvider.GetBlobInfoAsync(relativeUrl);
+    }
+
+    private void SendProgressNotification(SitemapNotification notification, ExportImportProgressInfo progressInfo)
+    {
+        notification.Description = progressInfo.Description;
+        notification.ProcessedCount = progressInfo.ProcessedCount;
+        notification.TotalCount = progressInfo.TotalCount;
+        notification.Errors = progressInfo.Errors?.ToList() ?? [];
+
+        _notifier.Send(notification);
     }
 }
