@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using VirtoCommerce.Platform.Core.PushNotifications;
 
-namespace VirtoCommerce.SitemapsModule.Web.Model.PushNotifications
+namespace VirtoCommerce.SitemapsModule.Data.Model.PushNotifications
 {
     /// <summary>
-    /// Represents a notification about sitemap download.
+    /// Represents a notification about the sitemap export to asset.
     /// </summary>
-    public class SitemapDownloadNotification : PushNotification
+    public class SitemapExportToAssetNotification : PushNotification
     {
-        public SitemapDownloadNotification(string creator)
+        public SitemapExportToAssetNotification(string creator)
             : base(creator)
         {
-            NotifyType = "SitemapDownload";
-            Errors = new List<string>();
+            NotifyType = "SitemapExportToAsset";
+            Errors = [];
         }
 
         [JsonProperty("finished")]
@@ -32,7 +32,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Model.PushNotifications
         [JsonProperty("errors")]
         public ICollection<string> Errors { get; set; }
 
-        [JsonProperty("downloadUrl")]
-        public string DownloadUrl { get; set; }
+        [JsonProperty("sitemapXmlUrl")]
+        public string SitemapXmlUrl { get; set; }
     }
 }

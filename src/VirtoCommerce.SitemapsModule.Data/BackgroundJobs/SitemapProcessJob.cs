@@ -1,16 +1,24 @@
 using System;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
 using Microsoft.Extensions.Logging;
 using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Exceptions;
+using VirtoCommerce.Platform.Core.ExportImport;
+using VirtoCommerce.Platform.Core.PushNotifications;
 using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.SitemapsModule.Core;
 using VirtoCommerce.SitemapsModule.Data.Extensions;
+using VirtoCommerce.SitemapsModule.Data.Model.PushNotifications;
 using VirtoCommerce.SitemapsModule.Data.Services;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Model.Search;
 using VirtoCommerce.StoreModule.Core.Services;
+using SystemFile = System.IO.File;
 
 namespace VirtoCommerce.SitemapsModule.Data.BackgroundJobs;
 
@@ -20,16 +28,22 @@ public class SitemapExportToAssetsJob
     private readonly IStoreSearchService _storeSearchService;
     private readonly IBlobStorageProvider _blobStorageProvider;
     private readonly ILogger<SitemapExportToAssetsJob> _logger;
+    private readonly IPushNotificationManager _notifier;
+    private readonly IBlobUrlResolver _blobUrlResolver;
 
     public SitemapExportToAssetsJob(ISitemapXmlGenerator sitemapXmlGenerator,
         IStoreSearchService storeSearchService,
         IBlobStorageProvider blobStorageProvider,
-        ILogger<SitemapExportToAssetsJob> logger)
+        ILogger<SitemapExportToAssetsJob> logger,
+        IPushNotificationManager notifier,
+        IBlobUrlResolver blobUrlResolver)
     {
         _sitemapXmlGenerator = sitemapXmlGenerator;
         _storeSearchService = storeSearchService;
         _blobStorageProvider = blobStorageProvider;
         _logger = logger;
+        _notifier = notifier;
+        _blobUrlResolver = blobUrlResolver;
     }
 
     public async Task ProcessAll(IJobCancellationToken cancellationToken)
@@ -55,7 +69,137 @@ public class SitemapExportToAssetsJob
         }
     }
 
-    protected virtual async Task ProcessStore(Store store)
+    public Task BackgroundDownload(string storeId, string baseUrl, string localTmpFolder, SitemapDownloadNotification notification)
+    {
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(storeId);
+
+        if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out var correctUri))
+        {
+            throw new ArgumentException($"Incorrect base URL {baseUrl}");
+        }
+
+        return InnerBackgroundDownload(storeId, baseUrl, localTmpFolder, notification);
+    }
+
+    public Task BackgroundExportToAssets(string storeId, string baseUrl, SitemapExportToAssetNotification notification)
+    {
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(storeId);
+
+        if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out var correctUri))
+        {
+            throw new ArgumentException($"Incorrect base URL {baseUrl}");
+        }
+
+        return InnerBackgroundExportToAssets(storeId, baseUrl, notification);
+    }
+
+
+    private async Task InnerBackgroundExportToAssets(string storeId, string baseUrl, SitemapExportToAssetNotification notification)
+    {
+        void SendNotificationWithProgressInfo(ExportImportProgressInfo c)
+        {
+            notification.Description = c.Description;
+            notification.ProcessedCount = c.ProcessedCount;
+            notification.TotalCount = c.TotalCount;
+            notification.Errors = c.Errors?.ToList() ?? [];
+
+            _notifier.Send(notification);
+        }
+
+        var outputAssetFolder = string.Format(Core.ModuleConstants.StoreAssetsOutputFolderTemplate, storeId);
+
+        try
+        {
+            var sitemapXmlBlobInfo = await ExportSitemapPartAsync(storeId, baseUrl, outputAssetFolder, ModuleConstants.SitemapFileName, SendNotificationWithProgressInfo);
+
+            foreach (var sitemapUrl in await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId, baseUrl))
+            {
+                await ExportSitemapPartAsync(storeId, baseUrl, outputAssetFolder, sitemapUrl, SendNotificationWithProgressInfo);
+            }
+
+            notification.Description = "Sitemap export to store assets finished";
+            notification.SitemapXmlUrl = sitemapXmlBlobInfo.Url;
+        }
+        catch (Exception exception)
+        {
+            notification.Description = "Sitemap export to store assets failed";
+            notification.Errors.Add(exception.ExpandExceptionMessage());
+        }
+        finally
+        {
+            notification.Finished = DateTime.UtcNow;
+            await _notifier.SendAsync(notification);
+        }
+    }
+
+    private async Task InnerBackgroundDownload(string storeId, string baseUrl, string localTmpFolder, SitemapDownloadNotification notification)
+    {
+        void SendNotificationWithProgressInfo(ExportImportProgressInfo c)
+        {
+            notification.Description = c.Description;
+            notification.ProcessedCount = c.ProcessedCount;
+            notification.TotalCount = c.TotalCount;
+            notification.Errors = c.Errors?.ToList() ?? [];
+
+            _notifier.Send(notification);
+        }
+        var uniqueFileName = $"sitemap-{DateTime.UtcNow:yyyy-MM-dd}-{Guid.NewGuid()}.zip";
+
+        try
+        {
+            var relativeUrl = $"tmp/{uniqueFileName}";
+            var localTmpPath = Path.Combine(localTmpFolder, uniqueFileName);
+
+            // Create directory if not exist
+            if (!Directory.Exists(localTmpFolder))
+            {
+                Directory.CreateDirectory(localTmpFolder);
+            }
+
+            // Remove old file if exist
+            if (SystemFile.Exists(localTmpPath))
+            {
+                SystemFile.Delete(localTmpPath);
+            }
+
+            //Import first to local tmp folder because Azure blob storage doesn't support some special file access mode
+            using (var stream = SystemFile.Open(localTmpPath, FileMode.CreateNew))
+            using (var zipArchive = new ZipArchive(stream, ZipArchiveMode.Create, true))
+            {
+                // Create default sitemap.xml
+                await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, ModuleConstants.SitemapFileName, SendNotificationWithProgressInfo);
+
+                var sitemapUrls = await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId, baseUrl);
+                foreach (var sitemapUrl in sitemapUrls.Where(url => !string.IsNullOrEmpty(url)))
+                {
+                    await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, sitemapUrl, SendNotificationWithProgressInfo);
+                }
+            }
+
+            //Copy export data to blob provider for get public download url
+            using (var localStream = SystemFile.Open(localTmpPath, FileMode.Open, FileAccess.Read))
+            using (var blobStream = _blobStorageProvider.OpenWrite(relativeUrl))
+            {
+                await localStream.CopyToAsync(blobStream);
+            }
+
+            // Add unique key for every link to prevent browser caching
+            notification.DownloadUrl = $"{_blobUrlResolver.GetAbsoluteUrl(relativeUrl)}?v={DateTime.UtcNow.Ticks}";
+            notification.Description = "Sitemap download finished";
+        }
+        catch (Exception exception)
+        {
+            notification.Description = "Sitemap download failed";
+            notification.Errors.Add(exception.ExpandExceptionMessage());
+        }
+        finally
+        {
+            notification.Finished = DateTime.UtcNow;
+            await _notifier.SendAsync(notification);
+        }
+    }
+
+    private async Task ProcessStore(Store store)
     {
         var outputAssetFolder = string.Format(Core.ModuleConstants.StoreAssetsOutputFolderTemplate, store.Id);
 
@@ -72,12 +216,31 @@ public class SitemapExportToAssetsJob
     }
 
 
-    protected virtual async Task ExportSitemapPartAsync(Store store, string outputAssetFolder, string sitemapUrl)
+    private async Task ExportSitemapPartAsync(Store store, string outputAssetFolder, string sitemapUrl)
     {
         var relativeUrl = RelativePathUtils.Combine(outputAssetFolder, sitemapUrl);
 
         using var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(store.Id, store.Url, sitemapUrl, null);
         using var blobStream = _blobStorageProvider.OpenWrite(relativeUrl);
         await stream.CopyToAsync(blobStream);
+    }
+
+    private async Task CreateSitemapPartAsync(ZipArchive zipArchive, string storeId, string baseUrl, string sitemapUrl, Action<ExportImportProgressInfo> progressCallback)
+    {
+        var sitemapPart = zipArchive.CreateEntry(sitemapUrl, CompressionLevel.Optimal);
+        using var sitemapPartStream = sitemapPart.Open();
+        using var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(storeId, baseUrl, sitemapUrl, progressCallback);
+        await stream.CopyToAsync(sitemapPartStream);
+    }
+
+    private async Task<BlobInfo> ExportSitemapPartAsync(string storeId, string storeUrl, string outputAssetFolder, string sitemapUrl, Action<ExportImportProgressInfo> progressCallback)
+    {
+        var relativeUrl = RelativePathUtils.Combine(outputAssetFolder, sitemapUrl);
+
+        using var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(storeId, storeUrl, sitemapUrl, progressCallback);
+        using var blobStream = _blobStorageProvider.OpenWrite(relativeUrl);
+        await stream.CopyToAsync(blobStream);
+
+        return await _blobStorageProvider.GetBlobInfoAsync(relativeUrl);
     }
 }
