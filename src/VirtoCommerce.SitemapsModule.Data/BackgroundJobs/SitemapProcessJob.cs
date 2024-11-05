@@ -73,7 +73,7 @@ public class SitemapExportToAssetsJob
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(storeId);
 
-        if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out var correctUri))
+        if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out _))
         {
             throw new ArgumentException($"Incorrect base URL {baseUrl}");
         }
@@ -85,14 +85,13 @@ public class SitemapExportToAssetsJob
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(storeId);
 
-        if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out var correctUri))
+        if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out _))
         {
             throw new ArgumentException($"Incorrect base URL {baseUrl}");
         }
 
         return InnerBackgroundExportToAssets(storeId, baseUrl, notification);
     }
-
 
     private async Task InnerBackgroundExportToAssets(string storeId, string baseUrl, SitemapExportToAssetNotification notification)
     {
@@ -205,24 +204,14 @@ public class SitemapExportToAssetsJob
 
         _logger.LogInformation("Starting export {sitemapUrl} for store {storeId} to {outputAssetFolder}.", Core.ModuleConstants.SitemapFileName, store.Id, outputAssetFolder); // Log success
 
-        await ExportSitemapPartAsync(store, outputAssetFolder, Core.ModuleConstants.SitemapFileName);
+        await ExportSitemapPartAsync(store.Id, store.Url, outputAssetFolder, Core.ModuleConstants.SitemapFileName, null);
 
         foreach (var sitemapUrl in await _sitemapXmlGenerator.GetSitemapUrlsAsync(store.Id, store.Url))
         {
             _logger.LogInformation("Starting export {sitemapUrl} for store {storeId} to {outputAssetFolder}.", sitemapUrl, store.Id, outputAssetFolder); // Log success
 
-            await ExportSitemapPartAsync(store, outputAssetFolder, sitemapUrl);
+            await ExportSitemapPartAsync(store.Id, store.Url, outputAssetFolder, sitemapUrl, null);
         }
-    }
-
-
-    private async Task ExportSitemapPartAsync(Store store, string outputAssetFolder, string sitemapUrl)
-    {
-        var relativeUrl = RelativePathUtils.Combine(outputAssetFolder, sitemapUrl);
-
-        using var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(store.Id, store.Url, sitemapUrl, null);
-        using var blobStream = _blobStorageProvider.OpenWrite(relativeUrl);
-        await stream.CopyToAsync(blobStream);
     }
 
     private async Task CreateSitemapPartAsync(ZipArchive zipArchive, string storeId, string baseUrl, string sitemapUrl, Action<ExportImportProgressInfo> progressCallback)
