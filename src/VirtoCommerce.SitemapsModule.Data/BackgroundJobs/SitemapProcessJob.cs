@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.SitemapsModule.Data.Extensions;
 using VirtoCommerce.SitemapsModule.Data.Services;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Model.Search;
@@ -73,7 +74,7 @@ public class SitemapExportToAssetsJob
 
     protected virtual async Task ExportSitemapPartAsync(Store store, string outputAssetFolder, string sitemapUrl)
     {
-        var relativeUrl = $"{outputAssetFolder.Trim('/')}/{sitemapUrl.Trim('/')}";
+        var relativeUrl = RelativePathUtils.Combine(outputAssetFolder, sitemapUrl);
 
         using var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(store.Id, store.Url, sitemapUrl, null);
         using var blobStream = _blobStorageProvider.OpenWrite(relativeUrl);

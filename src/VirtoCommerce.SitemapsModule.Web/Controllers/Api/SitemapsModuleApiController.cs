@@ -20,6 +20,7 @@ using VirtoCommerce.SitemapsModule.Core;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Models.Search;
 using VirtoCommerce.SitemapsModule.Core.Services;
+using VirtoCommerce.SitemapsModule.Data.Extensions;
 using VirtoCommerce.SitemapsModule.Data.Services;
 using VirtoCommerce.SitemapsModule.Web.Extensions;
 using VirtoCommerce.SitemapsModule.Web.Model.PushNotifications;
@@ -484,7 +485,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
         private async Task<BlobInfo> ExportSitemapPartAsync(string storeId, string storeUrl, string outputAssetFolder, string sitemapUrl, Action<ExportImportProgressInfo> progressCallback)
         {
-            var relativeUrl = $"{outputAssetFolder.Trim('/')}/{sitemapUrl.Trim('/')}";
+            var relativeUrl = RelativePathUtils.Combine(outputAssetFolder, sitemapUrl);
 
             using var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(storeId, storeUrl, sitemapUrl, progressCallback);
             using var blobStream = _blobStorageProvider.OpenWrite(relativeUrl);
