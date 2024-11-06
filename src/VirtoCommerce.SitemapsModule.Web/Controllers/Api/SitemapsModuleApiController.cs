@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
@@ -11,27 +6,21 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.Exceptions;
-using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.PushNotifications;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.SitemapsModule.Core;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Models.Search;
 using VirtoCommerce.SitemapsModule.Core.Services;
+using VirtoCommerce.SitemapsModule.Data.BackgroundJobs;
+using VirtoCommerce.SitemapsModule.Data.Model.PushNotifications;
 using VirtoCommerce.SitemapsModule.Data.Services;
 using VirtoCommerce.SitemapsModule.Web.Extensions;
-using VirtoCommerce.SitemapsModule.Web.Model.PushNotifications;
-using SystemFile = System.IO.File;
 
 namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 {
-    /// <summary>
-    ///
-    /// </summary>
     [Route("api/sitemaps")]
     [Authorize(ModuleConstants.Security.Permissions.Read)]
     public class SitemapsModuleApiController : Controller
@@ -43,25 +32,9 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         private readonly ISitemapXmlGenerator _sitemapXmlGenerator;
         private readonly IUserNameResolver _userNameResolver;
         private readonly IPushNotificationManager _notifier;
-        private readonly IBlobStorageProvider _blobStorageProvider;
-        private readonly IBlobUrlResolver _blobUrlResolver;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly PlatformOptions _platformOptions;
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="sitemapService"></param>
-        /// <param name="sitemapItemService"></param>
-        /// <param name="sitemapSearchService"></param>
-        /// <param name="sitemapItemSearchService"></param>
-        /// <param name="sitemapXmlGenerator"></param>
-        /// <param name="userNameResolver"></param>
-        /// <param name="notifier"></param>
-        /// <param name="blobStorageProvider"></param>
-        /// <param name="blobUrlResolver"></param>
-        /// <param name="hostingEnvironment"></param>
-        /// <param name="platformOptions"></param>
         public SitemapsModuleApiController(
             ISitemapService sitemapService,
             ISitemapItemService sitemapItemService,
@@ -70,8 +43,6 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             ISitemapXmlGenerator sitemapXmlGenerator,
             IUserNameResolver userNameResolver,
             IPushNotificationManager notifier,
-            IBlobStorageProvider blobStorageProvider,
-            IBlobUrlResolver blobUrlResolver,
             IWebHostEnvironment hostingEnvironment,
             IOptions<PlatformOptions> platformOptions)
         {
@@ -82,17 +53,10 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             _sitemapXmlGenerator = sitemapXmlGenerator;
             _userNameResolver = userNameResolver;
             _notifier = notifier;
-            _blobStorageProvider = blobStorageProvider;
-            _blobUrlResolver = blobUrlResolver;
             _hostingEnvironment = hostingEnvironment;
             _platformOptions = platformOptions.Value;
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
         [HttpPost]
         [Route("search")]
         public async Task<ActionResult<SitemapSearchResult>> SearchSitemaps([FromBody] SitemapSearchCriteria request)
@@ -107,11 +71,6 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             return Ok(sitemapSearchResponse);
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
         public async Task<ActionResult<Sitemap>> GetSitemapById(string id)
@@ -131,11 +90,6 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             return Ok(sitemap);
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="sitemap"></param>
-        /// <returns></returns>
         [HttpPost]
         [Route("")]
         [Authorize(ModuleConstants.Security.Permissions.Create)]
@@ -152,11 +106,6 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             return NoContent();
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="sitemap"></param>
-        /// <returns></returns>
         [HttpPut]
         [Route("")]
         [Authorize(ModuleConstants.Security.Permissions.Update)]
@@ -173,11 +122,6 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             return NoContent();
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="ids"></param>
-        /// <returns></returns>
         [HttpDelete]
         [Route("")]
         [Authorize(ModuleConstants.Security.Permissions.Delete)]
@@ -194,11 +138,6 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             return NoContent();
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
         [HttpPost]
         [Route("items/search")]
         public async Task<ActionResult<SitemapItemsSearchResult>> SearchSitemapItems([FromBody] SitemapItemSearchCriteria request)
@@ -213,12 +152,6 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             return Ok(result);
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="sitemapId"></param>
-        /// <param name="items"></param>
-        /// <returns></returns>
         [HttpPost]
         [Route("{sitemapId}/items")]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
@@ -242,11 +175,6 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             return NoContent();
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="itemIds"></param>
-        /// <returns></returns>
         [HttpDelete]
         [Route("items")]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
@@ -262,11 +190,6 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             return NoContent();
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="storeId"></param>
-        /// <returns></returns>
         [HttpGet]
         [Route("schema")]
         public async Task<ActionResult<string[]>> GetSitemapsSchema(string storeId)
@@ -280,13 +203,6 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             return Ok(sitemapUrls);
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="storeId"></param>
-        /// <param name="baseUrl"></param>
-        /// <param name="sitemapUrl"></param>
-        /// <returns></returns>
         [HttpGet]
         [Route("generate")]
         [SwaggerFileResponse]
@@ -296,12 +212,6 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
             return new FileStreamResult(stream, "text/xml");
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="storeId"></param>
-        /// <param name="baseUrl"></param>
-        /// <returns></returns>
         [HttpGet]
         [Route("download")]
         public async Task<ActionResult<SitemapDownloadNotification>> DownloadSitemap(string storeId, string baseUrl)
@@ -314,109 +224,29 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
             await _notifier.SendAsync(notification);
 
-            BackgroundJob.Enqueue(() => BackgroundDownload(storeId, baseUrl, notification));
+            var localTmpFolder = _hostingEnvironment.MapPath(Path.Combine("~/", _platformOptions.LocalUploadFolderPath, "tmp"));
+
+            BackgroundJob.Enqueue<SitemapExportToAssetsJob>(job => job.BackgroundDownload(storeId, baseUrl, localTmpFolder, notification));
 
             return Ok(notification);
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="storeId"></param>
-        /// <param name="baseUrl"></param>
-        /// <param name="notification"></param>
-        /// <returns></returns>
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public Task BackgroundDownload(string storeId, string baseUrl, SitemapDownloadNotification notification)
+        [HttpGet]
+        [Route("exportToStoreAssets")]
+        [Authorize(ModuleConstants.Security.Permissions.ExportToStoreAssets)]
+        public async Task<ActionResult<SitemapDownloadNotification>> ExportToStoreAssets(string storeId, string baseUrl)
         {
-            // We cannot use storeId.IndexOfAny(Path.GetInvalidFileNameChars()) != -1 to validate path because default
-            // sanitizer for Sonar Cube do not trust it, so we use Regex here with same logic. Check this out
-            // https://community.sonarsource.com/t/help-sonarcloud-with-understanding-the-usage-of-untrusted-and-tainted-input/9873/7
-            // Btw, we cannot move this to extansion or any method from here because sonar ignore any outer checks :(
-            if (!Regex.IsMatch(storeId, "^[a-zA-Z0-9-]+$"))
+            var notification = new SitemapExportToAssetNotification(_userNameResolver.GetCurrentUserName())
             {
-                throw new ArgumentException($"Incorrect name of store {storeId}");
-            }
+                Title = "Exporting sitemaps to store assets",
+                Description = "Processing exporting sitemaps to store assets..."
+            };
 
-            if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out var correctUri))
-            {
-                throw new ArgumentException($"Incorrect base URL {baseUrl}");
-            }
+            await _notifier.SendAsync(notification);
 
-            return InnerBackgroundDownload(storeId, baseUrl, notification);
-        }
+            BackgroundJob.Enqueue<SitemapExportToAssetsJob>(job => job.BackgroundExportToAssets(storeId, baseUrl, notification));
 
-        private async Task InnerBackgroundDownload(string storeId, string baseUrl, SitemapDownloadNotification notification)
-        {
-            void SendNotificationWithProgressInfo(ExportImportProgressInfo c)
-            {
-                notification.Description = c.Description;
-                notification.ProcessedCount = c.ProcessedCount;
-                notification.TotalCount = c.TotalCount;
-                notification.Errors = c.Errors?.ToList() ?? new List<string>();
-
-                _notifier.Send(notification);
-            }
-
-            try
-            {
-                var relativeUrl = $"tmp/sitemap-{storeId}.zip";
-                var localTmpFolder = _hostingEnvironment.MapPath(Path.Combine("~/", _platformOptions.LocalUploadFolderPath, "tmp"));
-                var localTmpPath = Path.Combine(localTmpFolder, $"sitemap-{storeId}.zip");
-
-                // Create directory if not exist
-                if (!Directory.Exists(localTmpFolder))
-                    Directory.CreateDirectory(localTmpFolder);
-
-                // Remove old file if exist
-                if (SystemFile.Exists(localTmpPath))
-                    SystemFile.Delete(localTmpPath);
-
-                //Import first to local tmp folder because Azure blob storage doesn't support some special file access mode
-                using (var stream = SystemFile.Open(localTmpPath, FileMode.CreateNew))
-                using (var zipArchive = new ZipArchive(stream, ZipArchiveMode.Create, true))
-                {
-                    // Create default sitemap.xml
-                    await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, "sitemap.xml", SendNotificationWithProgressInfo);
-
-                    var sitemapUrls = await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId, baseUrl);
-                    foreach (var sitemapUrl in sitemapUrls.Where(url => !string.IsNullOrEmpty(url)))
-                    {
-                        await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, sitemapUrl, SendNotificationWithProgressInfo);
-                    }
-                }
-
-                //Copy export data to blob provider for get public download url
-                using (var localStream = SystemFile.Open(localTmpPath, FileMode.Open, FileAccess.Read))
-                using (var blobStream = _blobStorageProvider.OpenWrite(relativeUrl))
-                {
-                    await localStream.CopyToAsync(blobStream);
-                }
-
-                // Add unique key for every link to prevent browser caching
-                notification.DownloadUrl = $"{_blobUrlResolver.GetAbsoluteUrl(relativeUrl)}?v={DateTime.UtcNow.Ticks}";
-                notification.Description = "Sitemap download finished";
-            }
-            catch (Exception exception)
-            {
-                notification.Description = "Sitemap download failed";
-                notification.Errors.Add(exception.ExpandExceptionMessage());
-            }
-            finally
-            {
-                notification.Finished = DateTime.UtcNow;
-                await _notifier.SendAsync(notification);
-            }
-        }
-
-        private async Task CreateSitemapPartAsync(ZipArchive zipArchive, string storeId, string baseUrl, string sitemapUrl, Action<ExportImportProgressInfo> progressCallback)
-        {
-            var sitemapPart = zipArchive.CreateEntry(sitemapUrl, CompressionLevel.Optimal);
-            using (var sitemapPartStream = sitemapPart.Open())
-            {
-                var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(storeId, baseUrl, sitemapUrl, progressCallback);
-                await stream.CopyToAsync(sitemapPartStream);
-            }
+            return Ok(notification);
         }
     }
 }
