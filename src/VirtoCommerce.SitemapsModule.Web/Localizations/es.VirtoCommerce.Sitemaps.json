@@ -1,0 +1,218 @@
+{
+  "sitemapsModule": {
+    "widgets": {
+      "storeSitemaps": {
+        "title": "Mapas del sitio"
+      }
+    },
+    "blades": {
+      "sitemapList": {
+        "title": "Mapas del sitio",
+        "subtitle": "Gestiona los mapas del sitio para incluirlos en el índice sitemap.xml",
+        "toolbar": {
+          "download": "Descargar como ZIP",
+          "exportToStoreAssets": "Exportar a activos de la tienda"
+        },
+        "gridHeaders": {
+          "location": "Ubicación",
+          "itemsCount": "Cantidad de elementos"
+        },
+        "noSitemapsMessage": "Aún no hay mapas del sitio"
+      },
+      "sitemap": {
+        "newSitemapTitle": "Nuevo mapa del sitio",
+        "toolbar": {
+          "addItems": "Agregar elementos",
+          "removeItems": "Eliminar elementos"
+        },
+        "formSitemap": {
+          "labelSitemapLocation": "Ubicación del mapa del sitio",
+          "descriptionSitemapLocation": "Especifique una URL relativa para el mapa del sitio que sea única dentro del contexto del índice sitemap. Por ejemplo: 'categories/electronics.xml', 'products.xml'. Evite usar 'sitemap.xml' en la ruta del mapa del sitio",
+          "sitemapIndexErrorMessage": "Evite usar \"sitemap.xml\" como ubicación del mapa del sitio",
+          "sitemapSitemapLocationExistErrorMessage": "Esta ubicación del mapa del sitio ya está en uso",
+          "labelSitemapItemsLocation": "Ubicación de los elementos del mapa del sitio",
+          "descriptionSitemapItemsLocation": "Defina el patrón para generar URLs de elementos del mapa del sitio. Use {slug} para incluir la parte semántica SEO de la URL basada en las reglas de 'Configuración de Enlaces' SEO de la tienda. Por ejemplo: /mi-pagina/{slug}",
+          "labelSitemapItems": "Elementos del mapa del sitio",
+          "sitemapMode": "Exportar elementos del catálogo"
+        },
+        "sitemapModes": {
+          "sitemapFullMode": "Categorías y productos",
+          "sitemapOnlyCategoriesMode": "Solo categorías",
+          "sitemapOnlyProductsMode": "Solo productos"
+        },
+        "gridHeaders": {
+          "img": "Imagen",
+          "title": "Título",
+          "type": "Tipo"
+        },
+        "noSitemapsItemsMessage": "Aún no hay elementos del mapa del sitio"
+      },
+      "addItems": {
+        "title": "Agregar elementos",
+        "addCatalogItem": {
+          "title": "Elementos del catálogo",
+          "description": "Incluir productos y categorías"
+        },
+        "addVendorItem": {
+          "title": "Elementos del proveedor",
+          "description": "Incluir proveedores"
+        },
+        "addStaticContentItem": {
+          "title": "Elementos de contenido estático",
+          "description": "Incluir páginas y blogs"
+        },
+        "addCustomItem": {
+          "title": "Elemento personalizado",
+          "description": "Elemento con URL personalizada"
+        }
+      },
+      "addCatalogItems": {
+        "title": "Agregar elementos del catálogo",
+        "toolbar": {
+          "addSelected": "Agregar seleccionados"
+        }
+      },
+      "addCustomItem": {
+        "title": "Agregar elemento personalizado",
+        "toolbar": {
+          "save": "Guardar"
+        },
+        "formCustomSitemapItem": {
+          "labelUrlTemplate": "Plantilla de URL",
+          "descriptionUrlTemplate": "Especifique una URL relativa para elementos personalizados. Por ejemplo: /sobre-nosotros o /mi-carpeta/mi-pagina"
+        }
+      },
+      "addVendorItems": {
+        "title": "Agregar elementos del proveedor",
+        "toolbar": {
+          "addSelected": "Agregar seleccionados"
+        },
+        "bread-crumb-top": "Todos los proveedores"
+      },
+      "addStaticContentItems": {
+        "title": "Agregar elementos de contenido estático",
+        "toolbar": {
+          "addSelected": "Agregar seleccionados"
+        },
+        "bread-crumb-top": "Todos los elementos"
+      },
+      "download": {
+        "title": "Descargar mapa del sitio",
+        "labels": {
+          "start": "Inicio",
+          "end": "Fin",
+          "total": "Total",
+          "processed": "Procesado",
+          "errors-count": "Cantidad de errores",
+          "errors": "Errores",
+          "download-url": "URL de descarga"
+        }
+      },
+      "exportToStoreAssets": {
+        "title": "Exportar mapa del sitio a activos de la tienda",
+        "labels": {
+          "start": "Inicio",
+          "end": "Fin",
+          "total": "Total",
+          "processed": "Procesado",
+          "errors-count": "Cantidad de errores",
+          "errors": "Errores",
+          "download-url": "Puede encontrar sitemap.xml en la siguiente URL"
+        }
+      }
+    },
+    "contextMenu": {
+      "manage": "Gestionar",
+      "remove": "Eliminar"
+    },
+    "dialogs": {
+      "sitemap-delete": {
+        "title": "Confirmación de eliminación",
+        "message": "¿Está seguro de que desea eliminar los mapas del sitio seleccionados?"
+      },
+      "sitemapItems-delete": {
+        "title": "Confirmación de eliminación",
+        "message": "¿Está seguro de que desea eliminar los elementos seleccionados del mapa del sitio?"
+      },
+      "confirmBaseUrl": {
+        "title": "URL base",
+        "messageNoBaseUrl": "Ingrese la URL base para los mapas del sitio",
+        "messageConfirmBaseUrl": "Confirme la URL base para los mapas del sitio"
+      },
+      "discardChanges": {
+        "title": "Guardar cambios",
+        "message": "El mapa del sitio ha sido modificado. ¿Desea guardar los cambios?"
+      }
+    },
+    "errorMessages": {
+      "filenameNotUnique": "Ya existe un mapa del sitio con este nombre de archivo"
+    }
+  },
+  "permissions": {
+    "sitemaps:access": "Acceso para abrir una hoja de mapas del sitio",
+    "sitemaps:create": "Acceso para crear un mapa del sitio",
+    "sitemaps:read": "Acceso para ver detalles del mapa del sitio",
+    "sitemaps:update": "Acceso para actualizar un mapa del sitio",
+    "sitemaps:delete": "Acceso para eliminar un mapa del sitio",
+    "sitemaps:exportToStoreAssets": "Permite la exportación manual a activos de la tienda"
+  },
+  "settings": {
+    "Sitemap.RecordsLimitPerFile": {
+      "title": "Límite de registros",
+      "description": "Establezca el número máximo de registros permitidos en cada archivo de mapa del sitio. Los rastreadores de motores de búsqueda aceptan archivos de mapa del sitio con menos de 50,000 URLs y un tamaño de archivo inferior a 10 MB"
+    },
+    "Sitemap.FilenameSeparator": {
+      "title": "Separador de nombre de archivo",
+      "description": "Defina el separador utilizado entre el nombre del archivo del mapa del sitio y su parte si el número de elementos excede el límite de registros por archivo"
+    },
+    "Sitemap.SearchBunchSize": {
+      "title": "Tamaño del lote de búsqueda",
+      "description": "Especifique el tamaño de los lotes de elementos de búsqueda, por ejemplo, para la búsqueda en el catálogo"
+    },
+    "Sitemap.AcceptedFilenameExtensions": {
+      "title": "Extensiones de archivo aceptadas",
+      "description": "Enumere las extensiones de archivo para contenido estático que se incluirán en el mapa del sitio, separadas por comas. Por ejemplo: '.md, .html'"
+    },
+    "Sitemap.IncludeImages": {
+      "title": "Incluir imágenes en el mapa del sitio",
+      "description": "Habilitar/deshabilitar la inclusión de imágenes en la generación del mapa del sitio"
+    },
+    "Sitemap.ProductPageUpdateFrequency": {
+      "title": "Frecuencia de actualización de la página de producto",
+      "description": "Establezca con qué frecuencia se actualizan las páginas de productos. Esto informa a los motores de búsqueda, pero puede no coincidir exactamente con su frecuencia de rastreo"
+    },
+    "Sitemap.ProductPagePriority": {
+      "title": "Prioridad de la página de producto",
+      "description": "Defina la prioridad de las URLs de la página de producto en relación con otras en su sitio. Use valores de 0.0 a 1.0. Esto solo indica importancia para los rastreadores y no afecta las comparaciones con páginas en otros sitios"
+    },
+    "Sitemap.CategoryPageUpdateFrequency": {
+      "title": "Frecuencia de actualización de la página de categoría",
+      "description": "Establezca con qué frecuencia se actualizan las páginas de categoría. Esto informa a los motores de búsqueda, pero puede no coincidir exactamente con su frecuencia de rastreo"
+    },
+    "Sitemap.BlogPageUpdateFrequency": {
+      "title": "Frecuencia de actualización de la página de blog",
+      "description": "Establezca con qué frecuencia se actualizan las páginas de blog. Esto informa a los motores de búsqueda, pero puede no coincidir exactamente con su frecuencia de rastreo"
+    },
+    "Sitemap.CategoryPagePriority": {
+      "title": "Prioridad de la página de categoría",
+      "description": "Defina la prioridad de las URLs de la página de categoría en relación con otras en su sitio. Use valores de 0.0 a 1.0. Esto solo indica importancia para los rastreadores y no afecta las comparaciones con páginas en otros sitios"
+    },
+    "Sitemap.BlogPagePriority": {
+      "title": "Prioridad de la página de blog",
+      "description": "Defina la prioridad de las URLs de la página de blog en relación con otras en su sitio. Use valores de 0.0 a 1.0. Esto solo indica importancia para los rastreadores y no afecta las comparaciones con páginas en otros sitios"
+    },
+    "Sitemap.ExportToAssets.EnableExportToAssetsJob": {
+      "title": "Exportar archivos de mapa del sitio por trabajo",
+      "description": "Habilitar/deshabilitar la exportación a la carpeta de activos de la tienda. Guarde todos los artefactos del mapa del sitio en la carpeta de activos 'stores/{storeId}/sitemap'"
+    },
+    "Sitemap.ExportToAssets.JobCronExpression": {
+      "title": "Expresión cron para exportar a activos",
+      "description": "Configure la expresión cron para exportar archivos de mapa del sitio a la carpeta de activos de la tienda por programación. Por defecto, '0 0 * * *' diariamente a las 00:00."
+    }
+  },
+  "module": {
+    "VirtoCommerce.Sitemaps": {
+      "description": "Exportar/Importar mapas del sitio con todos los elementos del mapa del sitio"
+    }
+  }
+}

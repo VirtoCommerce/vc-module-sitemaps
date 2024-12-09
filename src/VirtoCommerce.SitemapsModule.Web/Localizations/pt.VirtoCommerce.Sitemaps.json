@@ -1,0 +1,218 @@
+{
+  "sitemapsModule": {
+    "widgets": {
+      "storeSitemaps": {
+        "title": "Sitemaps"
+      }
+    },
+    "blades": {
+      "sitemapList": {
+        "title": "Sitemaps",
+        "subtitle": "Gerencie os sitemaps para incluí-los no índice sitemap.xml",
+        "toolbar": {
+          "download": "Baixar como ZIP",
+          "exportToStoreAssets": "Exportar para ativos da loja"
+        },
+        "gridHeaders": {
+          "location": "Localização",
+          "itemsCount": "Contagem de itens"
+        },
+        "noSitemapsMessage": "Ainda não há sitemaps"
+      },
+      "sitemap": {
+        "newSitemapTitle": "Novo sitemap",
+        "toolbar": {
+          "addItems": "Adicionar itens",
+          "removeItems": "Remover itens"
+        },
+        "formSitemap": {
+          "labelSitemapLocation": "Localização do sitemap",
+          "descriptionSitemapLocation": "Especifique uma URL relativa para o sitemap que seja única dentro do contexto do índice sitemap. Por exemplo: 'categories/electronics.xml', 'products.xml'. Evite usar 'sitemap.xml' no caminho do sitemap",
+          "sitemapIndexErrorMessage": "Evite usar \"sitemap.xml\" como localização do sitemap",
+          "sitemapSitemapLocationExistErrorMessage": "Esta localização do sitemap já está em uso",
+          "labelSitemapItemsLocation": "Localização dos itens do sitemap",
+          "descriptionSitemapItemsLocation": "Defina o padrão para gerar URLs de itens do sitemap. Use {slug} para incluir a parte semântica SEO da URL com base nas regras de 'Configurações de Links' SEO da loja. Por exemplo: /minha-pagina/{slug}",
+          "labelSitemapItems": "Itens do sitemap",
+          "sitemapMode": "Exportar itens do catálogo"
+        },
+        "sitemapModes": {
+          "sitemapFullMode": "Categorias e produtos",
+          "sitemapOnlyCategoriesMode": "Apenas categorias",
+          "sitemapOnlyProductsMode": "Apenas produtos"
+        },
+        "gridHeaders": {
+          "img": "Imagem",
+          "title": "Título",
+          "type": "Tipo"
+        },
+        "noSitemapsItemsMessage": "Ainda não há itens do sitemap"
+      },
+      "addItems": {
+        "title": "Adicionar itens",
+        "addCatalogItem": {
+          "title": "Itens do catálogo",
+          "description": "Incluir produtos e categorias"
+        },
+        "addVendorItem": {
+          "title": "Itens do fornecedor",
+          "description": "Incluir fornecedores"
+        },
+        "addStaticContentItem": {
+          "title": "Itens de conteúdo estático",
+          "description": "Incluir páginas e blogs"
+        },
+        "addCustomItem": {
+          "title": "Item personalizado",
+          "description": "Item com URL personalizada"
+        }
+      },
+      "addCatalogItems": {
+        "title": "Adicionar itens do catálogo",
+        "toolbar": {
+          "addSelected": "Adicionar selecionados"
+        }
+      },
+      "addCustomItem": {
+        "title": "Adicionar item personalizado",
+        "toolbar": {
+          "save": "Salvar"
+        },
+        "formCustomSitemapItem": {
+          "labelUrlTemplate": "Modelo de URL",
+          "descriptionUrlTemplate": "Especifique uma URL relativa para itens personalizados. Por exemplo: /sobre-nos ou /minha-pasta/minha-pagina"
+        }
+      },
+      "addVendorItems": {
+        "title": "Adicionar itens do fornecedor",
+        "toolbar": {
+          "addSelected": "Adicionar selecionados"
+        },
+        "bread-crumb-top": "Todos os fornecedores"
+      },
+      "addStaticContentItems": {
+        "title": "Adicionar itens de conteúdo estático",
+        "toolbar": {
+          "addSelected": "Adicionar selecionados"
+        },
+        "bread-crumb-top": "Todos os itens"
+      },
+      "download": {
+        "title": "Baixar sitemap",
+        "labels": {
+          "start": "Início",
+          "end": "Fim",
+          "total": "Total",
+          "processed": "Processado",
+          "errors-count": "Contagem de erros",
+          "errors": "Erros",
+          "download-url": "URL de download"
+        }
+      },
+      "exportToStoreAssets": {
+        "title": "Exportar sitemap para ativos da loja",
+        "labels": {
+          "start": "Início",
+          "end": "Fim",
+          "total": "Total",
+          "processed": "Processado",
+          "errors-count": "Contagem de erros",
+          "errors": "Erros",
+          "download-url": "Você pode encontrar sitemap.xml no seguinte URL"
+        }
+      }
+    },
+    "contextMenu": {
+      "manage": "Gerenciar",
+      "remove": "Remover"
+    },
+    "dialogs": {
+      "sitemap-delete": {
+        "title": "Confirmação de exclusão",
+        "message": "Tem certeza de que deseja excluir os sitemaps selecionados?"
+      },
+      "sitemapItems-delete": {
+        "title": "Confirmação de remoção",
+        "message": "Tem certeza de que deseja remover os itens selecionados do sitemap?"
+      },
+      "confirmBaseUrl": {
+        "title": "URL base",
+        "messageNoBaseUrl": "Insira a URL base para os sitemaps",
+        "messageConfirmBaseUrl": "Confirme a URL base para os sitemaps"
+      },
+      "discardChanges": {
+        "title": "Salvar alterações",
+        "message": "O sitemap foi modificado. Deseja salvar as alterações?"
+      }
+    },
+    "errorMessages": {
+      "filenameNotUnique": "Já existe um sitemap com este nome de arquivo"
+    }
+  },
+  "permissions": {
+    "sitemaps:access": "Acesso para abrir uma lâmina de sitemaps",
+    "sitemaps:create": "Acesso para criar um sitemap",
+    "sitemaps:read": "Acesso para visualizar detalhes do sitemap",
+    "sitemaps:update": "Acesso para atualizar um sitemap",
+    "sitemaps:delete": "Acesso para excluir um sitemap",
+    "sitemaps:exportToStoreAssets": "Permite exportação manual para ativos da loja"
+  },
+  "settings": {
+    "Sitemap.RecordsLimitPerFile": {
+      "title": "Limite de registros",
+      "description": "Defina o número máximo de registros permitidos em cada arquivo de sitemap. Os rastreadores de mecanismos de busca aceitam arquivos de sitemap com menos de 50.000 URLs e um tamanho de arquivo inferior a 10 MB"
+    },
+    "Sitemap.FilenameSeparator": {
+      "title": "Separador de nome de arquivo",
+      "description": "Defina o separador usado entre o nome do arquivo do sitemap e sua parte se o número de itens exceder o limite de registros por arquivo"
+    },
+    "Sitemap.SearchBunchSize": {
+      "title": "Tamanho do lote de pesquisa",
+      "description": "Especifique o tamanho dos lotes de itens de pesquisa, por exemplo, para pesquisa de catálogo"
+    },
+    "Sitemap.AcceptedFilenameExtensions": {
+      "title": "Extensões de arquivo aceitas",
+      "description": "Liste as extensões de arquivo para conteúdo estático a serem incluídas no sitemap, separadas por vírgulas. Por exemplo: '.md, .html'"
+    },
+    "Sitemap.IncludeImages": {
+      "title": "Inclusão de imagens no sitemap",
+      "description": "Habilitar/desabilitar a inclusão de imagens na geração do sitemap"
+    },
+    "Sitemap.ProductPageUpdateFrequency": {
+      "title": "Frequência de atualização da página de produto",
+      "description": "Defina com que frequência as páginas de produtos são atualizadas. Isso informa os mecanismos de busca, mas pode não corresponder exatamente à sua frequência de rastreamento"
+    },
+    "Sitemap.ProductPagePriority": {
+      "title": "Prioridade da página de produto",
+      "description": "Defina a prioridade dos URLs da página de produto em relação aos outros em seu site. Use valores de 0,0 a 1,0. Isso indica apenas a importância para os rastreadores e não afeta comparações com páginas em outros sites"
+    },
+    "Sitemap.CategoryPageUpdateFrequency": {
+      "title": "Frequência de atualização da página de categoria",
+      "description": "Defina com que frequência as páginas de categoria são atualizadas. Isso informa os mecanismos de busca, mas pode não corresponder exatamente à sua frequência de rastreamento"
+    },
+    "Sitemap.BlogPageUpdateFrequency": {
+      "title": "Frequência de atualização da página de blog",
+      "description": "Defina com que frequência as páginas de blog são atualizadas. Isso informa os mecanismos de busca, mas pode não corresponder exatamente à sua frequência de rastreamento"
+    },
+    "Sitemap.CategoryPagePriority": {
+      "title": "Prioridade da página de categoria",
+      "description": "Defina a prioridade dos URLs da página de categoria em relação aos outros em seu site. Use valores de 0,0 a 1,0. Isso indica apenas a importância para os rastreadores e não afeta comparações com páginas em outros sites"
+    },
+    "Sitemap.BlogPagePriority": {
+      "title": "Prioridade da página de blog",
+      "description": "Defina a prioridade dos URLs da página de blog em relação aos outros em seu site. Use valores de 0,0 a 1,0. Isso indica apenas a importância para os rastreadores e não afeta comparações com páginas em outros sites"
+    },
+    "Sitemap.ExportToAssets.EnableExportToAssetsJob": {
+      "title": "Exportar arquivos de sitemap por tarefa",
+      "description": "Habilitar/desabilitar exportação para a pasta de ativos da loja. Salve todos os artefatos do sitemap na pasta de ativos 'stores/{storeId}/sitemap'"
+    },
+    "Sitemap.ExportToAssets.JobCronExpression": {
+      "title": "Expressão cron para exportação para ativos",
+      "description": "Configure a expressão cron para exportar arquivos de sitemap para a pasta de ativos da loja por programação. Por padrão, '0 0 * * *' diariamente às 00:00."
+    }
+  },
+  "module": {
+    "VirtoCommerce.Sitemaps": {
+      "description": "Exportar/Importar sitemaps com todos os itens do sitemap"
+    }
+  }
+}
