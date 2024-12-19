@@ -1,0 +1,218 @@
+{
+  "sitemapsModule": {
+    "widgets": {
+      "storeSitemaps": {
+        "title": "Plans de site"
+      }
+    },
+    "blades": {
+      "sitemapList": {
+        "title": "Plans de site",
+        "subtitle": "Gérez les plans de site pour les inclure dans l'index sitemap.xml",
+        "toolbar": {
+          "download": "Télécharger en tant que ZIP",
+          "exportToStoreAssets": "Exporter vers les ressources du magasin"
+        },
+        "gridHeaders": {
+          "location": "Emplacement",
+          "itemsCount": "Nombre d'éléments"
+        },
+        "noSitemapsMessage": "Pas encore de plans de site"
+      },
+      "sitemap": {
+        "newSitemapTitle": "Nouveau plan de site",
+        "toolbar": {
+          "addItems": "Ajouter des éléments",
+          "removeItems": "Supprimer des éléments"
+        },
+        "formSitemap": {
+          "labelSitemapLocation": "Emplacement du plan de site",
+          "descriptionSitemapLocation": "Spécifiez une URL relative pour le plan de site qui est unique dans le contexte de l'index sitemap. Par exemple : 'categories/electronics.xml', 'products.xml'. Évitez d'utiliser 'sitemap.xml' dans le chemin du plan de site",
+          "sitemapIndexErrorMessage": "Évitez d'utiliser \"sitemap.xml\" comme emplacement du plan de site",
+          "sitemapSitemapLocationExistErrorMessage": "Cet emplacement de plan de site est déjà utilisé",
+          "labelSitemapItemsLocation": "Emplacement des éléments du plan de site",
+          "descriptionSitemapItemsLocation": "Définissez le modèle pour générer les URL des éléments du plan de site. Utilisez {slug} pour inclure la partie URL sémantique SEO basée sur les règles des 'Paramètres de liens' SEO du magasin. Par exemple : /ma-page/{slug}",
+          "labelSitemapItems": "Éléments du plan de site",
+          "sitemapMode": "Exporter les éléments du catalogue"
+        },
+        "sitemapModes": {
+          "sitemapFullMode": "Catégories et produits",
+          "sitemapOnlyCategoriesMode": "Seulement les catégories",
+          "sitemapOnlyProductsMode": "Seulement les produits"
+        },
+        "gridHeaders": {
+          "img": "Image",
+          "title": "Titre",
+          "type": "Type"
+        },
+        "noSitemapsItemsMessage": "Pas encore d'éléments de plan de site"
+      },
+      "addItems": {
+        "title": "Ajouter des éléments",
+        "addCatalogItem": {
+          "title": "Éléments du catalogue",
+          "description": "Inclure les produits et les catégories"
+        },
+        "addVendorItem": {
+          "title": "Éléments du fournisseur",
+          "description": "Inclure les fournisseurs"
+        },
+        "addStaticContentItem": {
+          "title": "Éléments de contenu statique",
+          "description": "Inclure les pages et les blogs"
+        },
+        "addCustomItem": {
+          "title": "Élément personnalisé",
+          "description": "Élément avec URL personnalisée"
+        }
+      },
+      "addCatalogItems": {
+        "title": "Ajouter des éléments du catalogue",
+        "toolbar": {
+          "addSelected": "Ajouter les éléments sélectionnés"
+        }
+      },
+      "addCustomItem": {
+        "title": "Ajouter un élément personnalisé",
+        "toolbar": {
+          "save": "Enregistrer"
+        },
+        "formCustomSitemapItem": {
+          "labelUrlTemplate": "Modèle d'URL",
+          "descriptionUrlTemplate": "Spécifiez une URL relative pour les éléments personnalisés. Par exemple : /a-propos-de-nous ou /mon-dossier/ma-page"
+        }
+      },
+      "addVendorItems": {
+        "title": "Ajouter des éléments du fournisseur",
+        "toolbar": {
+          "addSelected": "Ajouter les éléments sélectionnés"
+        },
+        "bread-crumb-top": "Tous les fournisseurs"
+      },
+      "addStaticContentItems": {
+        "title": "Ajouter des éléments de contenu statique",
+        "toolbar": {
+          "addSelected": "Ajouter les éléments sélectionnés"
+        },
+        "bread-crumb-top": "Tous les éléments"
+      },
+      "download": {
+        "title": "Télécharger le plan de site",
+        "labels": {
+          "start": "Début",
+          "end": "Fin",
+          "total": "Total",
+          "processed": "Traité",
+          "errors-count": "Nombre d'erreurs",
+          "errors": "Erreurs",
+          "download-url": "URL de téléchargement"
+        }
+      },
+      "exportToStoreAssets": {
+        "title": "Exporter le plan de site vers les ressources du magasin",
+        "labels": {
+          "start": "Début",
+          "end": "Fin",
+          "total": "Total",
+          "processed": "Traité",
+          "errors-count": "Nombre d'erreurs",
+          "errors": "Erreurs",
+          "download-url": "Vous pouvez trouver sitemap.xml à l'URL suivante"
+        }
+      }
+    },
+    "contextMenu": {
+      "manage": "Gérer",
+      "remove": "Supprimer"
+    },
+    "dialogs": {
+      "sitemap-delete": {
+        "title": "Confirmation de suppression",
+        "message": "Êtes-vous sûr de vouloir supprimer les plans de site sélectionnés ?"
+      },
+      "sitemapItems-delete": {
+        "title": "Confirmation de suppression",
+        "message": "Êtes-vous sûr de vouloir supprimer les éléments sélectionnés du plan de site ?"
+      },
+      "confirmBaseUrl": {
+        "title": "URL de base",
+        "messageNoBaseUrl": "Entrez l'URL de base pour les plans de site",
+        "messageConfirmBaseUrl": "Confirmez l'URL de base pour les plans de site"
+      },
+      "discardChanges": {
+        "title": "Enregistrer les modifications",
+        "message": "Le plan de site a été modifié. Voulez-vous enregistrer les modifications ?"
+      }
+    },
+    "errorMessages": {
+      "filenameNotUnique": "Un plan de site avec ce nom de fichier existe déjà"
+    }
+  },
+  "permissions": {
+    "sitemaps:access": "Accès pour ouvrir une lame de plans de site",
+    "sitemaps:create": "Accès pour créer un plan de site",
+    "sitemaps:read": "Accès pour voir les détails du plan de site",
+    "sitemaps:update": "Accès pour mettre à jour un plan de site",
+    "sitemaps:delete": "Accès pour supprimer un plan de site",
+    "sitemaps:exportToStoreAssets": "Permet l'exportation manuelle vers les ressources du magasin"
+  },
+  "settings": {
+    "Sitemap.RecordsLimitPerFile": {
+      "title": "Limite de dossiers",
+      "description": "Définissez le nombre maximum de dossiers autorisés dans chaque fichier de plan de site. Les robots des moteurs de recherche acceptent les fichiers de plan de site avec moins de 50 000 URL et une taille de fichier inférieure à 10 Mo"
+    },
+    "Sitemap.FilenameSeparator": {
+      "title": "Séparateur de nom de fichier",
+      "description": "Définissez le séparateur utilisé entre le nom de fichier du plan de site et sa partie si le nombre d'éléments dépasse la limite de dossiers par fichier"
+    },
+    "Sitemap.SearchBunchSize": {
+      "title": "Taille du lot de recherche",
+      "description": "Spécifiez la taille des lots d'éléments de recherche, par exemple, pour la recherche de catalogue"
+    },
+    "Sitemap.AcceptedFilenameExtensions": {
+      "title": "Extensions de fichier acceptées",
+      "description": "Listez les extensions de fichier pour le contenu statique à inclure dans le plan de site, séparées par des virgules. Par exemple : '.md, .html'"
+    },
+    "Sitemap.IncludeImages": {
+      "title": "Inclusion des images dans le plan de site",
+      "description": "Activer/désactiver l'inclusion des images dans la génération du plan de site"
+    },
+    "Sitemap.ProductPageUpdateFrequency": {
+      "title": "Fréquence de mise à jour de la page produit",
+      "description": "Définissez la fréquence à laquelle les pages produits sont mises à jour. Cela informe les moteurs de recherche mais peut ne pas correspondre exactement à leur fréquence de crawl"
+    },
+    "Sitemap.ProductPagePriority": {
+      "title": "Priorité de la page produit",
+      "description": "Définissez la priorité des URL de la page produit par rapport aux autres sur votre site. Utilisez des valeurs de 0,0 à 1,0. Cela indique seulement l'importance pour les robots et n'affecte pas les comparaisons avec les pages sur d'autres sites"
+    },
+    "Sitemap.CategoryPageUpdateFrequency": {
+      "title": "Fréquence de mise à jour de la page catégorie",
+      "description": "Définissez la fréquence à laquelle les pages de catégorie sont mises à jour. Cela informe les moteurs de recherche mais peut ne pas correspondre exactement à leur fréquence de crawl"
+    },
+    "Sitemap.BlogPageUpdateFrequency": {
+      "title": "Fréquence de mise à jour de la page de blog",
+      "description": "Définissez la fréquence à laquelle les pages de blog sont mises à jour. Cela informe les moteurs de recherche mais peut ne pas correspondre exactement à leur fréquence de crawl"
+    },
+    "Sitemap.CategoryPagePriority": {
+      "title": "Priorité de la page catégorie",
+      "description": "Définissez la priorité des URL de la page catégorie par rapport aux autres sur votre site. Utilisez des valeurs de 0,0 à 1,0. Cela indique seulement l'importance pour les robots et n'affecte pas les comparaisons avec les pages sur d'autres sites"
+    },
+    "Sitemap.BlogPagePriority": {
+      "title": "Priorité de la page de blog",
+      "description": "Définissez la priorité des URL de la page de blog par rapport aux autres sur votre site. Utilisez des valeurs de 0,0 à 1,0. Cela indique seulement l'importance pour les robots et n'affecte pas les comparaisons avec les pages sur d'autres sites"
+    },
+    "Sitemap.ExportToAssets.EnableExportToAssetsJob": {
+      "title": "Exporter les fichiers de plan de site par tâche",
+      "description": "Activer/désactiver l'exportation vers le dossier des ressources du magasin. Enregistrez tous les artefacts du plan de site dans le dossier des ressources 'stores/{storeId}/sitemap'"
+    },
+    "Sitemap.ExportToAssets.JobCronExpression": {
+      "title": "Expression cron pour l'exportation vers les ressources",
+      "description": "Configurez l'expression cron pour exporter les fichiers de plan de site vers le dossier des ressources du magasin par programme. Par défaut, '0 0 * * *' quotidiennement à 00:00."
+    }
+  },
+  "module": {
+    "VirtoCommerce.Sitemaps": {
+      "description": "Exporter/Importer des plans de site avec tous les éléments du plan de site"
+    }
+  }
+}

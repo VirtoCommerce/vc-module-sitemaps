@@ -1,33 +1,38 @@
 {
   "sitemapsModule": {
+    "widgets": {
+      "storeSitemaps": {
+        "title": "Sitemaps"
+      }
+    },
     "blades": {
       "sitemapList": {
         "title": "Sitemaps",
-        "subtitle": "Verwalten von sitemaps, um sie in den Index sitemap.xml aufzunehmen",
+        "subtitle": "Verwalten Sie die Sitemaps, um sie in das Index sitemap.xml aufzunehmen",
         "toolbar": {
           "download": "Als ZIP herunterladen",
-          "exportToStoreAssets": "In Store-Assets exportieren"
+          "exportToStoreAssets": "In die Ressourcen des Shops exportieren"
         },
         "gridHeaders": {
-          "location": "Lage",
-          "itemsCount": "Artikelanzahl"
+          "location": "Ort",
+          "itemsCount": "Anzahl der Elemente"
         },
-        "noSitemapsMessage": "Es gibt keine Sitemaps noch"
+        "noSitemapsMessage": "Noch keine Sitemaps"
       },
       "sitemap": {
-        "newSitemapTitle": "Neue sitemap",
+        "newSitemapTitle": "Neue Sitemap",
         "toolbar": {
-          "addItems": "Einträge hinzufügen",
-          "removeItems": "Artikel entfernen"
+          "addItems": "Elemente hinzufügen",
+          "removeItems": "Elemente entfernen"
         },
         "formSitemap": {
-          "labelSitemapLocation": "Sitemap Standort",
-          "descriptionSitemapLocation": "Die Sitemap-Standort sollte eine relative Sitemap-URL sein, die im Kontext der Index-Sitemap eindeutig ist, d. H .: 'categories / electronics.xml', 'products.xml', etc. Bitte vermeiden Sie die Verwendung von 'sitemap.xml' im Sitemappfad.",
-          "sitemapIndexErrorMessage": "Bitte vermeiden Sie die Verwendung von 'sitemap.xml' als Sitemap",
-          "sitemapSitemapLocationExistErrorMessage": "Diese Sitemap Standort wird bereits verwendet",
-          "labelSitemapItemsLocation": "Sitemap Artikellage",
-          "descriptionSitemapItemsLocation": "Zur Erzeugung einer Sitemap-Item-URL können die nächsten Muster verwendet werden: {language} - wird durch Sprachcode ersetzt (d.h. en-US), {slug} - wird durch SEO semantischen URL-Teil ersetzt",
-          "labelSitemapItems": "Sitemap Reihen",
+          "labelSitemapLocation": "Sitemap-Standort",
+          "descriptionSitemapLocation": "Geben Sie eine relative URL für die Sitemap an, die im Kontext des Index-Sitemaps eindeutig ist. Zum Beispiel: 'categories/electronics.xml', 'products.xml'. Vermeiden Sie die Verwendung von 'sitemap.xml' im Sitemap-Pfad",
+          "sitemapIndexErrorMessage": "Vermeiden Sie die Verwendung von \"sitemap.xml\" als Sitemap-Standort",
+          "sitemapSitemapLocationExistErrorMessage": "Dieser Sitemap-Standort wird bereits verwendet",
+          "labelSitemapItemsLocation": "Standort der Sitemap-Elemente",
+          "descriptionSitemapItemsLocation": "Definieren Sie das Muster zur Generierung von URLs für Sitemap-Elemente. Verwenden Sie {slug}, um den SEO-semantischen URL-Teil basierend auf den SEO-„Linkeinstellungen“ des Shops einzuschließen. Zum Beispiel: /meine-seite/{slug}",
+          "labelSitemapItems": "Sitemap-Elemente",
           "sitemapMode": "Katalogelemente exportieren"
         },
         "sitemapModes": {
@@ -40,69 +45,59 @@
           "title": "Titel",
           "type": "Typ"
         },
-        "noSitemapsItemsMessage": "Es gibt noch keine Sitemap"
+        "noSitemapsItemsMessage": "Noch keine Sitemap-Elemente"
       },
       "addItems": {
-        "title": "Einträge hinzufügen",
+        "title": "Elemente hinzufügen",
         "addCatalogItem": {
-          "title": "Katalogartikel",
-          "description": "Enthalten Produkt- und Kategorien"
+          "title": "Katalogelemente",
+          "description": "Produkte und Kategorien einbeziehen"
         },
         "addVendorItem": {
-          "title": "Anbieter Produkte",
-          "description": "Anbieter gehören"
+          "title": "Lieferantenelemente",
+          "description": "Lieferanten einbeziehen"
         },
         "addStaticContentItem": {
-          "title": "Statische Inhalte",
-          "description": "Fügen Sie die Seiten und Blogs"
+          "title": "Statische Inhaltselemente",
+          "description": "Seiten und Blogs einbeziehen"
         },
         "addCustomItem": {
-          "title": "Benutzerdefinierte Position",
-          "description": "Artikel mit benutzerdefinierte URL"
+          "title": "Benutzerdefiniertes Element",
+          "description": "Element mit benutzerdefinierter URL"
         }
       },
       "addCatalogItems": {
-        "title": "Katalogartikel hinzufügen",
+        "title": "Katalogelemente hinzufügen",
         "toolbar": {
           "addSelected": "Ausgewählte hinzufügen"
         }
       },
       "addCustomItem": {
-        "title": "Benutzerdefinierte Artikel hinzufügen",
+        "title": "Benutzerdefiniertes Element hinzufügen",
         "toolbar": {
           "save": "Speichern"
         },
         "formCustomSitemapItem": {
-          "labelUrlTemplate": "URL Vorlage",
-          "descriptionUrlTemplate": "Die konkrete relative URL für benutzerdefinierte Artikel, i.e .: / about-us, / my-folder / my-page"
+          "labelUrlTemplate": "URL-Vorlage",
+          "descriptionUrlTemplate": "Geben Sie eine relative URL für benutzerdefinierte Elemente an. Zum Beispiel: /über-uns oder /mein-ordner/meine-seite"
         }
       },
       "addVendorItems": {
-        "title": "Anbieter Artikel hinzufügen",
+        "title": "Lieferantenelemente hinzufügen",
         "toolbar": {
           "addSelected": "Ausgewählte hinzufügen"
-        }
+        },
+        "bread-crumb-top": "Alle Lieferanten"
       },
       "addStaticContentItems": {
-        "title": "Statischer Inhalt Artikel hinzufügen",
+        "title": "Statische Inhaltselemente hinzufügen",
         "toolbar": {
           "addSelected": "Ausgewählte hinzufügen"
-        }
+        },
+        "bread-crumb-top": "Alle Elemente"
       },
       "download": {
         "title": "Sitemap herunterladen",
-        "labels": {
-          "start": "Starten",
-          "end": "Ende",
-          "total": "Gesamt",
-          "processed": "Verarbeitet",
-          "errors-count": "Fehleranzahl",
-          "errors": "Fehler",
-          "download-url": "URL herunterladen"
-        }
-      },
-      "exportToStoreAssets": {
-        "title": "Sitemap in Store-Assets exportieren",
         "labels": {
           "start": "Start",
           "end": "Ende",
@@ -110,89 +105,114 @@
           "processed": "Verarbeitet",
           "errors-count": "Fehleranzahl",
           "errors": "Fehler",
-          "download-url": "Sie können die sitemap.xml unter folgendem URL finden"
+          "download-url": "Download-URL"
         }
       },
-      "contextMenu": {
-        "manage": "Verwalten",
-        "remove": "Entfernen"
-      },
-      "dialogs": {
-        "sitemap-delete": {
-          "title": "Bestätigung löschen",
-          "message": "Möchten Sie die ausgewählten Sitemaps löschen?"
-        },
-        "sitemapItems-delete": {
-          "title": "Bestätigung entfernen",
-          "message": "Sind Sie sicher, dass Sie ausgewählte Artikel aus der Sitemap entfernen möchten?"
-        },
-        "confirmBaseUrl": {
-          "title": "Basis-URL",
-          "messageNoBaseUrl": "Geben Sie die Basis-URL für Sitemaps",
-          "messageConfirmBaseUrl": "Bitte bestätigen Sie Basis-URL für Sitemaps"
-        },
-        "discardChanges": {
-          "title": "Änderungen speichern",
-          "message": "Die Sitemap wurde geändert. Möchten Sie die Änderungen speichern?"
+      "exportToStoreAssets": {
+        "title": "Sitemap in die Ressourcen des Shops exportieren",
+        "labels": {
+          "start": "Start",
+          "end": "Ende",
+          "total": "Gesamt",
+          "processed": "Verarbeitet",
+          "errors-count": "Fehleranzahl",
+          "errors": "Fehler",
+          "download-url": "Sie können sitemap.xml unter der folgenden URL finden"
         }
-      },
-      "errorMessages": {
-        "filenameNotUnique": "Sitemap Mit dieser Dateiname ist bereits vorhanden"
       }
     },
-    "permissions": {
-      "sitemaps:access": "Zugriff zum Öffnen eines Sitemaps-Blades",
-      "sitemaps:create": "Zugriff zum Erstellen einer Sitemap",
-      "sitemaps:read": "Zugriff, um eine Sitemap-Details anzuzeigen",
-      "sitemaps:update": "Zugriff auf eine Sitemap aktualisieren",
-      "sitemaps:delete": "Zugriff auf eine Sitemap löschen",
-      "sitemaps:exportToStoreAssets": "Ermöglicht den manuellen Export in Store-Assets"
+    "contextMenu": {
+      "manage": "Verwalten",
+      "remove": "Entfernen"
     },
-    "settings": {
-      "Sitemap.RecordsLimitPerFile": {
-        "title": "Datensatzbegrenzung",
-        "description": "Aufzeichnungslimit für jede Sitemap-Datei Beachten Sie, dass Suchmaschinen-Crawler Sitepaketdateien akzeptieren, die weniger als 50000 URL-Datensätze enthalten und die Dateigröße weniger als 10 MB beträgt"
+    "dialogs": {
+      "sitemap-delete": {
+        "title": "Löschbestätigung",
+        "message": "Sind Sie sicher, dass Sie die ausgewählten Sitemaps löschen möchten?"
       },
-      "Sitemap.FilenameSeparator": {
-        "title": "Dateinamens-Trennzeichen",
-        "description": "Das Trennzeichen für den Dateinamen der Sitemap und dessen Teil im Falle der Anzahl der Sitemap-Elemente ist größer als die Anzahl der Datensätze pro Datei"
+      "sitemapItems-delete": {
+        "title": "Entfernungsbestätigung",
+        "message": "Sind Sie sicher, dass Sie die ausgewählten Elemente aus der Sitemap entfernen möchten?"
       },
-      "Sitemap.SearchBunchSize": {
-        "title": "Suche Gruppengröße",
-        "description": "Die Bündelgröße für Suchelemente (z. B. Katalogsuche)"
+      "confirmBaseUrl": {
+        "title": "Basis-URL",
+        "messageNoBaseUrl": "Geben Sie die Basis-URL für Sitemaps ein",
+        "messageConfirmBaseUrl": "Bestätigen Sie die Basis-URL für Sitemaps"
       },
-      "Sitemap.AcceptedFilenameExtensions": {
-        "title": "Akzeptierte Dateierweiterungen für statische Inhalte",
-        "description": "Dieses Feld enthält die durch Kommas getrennte Liste der Dateinamenerweiterungen für statische Inhalte, die in der Sitemap enthalten sind. Zum Beispiel: .md,.html"
-      },
-      "Sitemap.IncludeImages": {
-        "title": "Sollte Bilder in die Sitemap aufnehmen",
-        "description": "Diese Prüfung gibt an, ob Bilder in die Sitemap-Generierung einbezogen werden sollen"
-      },
-      "Sitemap.ProductPageUpdateFrequency": {
-        "title": "Aktualisierungshäufigkeit der Produktseite",
-        "description": "Gibt an, wie häufig sich die Produktseite ändern wird. Dieser Wert stellt allgemeine Informationen für Suchmaschinen bereit und korreliert möglicherweise nicht genau mit der Häufigkeit, mit der die Seiten gecrawlt werden."
-      },
-      "Sitemap.ProductPagePriority": {
-        "title": "Priorität der Produktseite",
-        "description": "Die Priorität der URL relativ zu anderen URLs auf der Website. Gültige Werte liegen zwischen 0,0 und 1,0. Dieser Wert wirkt sich nicht darauf aus, wie Seiten mit Seiten auf anderen Websites verglichen werden. Dadurch können die Suchmaschinen nur erfahren, welche Seiten für die Crawler am wichtigsten sind."
-      },
-      "Sitemap.CategoryPageUpdateFrequency": {
-        "title": "Aktualisierungshäufigkeit der Kategorieseite",
-        "description": "Gibt an, wie häufig sich die Kategorieseite ändern wird. Dieser Wert stellt allgemeine Informationen für Suchmaschinen bereit und korreliert möglicherweise nicht genau mit der Häufigkeit, mit der die Seiten gecrawlt werden."
-      },
-      "Sitemap.CategoryPagePriority": {
-        "title": "Kategorieseitenpriorität",
-        "description": "Die Priorität der URL relativ zu anderen URLs auf der Website. Gültige Werte liegen zwischen 0,0 und 1,0. Dieser Wert wirkt sich nicht darauf aus, wie Seiten mit Seiten auf anderen Websites verglichen werden. Dadurch können die Suchmaschinen nur erfahren, welche Seiten für die Crawler am wichtigsten sind."
-      },
-      "Sitemap.ExportToAssets.EnableExportToAssetsJob": {
-        "title": "Export von Sitemap-Dateien per Job aktivieren",
-        "description": "Diese Überprüfung zeigt an, ob der Export in den Store-Assets-Ordner aktiviert werden soll. Speichern Sie alle Sitemap-Artefakte im Ordner stores/{storeId}/sitemap asset."
-      },
-      "Sitemap.ExportToAssets.JobCronExpression": {
-        "title": "Cron-Ausdruck für den Export in Assets",
-        "description": "Der Cron-Ausdruck für den Export von Sitemap-Dateien in den Store-Assets-Ordner nach Zeitplan. Standardmäßig '0 0 * * *' täglich um 00:00."
+      "discardChanges": {
+        "title": "Änderungen speichern",
+        "message": "Die Sitemap wurde geändert. Möchten Sie die Änderungen speichern?"
       }
+    },
+    "errorMessages": {
+      "filenameNotUnique": "Eine Sitemap mit diesem Dateinamen existiert bereits"
+    }
+  },
+  "permissions": {
+    "sitemaps:access": "Zugriff zum Öffnen einer Sitemap-Klinge",
+    "sitemaps:create": "Zugriff zum Erstellen einer Sitemap",
+    "sitemaps:read": "Zugriff zum Anzeigen von Sitemap-Details",
+    "sitemaps:update": "Zugriff zum Aktualisieren einer Sitemap",
+    "sitemaps:delete": "Zugriff zum Löschen einer Sitemap",
+    "sitemaps:exportToStoreAssets": "Erlaubt den manuellen Export in die Ressourcen des Shops"
+  },
+  "settings": {
+    "Sitemap.RecordsLimitPerFile": {
+      "title": "Datensatzlimit",
+      "description": "Legen Sie die maximale Anzahl von Datensätzen fest, die in jeder Sitemap-Datei zulässig sind. Suchmaschinen-Crawler akzeptieren Sitemap-Dateien mit weniger als 50.000 URLs und einer Dateigröße von unter 10 MB"
+    },
+    "Sitemap.FilenameSeparator": {
+      "title": "Dateinamenseparator",
+      "description": "Definieren Sie den Separator, der zwischen dem Sitemap-Dateinamen und seinem Teil verwendet wird, wenn die Anzahl der Elemente das Datensatzlimit pro Datei überschreitet"
+    },
+    "Sitemap.SearchBunchSize": {
+      "title": "Suchbündelgröße",
+      "description": "Geben Sie die Größe der Suchelementbündel an, z. B. für die Katalogsuche"
+    },
+    "Sitemap.AcceptedFilenameExtensions": {
+      "title": "Akzeptierte Dateierweiterungen",
+      "description": "Listen Sie die Dateierweiterungen für statische Inhalte auf, die in die Sitemap aufgenommen werden sollen, getrennt durch Kommas. Zum Beispiel: '.md, .html'"
+    },
+    "Sitemap.IncludeImages": {
+      "title": "Bilder in die Sitemap einbeziehen",
+      "description": "Aktivieren/Deaktivieren der Einbeziehung von Bildern in die Sitemap-Generierung"
+    },
+    "Sitemap.ProductPageUpdateFrequency": {
+      "title": "Aktualisierungshäufigkeit der Produktseite",
+      "description": "Legen Sie fest, wie oft die Produktseiten aktualisiert werden. Dies informiert Suchmaschinen, stimmt jedoch möglicherweise nicht genau mit ihrer Crawl-Frequenz überein"
+    },
+    "Sitemap.ProductPagePriority": {
+      "title": "Priorität der Produktseite",
+      "description": "Definieren Sie die Priorität der URLs der Produktseite im Verhältnis zu anderen auf Ihrer Website. Verwenden Sie Werte von 0,0 bis 1,0. Dies zeigt nur die Bedeutung für Crawler an und beeinflusst nicht den Vergleich mit Seiten auf anderen Websites"
+    },
+    "Sitemap.CategoryPageUpdateFrequency": {
+      "title": "Aktualisierungshäufigkeit der Kategorieseite",
+      "description": "Legen Sie fest, wie oft die Kategorieseiten aktualisiert werden. Dies informiert Suchmaschinen, stimmt jedoch möglicherweise nicht genau mit ihrer Crawl-Frequenz überein"
+    },
+    "Sitemap.BlogPageUpdateFrequency": {
+      "title": "Aktualisierungshäufigkeit der Blogseite",
+      "description": "Legen Sie fest, wie oft die Blogseiten aktualisiert werden. Dies informiert Suchmaschinen, stimmt jedoch möglicherweise nicht genau mit ihrer Crawl-Frequenz überein"
+    },
+    "Sitemap.CategoryPagePriority": {
+      "title": "Priorität der Kategorieseite",
+      "description": "Definieren Sie die Priorität der URLs der Kategorieseite im Verhältnis zu anderen auf Ihrer Website. Verwenden Sie Werte von 0,0 bis 1,0. Dies zeigt nur die Bedeutung für Crawler an und beeinflusst nicht den Vergleich mit Seiten auf anderen Websites"
+    },
+    "Sitemap.BlogPagePriority": {
+      "title": "Priorität der Blogseite",
+      "description": "Definieren Sie die Priorität der URLs der Blogseite im Verhältnis zu anderen auf Ihrer Website. Verwenden Sie Werte von 0,0 bis 1,0. Dies zeigt nur die Bedeutung für Crawler an und beeinflusst nicht den Vergleich mit Seiten auf anderen Websites"
+    },
+    "Sitemap.ExportToAssets.EnableExportToAssetsJob": {
+      "title": "Exportieren von Sitemap-Dateien per Job",
+      "description": "Aktivieren/Deaktivieren des Exports in den Ressourcenordner des Shops. Speichern Sie alle Sitemap-Artefakte im Ressourcenordner 'stores/{storeId}/sitemap'"
+    },
+    "Sitemap.ExportToAssets.JobCronExpression": {
+      "title": "Cron-Ausdruck für den Export zu Ressourcen",
+      "description": "Konfigurieren Sie den Cron-Ausdruck für den Export von Sitemap-Dateien in den Ressourcenordner des Shops nach Zeitplan. Standardmäßig '0 0 * * *' täglich um 00:00 Uhr"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Sitemaps": {
+      "description": "Sitemaps mit allen Sitemap-Elementen exportieren/importieren"
     }
   }
 }
