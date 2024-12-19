@@ -1,0 +1,218 @@
+{
+  "sitemapsModule": {
+    "widgets": {
+      "storeSitemaps": {
+        "title": "网站地图"
+      }
+    },
+    "blades": {
+      "sitemapList": {
+        "title": "网站地图",
+        "subtitle": "管理网站地图以将其包含在索引 sitemap.xml 中",
+        "toolbar": {
+          "download": "下载为 ZIP",
+          "exportToStoreAssets": "导出到商店资产"
+        },
+        "gridHeaders": {
+          "location": "位置",
+          "itemsCount": "项目数量"
+        },
+        "noSitemapsMessage": "尚无网站地图"
+      },
+      "sitemap": {
+        "newSitemapTitle": "新网站地图",
+        "toolbar": {
+          "addItems": "添加项目",
+          "removeItems": "移除项目"
+        },
+        "formSitemap": {
+          "labelSitemapLocation": "网站地图位置",
+          "descriptionSitemapLocation": "指定一个相对 URL，该 URL 在索引网站地图的上下文中是唯一的。例如：'categories/electronics.xml'，'products.xml'。避免在网站地图路径中使用 'sitemap.xml'",
+          "sitemapIndexErrorMessage": "避免使用 \"sitemap.xml\" 作为网站地图位置",
+          "sitemapSitemapLocationExistErrorMessage": "此网站地图位置已被使用",
+          "labelSitemapItemsLocation": "网站地图项目位置",
+          "descriptionSitemapItemsLocation": "定义生成网站地图项目 URL 的模式。使用 {slug} 包含基于商店 SEO '链接设置' 规则的 SEO 语义 URL 部分。例如：/my-page/{slug}",
+          "labelSitemapItems": "网站地图项目",
+          "sitemapMode": "导出目录项目"
+        },
+        "sitemapModes": {
+          "sitemapFullMode": "类别和产品",
+          "sitemapOnlyCategoriesMode": "仅类别",
+          "sitemapOnlyProductsMode": "仅产品"
+        },
+        "gridHeaders": {
+          "img": "图片",
+          "title": "标题",
+          "type": "类型"
+        },
+        "noSitemapsItemsMessage": "尚无网站地图项目"
+      },
+      "addItems": {
+        "title": "添加项目",
+        "addCatalogItem": {
+          "title": "目录项目",
+          "description": "包括产品和类别"
+        },
+        "addVendorItem": {
+          "title": "供应商项目",
+          "description": "包括供应商"
+        },
+        "addStaticContentItem": {
+          "title": "静态内容项目",
+          "description": "包括页面和博客"
+        },
+        "addCustomItem": {
+          "title": "自定义项目",
+          "description": "具有自定义 URL 的项目"
+        }
+      },
+      "addCatalogItems": {
+        "title": "添加目录项目",
+        "toolbar": {
+          "addSelected": "添加选定项"
+        }
+      },
+      "addCustomItem": {
+        "title": "添加自定义项目",
+        "toolbar": {
+          "save": "保存"
+        },
+        "formCustomSitemapItem": {
+          "labelUrlTemplate": "URL 模板",
+          "descriptionUrlTemplate": "为自定义项目指定一个相对 URL。例如：/about-us 或 /my-folder/my-page"
+        }
+      },
+      "addVendorItems": {
+        "title": "添加供应商项目",
+        "toolbar": {
+          "addSelected": "添加选定项"
+        },
+        "bread-crumb-top": "所有供应商"
+      },
+      "addStaticContentItems": {
+        "title": "添加静态内容项目",
+        "toolbar": {
+          "addSelected": "添加选定项"
+        },
+        "bread-crumb-top": "所有项目"
+      },
+      "download": {
+        "title": "下载网站地图",
+        "labels": {
+          "start": "开始",
+          "end": "结束",
+          "total": "总计",
+          "processed": "已处理",
+          "errors-count": "错误计数",
+          "errors": "错误",
+          "download-url": "下载 URL"
+        }
+      },
+      "exportToStoreAssets": {
+        "title": "导出网站地图到商店资产",
+        "labels": {
+          "start": "开始",
+          "end": "结束",
+          "total": "总计",
+          "processed": "已处理",
+          "errors-count": "错误计数",
+          "errors": "错误",
+          "download-url": "您可以在以下 URL 找到 sitemap.xml"
+        }
+      }
+    },
+    "contextMenu": {
+      "manage": "管理",
+      "remove": "移除"
+    },
+    "dialogs": {
+      "sitemap-delete": {
+        "title": "删除确认",
+        "message": "您确定要删除选定的网站地图吗？"
+      },
+      "sitemapItems-delete": {
+        "title": "移除确认",
+        "message": "您确定要从网站地图中移除选定的项目吗？"
+      },
+      "confirmBaseUrl": {
+        "title": "基本 URL",
+        "messageNoBaseUrl": "输入网站地图的基本 URL",
+        "messageConfirmBaseUrl": "确认网站地图的基本 URL"
+      },
+      "discardChanges": {
+        "title": "保存更改",
+        "message": "网站地图已被修改。您要保存更改吗？"
+      }
+    },
+    "errorMessages": {
+      "filenameNotUnique": "具有此文件名的网站地图已存在"
+    }
+  },
+  "permissions": {
+    "sitemaps:access": "访问以打开网站地图刀片",
+    "sitemaps:create": "访问以创建网站地图",
+    "sitemaps:read": "访问以查看网站地图详细信息",
+    "sitemaps:update": "访问以更新网站地图",
+    "sitemaps:delete": "访问以删除网站地图",
+    "sitemaps:exportToStoreAssets": "允许手动导出到商店资产"
+  },
+  "settings": {
+    "Sitemap.RecordsLimitPerFile": {
+      "title": "记录限制",
+      "description": "设置每个网站地图文件中允许的最大记录数。搜索引擎爬虫接受少于 50,000 个 URL 且文件大小小于 10 MB 的网站地图文件"
+    },
+    "Sitemap.FilenameSeparator": {
+      "title": "文件名分隔符",
+      "description": "定义用于网站地图文件名及其部分之间的分隔符，如果项目数量超过每个文件的记录限制"
+    },
+    "Sitemap.SearchBunchSize": {
+      "title": "搜索批量大小",
+      "description": "指定搜索项目批量的大小，例如，用于目录搜索"
+    },
+    "Sitemap.AcceptedFilenameExtensions": {
+      "title": "接受的文件扩展名",
+      "description": "列出要包含在网站地图中的静态内容的文件扩展名，用逗号分隔。例如：'.md, .html'"
+    },
+    "Sitemap.IncludeImages": {
+      "title": "在网站地图中包含图像",
+      "description": "启用/禁用在网站地图生成中包含图像"
+    },
+    "Sitemap.ProductPageUpdateFrequency": {
+      "title": "产品页面更新频率",
+      "description": "设置产品页面的更新频率。这会通知搜索引擎，但可能与其爬行频率不完全一致"
+    },
+    "Sitemap.ProductPagePriority": {
+      "title": "产品页面优先级",
+      "description": "定义产品页面 URL 相对于您网站上其他页面的优先级。使用 0.0 到 1.0 的值。这仅表示对爬虫的重要性，不影响与其他网站页面的比较"
+    },
+    "Sitemap.CategoryPageUpdateFrequency": {
+      "title": "类别页面更新频率",
+      "description": "设置类别页面的更新频率。这会通知搜索引擎，但可能与其爬行频率不完全一致"
+    },
+    "Sitemap.BlogPageUpdateFrequency": {
+      "title": "博客页面更新频率",
+      "description": "设置博客页面的更新频率。这会通知搜索引擎，但可能与其爬行频率不完全一致"
+    },
+    "Sitemap.CategoryPagePriority": {
+      "title": "类别页面优先级",
+      "description": "定义类别页面 URL 相对于您网站上其他页面的优先级。使用 0.0 到 1.0 的值。这仅表示对爬虫的重要性，不影响与其他网站页面的比较"
+    },
+    "Sitemap.BlogPagePriority": {
+      "title": "博客页面优先级",
+      "description": "定义博客页面 URL 相对于您网站上其他页面的优先级。使用 0.0 到 1.0 的值。这仅表示对爬虫的重要性，不影响与其他网站页面的比较"
+    },
+    "Sitemap.ExportToAssets.EnableExportToAssetsJob": {
+      "title": "通过任务导出网站地图文件",
+      "description": "启用/禁用导出到商店资产文件夹。将所有网站地图工件保存到 'stores/{storeId}/sitemap' 资产文件夹"
+    },
+    "Sitemap.ExportToAssets.JobCronExpression": {
+      "title": "导出到资产的 cron 表达式",
+      "description": "配置 cron 表达式以按计划将网站地图文件导出到商店资产文件夹。默认情况下，'0 0 * * *' 每天 00:00。"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Sitemaps": {
+      "description": "导出/导入包含所有网站地图项目的网站地图"
+    }
+  }
+}

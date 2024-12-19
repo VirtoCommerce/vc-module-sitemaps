@@ -17,7 +17,7 @@
           "location": "Location",
           "itemsCount": "Items count"
         },
-        "noSitemapsMessage": "There are no sitemaps yet"
+        "noSitemapsMessage": "No sitemaps yet"
       },
       "sitemap": {
         "newSitemapTitle": "New sitemap",
@@ -27,11 +27,11 @@
         },
         "formSitemap": {
           "labelSitemapLocation": "Sitemap location",
-          "descriptionSitemapLocation": "Sitemap location should be a relative sitemap URL unique in context of index sitemap, i.e.: 'categories/electronics.xml', 'products.xml', etc. Please avoid using 'sitemap.xml' in sitemap path.",
-          "sitemapIndexErrorMessage": "Please avoid using \"sitemap.xml\" as sitemap location",
-          "sitemapSitemapLocationExistErrorMessage": "This sitemap location is already used",
+          "descriptionSitemapLocation": "Specify a relative URL for the sitemap that is unique within the context of the index sitemap. For example: 'categories/electronics.xml', 'products.xml'. Avoid using 'sitemap.xml' in the sitemap path",
+          "sitemapIndexErrorMessage": "Avoid using \"sitemap.xml\" as the sitemap location",
+          "sitemapSitemapLocationExistErrorMessage": "This sitemap location is already in use",
           "labelSitemapItemsLocation": "Sitemap items location",
-          "descriptionSitemapItemsLocation": "To generate a sitemap item URL can be used the next patterns: {slug} - will be replaced with SEO semantic URL part constructed depend on store SEO 'Links settings' rules. E.g /my-page/{slug}",
+          "descriptionSitemapItemsLocation": "Define the pattern to generate sitemap item URLs.  Use {slug} to include the SEO semantic URL part based on the store's SEO 'Links Settings' rules. For example: /my-page/{slug}",
           "labelSitemapItems": "Sitemap items",
           "sitemapMode": "Export catalog items"
         },
@@ -45,7 +45,7 @@
           "title": "Title",
           "type": "Type"
         },
-        "noSitemapsItemsMessage": "There are no sitemap items yet"
+        "noSitemapsItemsMessage": "No sitemap items yet"
       },
       "addItems": {
         "title": "Add items",
@@ -79,7 +79,7 @@
         },
         "formCustomSitemapItem": {
           "labelUrlTemplate": "URL template",
-          "descriptionUrlTemplate": "The concrete relative URL  for custom items, i.e.: /about-us, /my-folder/my-page"
+          "descriptionUrlTemplate": "Specify a relative URL for custom items. For example: /about-us or /my-folder/my-page"
         }
       },
       "addVendorItems": {
@@ -105,7 +105,7 @@
           "processed": "Processed",
           "errors-count": "Errors count",
           "errors": "Errors",
-          "download-url": "Download url"
+          "download-url": "Download URL"
         }
       },
       "exportToStoreAssets": {
@@ -117,7 +117,7 @@
           "processed": "Processed",
           "errors-count": "Errors count",
           "errors": "Errors",
-          "download-url": "You can find sitemap.xml by following url"
+          "download-url": "You can find sitemap.xml at the following URL"
         }
       }
     },
@@ -136,8 +136,8 @@
       },
       "confirmBaseUrl": {
         "title": "Base URL",
-        "messageNoBaseUrl": "Please enter base URL for sitemaps",
-        "messageConfirmBaseUrl": "Please confirm base URL for sitemaps"
+        "messageNoBaseUrl": "Enter base URL for sitemaps",
+        "messageConfirmBaseUrl": "Confirm base URL for sitemaps"
       },
       "discardChanges": {
         "title": "Save changes",
@@ -151,63 +151,63 @@
   "permissions": {
     "sitemaps:access": "Access to open a sitemaps blade",
     "sitemaps:create": "Access to create a sitemap",
-    "sitemaps:read": "Access to view a sitemap details",
+    "sitemaps:read": "Access to view sitemap details",
     "sitemaps:update": "Access to update a sitemap",
     "sitemaps:delete": "Access to delete a sitemap",
-    "sitemaps:exportToStoreAssets": "Allows to run manuall export to store assets"
+    "sitemaps:exportToStoreAssets": "Allows manual export to store assets"
   },
   "settings": {
     "Sitemap.RecordsLimitPerFile": {
       "title": "Records limit",
-      "description": "Records limit per each sitemap file. Note that search engine crawlers are accept sitemap files which contain less than 50000 URL records and filesize is less than 10 MB"
+      "description": "Set the maximum number of records allowed in each sitemap file. Search engine crawlers accept sitemap files with fewer than 50,000 URLs and a file size under 10 MB"
     },
     "Sitemap.FilenameSeparator": {
       "title": "Filename separator",
-      "description": "The separator for sitemap filename and its part in case of sitemap items count is greater than records limit per file"
+      "description": "Define the separator used between the sitemap filename and its part if the number of items exceeds the records limit per file"
     },
     "Sitemap.SearchBunchSize": {
       "title": "Search bunch size",
-      "description": "The bunch size for search items (i.e. catalog search)"
+      "description": "Specify the size of search item bunches, for example, for catalog search"
     },
     "Sitemap.AcceptedFilenameExtensions": {
-      "title": "Accepted static content file extensions",
-      "description": "This field contains the comma separated list of static content filename extensions which will be included to the sitemap. I.e.: .md,.html"
+      "title": "Accepted file extensions",
+      "description": "List the file extensions for static content to include in the sitemap, separated by commas. For example: '.md, .html'"
     },
     "Sitemap.IncludeImages": {
-      "title": "Should include images in sitemap",
-      "description": "This check indicates whether images should be included in sitemap generation"
+      "title": "Image inclusion in sitemap",
+      "description": "Enable/ disable inclusion of images in sitemap generation"
     },
     "Sitemap.ProductPageUpdateFrequency": {
       "title": "Product page update frequency",
-      "description": "How frequently the product page is likely to change. This value provides general information to search engines and may not correlate exactly to how often they crawl the page."
+      "description": "Set how often the product pages are updated. This informs search engines but may not align exactly with their crawling frequency"
     },
     "Sitemap.ProductPagePriority": {
       "title": "Product page priority",
-      "description": "The priority of URL relative to other URLs on site. Valid values range from 0.0 to 1.0. This value does not affect how pages are compared to pages on other sites — it only lets the search engines know which pages deem most important for the crawlers."
+      "description": "Define the priority of product page URLs relative to others on your site. Use values from 0.0 to 1.0. This only indicates importance to crawlers and does not affect comparisons with pages on other sites"
     },
     "Sitemap.CategoryPageUpdateFrequency": {
       "title": "Category page update frequency",
-      "description": "How frequently the category page is likely to change. This value provides general information to search engines and may not correlate exactly to how often they crawl the page."
+      "description": "Set how often the category pages are updated. This informs search engines but may not align exactly with their crawling frequency"
     },
     "Sitemap.BlogPageUpdateFrequency": {
       "title": "Blog page update frequency",
-      "description": "How frequently the category and product page is likely to change. This value provides general information to search engines and may not correlate exactly to how often they crawl the page."
+      "description": "Set how often the blog pages are updated. This informs search engines but may not align exactly with their crawling frequency"
     },
     "Sitemap.CategoryPagePriority": {
       "title": "Category page priority",
-      "description": "The priority of URL relative to other URLs on site. Valid values range from 0.0 to 1.0. This value does not affect how pages are compared to pages on other sites — it only lets the search engines know which pages deem most important for the crawlers."
+      "description": "Define the priority of category page URLs relative to others on your site. Use values from 0.0 to 1.0. This only indicates importance to crawlers and does not affect comparisons with pages on other sites"
     },
     "Sitemap.BlogPagePriority": {
       "title": "Blog page priority",
-      "description": "The priority of URL relative to other URLs on site. Valid values range from 0.0 to 1.0. This value does not affect how pages are compared to pages on other sites — it only lets the search engines know which pages deem most important for the crawlers."
+      "description": "Define the priority of blog page URLs relative to others on your site. Use values from 0.0 to 1.0. This only indicates importance to crawlers and does not affect comparisons with pages on other sites"
     },
     "Sitemap.ExportToAssets.EnableExportToAssetsJob": {
-      "title": "Enable export sitemap files by job",
-      "description": "This check indicates whether the export to assets store assets folder should be enabled. Save all sitemap artefacts to stores/{storeId}/sitemap asset folder."
+      "title": "Export sitemap files by job",
+      "description": "Enable/ disable export to store assets folder. Save all sitemap artifacts to 'stores/{storeId}/sitemap' asset folder"
     },
     "Sitemap.ExportToAssets.JobCronExpression": {
       "title": "Export to assets cron expression",
-      "description": "The cron expression for export sitemap files to store assets folder by schedule. By default, '0 0 * * *' daily at 00:00."
+      "description": "Configure the cron expression for export sitemap files to store assets folder by schedule. By default, '0 0 * * *' daily at 00:00"
     }
   },
   "module": {

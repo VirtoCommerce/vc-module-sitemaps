@@ -1,0 +1,218 @@
+{
+  "sitemapsModule": {
+    "widgets": {
+      "storeSitemaps": {
+        "title": "サイトマップ"
+      }
+    },
+    "blades": {
+      "sitemapList": {
+        "title": "サイトマップ",
+        "subtitle": "サイトマップを管理して、インデックス sitemap.xml に含めます",
+        "toolbar": {
+          "download": "ZIPとしてダウンロード",
+          "exportToStoreAssets": "ストアのリソースにエクスポート"
+        },
+        "gridHeaders": {
+          "location": "場所",
+          "itemsCount": "アイテム数"
+        },
+        "noSitemapsMessage": "まだサイトマップがありません"
+      },
+      "sitemap": {
+        "newSitemapTitle": "新しいサイトマップ",
+        "toolbar": {
+          "addItems": "アイテムを追加",
+          "removeItems": "アイテムを削除"
+        },
+        "formSitemap": {
+          "labelSitemapLocation": "サイトマップの場所",
+          "descriptionSitemapLocation": "インデックスサイトマップのコンテキスト内で一意の相対URLを指定します。例：'categories/electronics.xml'、'products.xml'。サイトマップパスに 'sitemap.xml' を使用しないでください",
+          "sitemapIndexErrorMessage": "\"sitemap.xml\" をサイトマップの場所として使用しないでください",
+          "sitemapSitemapLocationExistErrorMessage": "このサイトマップの場所は既に使用されています",
+          "labelSitemapItemsLocation": "サイトマップアイテムの場所",
+          "descriptionSitemapItemsLocation": "サイトマップアイテムのURLを生成するパターンを定義します。ストアのSEO「リンク設定」ルールに基づいて、SEOセマンティックURL部分を含めるには {slug} を使用します。例：/my-page/{slug}",
+          "labelSitemapItems": "サイトマップアイテム",
+          "sitemapMode": "カタログアイテムをエクスポート"
+        },
+        "sitemapModes": {
+          "sitemapFullMode": "カテゴリと製品",
+          "sitemapOnlyCategoriesMode": "カテゴリのみ",
+          "sitemapOnlyProductsMode": "製品のみ"
+        },
+        "gridHeaders": {
+          "img": "画像",
+          "title": "タイトル",
+          "type": "タイプ"
+        },
+        "noSitemapsItemsMessage": "まだサイトマップアイテムがありません"
+      },
+      "addItems": {
+        "title": "アイテムを追加",
+        "addCatalogItem": {
+          "title": "カタログアイテム",
+          "description": "製品とカテゴリを含める"
+        },
+        "addVendorItem": {
+          "title": "ベンダーアイテム",
+          "description": "ベンダーを含める"
+        },
+        "addStaticContentItem": {
+          "title": "静的コンテンツアイテム",
+          "description": "ページとブログを含める"
+        },
+        "addCustomItem": {
+          "title": "カスタムアイテム",
+          "description": "カスタムURLを持つアイテム"
+        }
+      },
+      "addCatalogItems": {
+        "title": "カタログアイテムを追加",
+        "toolbar": {
+          "addSelected": "選択したものを追加"
+        }
+      },
+      "addCustomItem": {
+        "title": "カスタムアイテムを追加",
+        "toolbar": {
+          "save": "保存"
+        },
+        "formCustomSitemapItem": {
+          "labelUrlTemplate": "URLテンプレート",
+          "descriptionUrlTemplate": "カスタムアイテムの相対URLを指定します。例：/about-us または /my-folder/my-page"
+        }
+      },
+      "addVendorItems": {
+        "title": "ベンダーアイテムを追加",
+        "toolbar": {
+          "addSelected": "選択したものを追加"
+        },
+        "bread-crumb-top": "すべてのベンダー"
+      },
+      "addStaticContentItems": {
+        "title": "静的コンテンツアイテムを追加",
+        "toolbar": {
+          "addSelected": "選択したものを追加"
+        },
+        "bread-crumb-top": "すべてのアイテム"
+      },
+      "download": {
+        "title": "サイトマップをダウンロード",
+        "labels": {
+          "start": "開始",
+          "end": "終了",
+          "total": "合計",
+          "processed": "処理済み",
+          "errors-count": "エラー数",
+          "errors": "エラー",
+          "download-url": "ダウンロードURL"
+        }
+      },
+      "exportToStoreAssets": {
+        "title": "サイトマップをストアのリソースにエクスポート",
+        "labels": {
+          "start": "開始",
+          "end": "終了",
+          "total": "合計",
+          "processed": "処理済み",
+          "errors-count": "エラー数",
+          "errors": "エラー",
+          "download-url": "次のURLで sitemap.xml を見つけることができます"
+        }
+      }
+    },
+    "contextMenu": {
+      "manage": "管理",
+      "remove": "削除"
+    },
+    "dialogs": {
+      "sitemap-delete": {
+        "title": "削除確認",
+        "message": "選択したサイトマップを削除してもよろしいですか？"
+      },
+      "sitemapItems-delete": {
+        "title": "削除確認",
+        "message": "サイトマップから選択したアイテムを削除してもよろしいですか？"
+      },
+      "confirmBaseUrl": {
+        "title": "基本URL",
+        "messageNoBaseUrl": "サイトマップの基本URLを入力してください",
+        "messageConfirmBaseUrl": "サイトマップの基本URLを確認してください"
+      },
+      "discardChanges": {
+        "title": "変更を保存",
+        "message": "サイトマップが変更されました。変更を保存しますか？"
+      }
+    },
+    "errorMessages": {
+      "filenameNotUnique": "このファイル名のサイトマップは既に存在します"
+    }
+  },
+  "permissions": {
+    "sitemaps:access": "サイトマップブレードを開くアクセス",
+    "sitemaps:create": "サイトマップを作成するアクセス",
+    "sitemaps:read": "サイトマップの詳細を表示するアクセス",
+    "sitemaps:update": "サイトマップを更新するアクセス",
+    "sitemaps:delete": "サイトマップを削除するアクセス",
+    "sitemaps:exportToStoreAssets": "ストアのリソースへの手動エクスポートを許可"
+  },
+  "settings": {
+    "Sitemap.RecordsLimitPerFile": {
+      "title": "レコード制限",
+      "description": "各サイトマップファイルに許可される最大レコード数を設定します。検索エンジンクローラーは、50,000未満のURLと10MB未満のファイルサイズのサイトマップファイルを受け入れます"
+    },
+    "Sitemap.FilenameSeparator": {
+      "title": "ファイル名セパレーター",
+      "description": "アイテム数がファイルごとのレコード制限を超える場合に、サイトマップファイル名とその部分の間に使用されるセパレーターを定義します"
+    },
+    "Sitemap.SearchBunchSize": {
+      "title": "検索バンチサイズ",
+      "description": "検索アイテムのバンチサイズを指定します。例：カタログ検索"
+    },
+    "Sitemap.AcceptedFilenameExtensions": {
+      "title": "受け入れられるファイル拡張子",
+      "description": "サイトマップに含める静的コンテンツのファイル拡張子をカンマで区切ってリストします。例：'.md, .html'"
+    },
+    "Sitemap.IncludeImages": {
+      "title": "サイトマップに画像を含める",
+      "description": "サイトマップ生成に画像を含める/含めないを設定します"
+    },
+    "Sitemap.ProductPageUpdateFrequency": {
+      "title": "製品ページの更新頻度",
+      "description": "製品ページの更新頻度を設定します。これは検索エンジンに通知しますが、クロール頻度と正確に一致するとは限りません"
+    },
+    "Sitemap.ProductPagePriority": {
+      "title": "製品ページの優先度",
+      "description": "製品ページのURLの優先度を他のページに対して設定します。0.0から1.0の値を使用します。これはクローラーにとっての重要性を示すだけで、他のサイトのページとの比較には影響しません"
+    },
+    "Sitemap.CategoryPageUpdateFrequency": {
+      "title": "カテゴリページの更新頻度",
+      "description": "カテゴリページの更新頻度を設定します。これは検索エンジンに通知しますが、クロール頻度と正確に一致するとは限りません"
+    },
+    "Sitemap.BlogPageUpdateFrequency": {
+      "title": "ブログページの更新頻度",
+      "description": "ブログページの更新頻度を設定します。これは検索エンジンに通知しますが、クロール頻度と正確に一致するとは限りません"
+    },
+    "Sitemap.CategoryPagePriority": {
+      "title": "カテゴリページの優先度",
+      "description": "カテゴリページのURLの優先度を他のページに対して設定します。0.0から1.0の値を使用します。これはクローラーにとっての重要性を示すだけで、他のサイトのページとの比較には影響しません"
+    },
+    "Sitemap.BlogPagePriority": {
+      "title": "ブログページの優先度",
+      "description": "ブログページのURLの優先度を他のページに対して設定します。0.0から1.0の値を使用します。これはクローラーにとっての重要性を示すだけで、他のサイトのページとの比較には影響しません"
+    },
+    "Sitemap.ExportToAssets.EnableExportToAssetsJob": {
+      "title": "ジョブによるサイトマップファイルのエクスポート",
+      "description": "ストアのリソースフォルダーへのエクスポートを有効/無効にします。すべてのサイトマップアーティファクトを 'stores/{storeId}/sitemap' リソースフォルダーに保存します"
+    },
+    "Sitemap.ExportToAssets.JobCronExpression": {
+      "title": "リソースへのエクスポートのcron式",
+      "description": "スケジュールに従ってサイトマップファイルをストアのリソースフォルダーにエクスポートするためのcron式を設定します。デフォルトでは、'0 0 * * *' 毎日00:00。"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Sitemaps": {
+      "description": "すべてのサイトマップアイテムを含むサイトマップのエクスポート/インポート"
+    }
+  }
+}

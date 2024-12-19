@@ -1,0 +1,218 @@
+{
+  "sitemapsModule": {
+    "widgets": {
+      "storeSitemaps": {
+        "title": "Mapy witryn"
+      }
+    },
+    "blades": {
+      "sitemapList": {
+        "title": "Mapy witryn",
+        "subtitle": "Zarządzaj mapami witryn, aby uwzględnić je w indeksie sitemap.xml",
+        "toolbar": {
+          "download": "Pobierz jako ZIP",
+          "exportToStoreAssets": "Eksportuj do zasobów sklepu"
+        },
+        "gridHeaders": {
+          "location": "Lokalizacja",
+          "itemsCount": "Liczba elementów"
+        },
+        "noSitemapsMessage": "Brak map witryn"
+      },
+      "sitemap": {
+        "newSitemapTitle": "Nowa mapa witryny",
+        "toolbar": {
+          "addItems": "Dodaj elementy",
+          "removeItems": "Usuń elementy"
+        },
+        "formSitemap": {
+          "labelSitemapLocation": "Lokalizacja mapy witryny",
+          "descriptionSitemapLocation": "Podaj względny URL dla mapy witryny, który jest unikalny w kontekście indeksu sitemap. Na przykład: 'categories/electronics.xml', 'products.xml'. Unikaj używania 'sitemap.xml' w ścieżce mapy witryny",
+          "sitemapIndexErrorMessage": "Unikaj używania \"sitemap.xml\" jako lokalizacji mapy witryny",
+          "sitemapSitemapLocationExistErrorMessage": "Ta lokalizacja mapy witryny jest już używana",
+          "labelSitemapItemsLocation": "Lokalizacja elementów mapy witryny",
+          "descriptionSitemapItemsLocation": "Zdefiniuj wzorzec generowania URL-i elementów mapy witryny. Użyj {slug}, aby uwzględnić semantyczną część URL SEO opartą na zasadach 'Ustawień linków' SEO sklepu. Na przykład: /moja-strona/{slug}",
+          "labelSitemapItems": "Elementy mapy witryny",
+          "sitemapMode": "Eksportuj elementy katalogu"
+        },
+        "sitemapModes": {
+          "sitemapFullMode": "Kategorie i produkty",
+          "sitemapOnlyCategoriesMode": "Tylko kategorie",
+          "sitemapOnlyProductsMode": "Tylko produkty"
+        },
+        "gridHeaders": {
+          "img": "Obraz",
+          "title": "Tytuł",
+          "type": "Typ"
+        },
+        "noSitemapsItemsMessage": "Brak elementów mapy witryny"
+      },
+      "addItems": {
+        "title": "Dodaj elementy",
+        "addCatalogItem": {
+          "title": "Elementy katalogu",
+          "description": "Uwzględnij produkty i kategorie"
+        },
+        "addVendorItem": {
+          "title": "Elementy dostawcy",
+          "description": "Uwzględnij dostawców"
+        },
+        "addStaticContentItem": {
+          "title": "Elementy treści statycznej",
+          "description": "Uwzględnij strony i blogi"
+        },
+        "addCustomItem": {
+          "title": "Element niestandardowy",
+          "description": "Element z niestandardowym URL"
+        }
+      },
+      "addCatalogItems": {
+        "title": "Dodaj elementy katalogu",
+        "toolbar": {
+          "addSelected": "Dodaj wybrane"
+        }
+      },
+      "addCustomItem": {
+        "title": "Dodaj element niestandardowy",
+        "toolbar": {
+          "save": "Zapisz"
+        },
+        "formCustomSitemapItem": {
+          "labelUrlTemplate": "Szablon URL",
+          "descriptionUrlTemplate": "Podaj względny URL dla elementów niestandardowych. Na przykład: /o-nas lub /moj-folder/moja-strona"
+        }
+      },
+      "addVendorItems": {
+        "title": "Dodaj elementy dostawcy",
+        "toolbar": {
+          "addSelected": "Dodaj wybrane"
+        },
+        "bread-crumb-top": "Wszyscy dostawcy"
+      },
+      "addStaticContentItems": {
+        "title": "Dodaj elementy treści statycznej",
+        "toolbar": {
+          "addSelected": "Dodaj wybrane"
+        },
+        "bread-crumb-top": "Wszystkie elementy"
+      },
+      "download": {
+        "title": "Pobierz mapę witryny",
+        "labels": {
+          "start": "Początek",
+          "end": "Koniec",
+          "total": "Łącznie",
+          "processed": "Przetworzone",
+          "errors-count": "Liczba błędów",
+          "errors": "Błędy",
+          "download-url": "URL pobierania"
+        }
+      },
+      "exportToStoreAssets": {
+        "title": "Eksportuj mapę witryny do zasobów sklepu",
+        "labels": {
+          "start": "Początek",
+          "end": "Koniec",
+          "total": "Łącznie",
+          "processed": "Przetworzone",
+          "errors-count": "Liczba błędów",
+          "errors": "Błędy",
+          "download-url": "Możesz znaleźć sitemap.xml pod następującym URL"
+        }
+      }
+    },
+    "contextMenu": {
+      "manage": "Zarządzaj",
+      "remove": "Usuń"
+    },
+    "dialogs": {
+      "sitemap-delete": {
+        "title": "Potwierdzenie usunięcia",
+        "message": "Czy na pewno chcesz usunąć wybrane mapy witryn?"
+      },
+      "sitemapItems-delete": {
+        "title": "Potwierdzenie usunięcia",
+        "message": "Czy na pewno chcesz usunąć wybrane elementy z mapy witryny?"
+      },
+      "confirmBaseUrl": {
+        "title": "Podstawowy URL",
+        "messageNoBaseUrl": "Wprowadź podstawowy URL dla map witryn",
+        "messageConfirmBaseUrl": "Potwierdź podstawowy URL dla map witryn"
+      },
+      "discardChanges": {
+        "title": "Zapisz zmiany",
+        "message": "Mapa witryny została zmodyfikowana. Czy chcesz zapisać zmiany?"
+      }
+    },
+    "errorMessages": {
+      "filenameNotUnique": "Mapa witryny o tej nazwie pliku już istnieje"
+    }
+  },
+  "permissions": {
+    "sitemaps:access": "Dostęp do otwarcia ostrza mapy witryn",
+    "sitemaps:create": "Dostęp do tworzenia mapy witryny",
+    "sitemaps:read": "Dostęp do przeglądania szczegółów mapy witryny",
+    "sitemaps:update": "Dostęp do aktualizacji mapy witryny",
+    "sitemaps:delete": "Dostęp do usunięcia mapy witryny",
+    "sitemaps:exportToStoreAssets": "Pozwala na ręczny eksport do zasobów sklepu"
+  },
+  "settings": {
+    "Sitemap.RecordsLimitPerFile": {
+      "title": "Limit rekordów",
+      "description": "Ustaw maksymalną liczbę rekordów dozwolonych w każdym pliku mapy witryny. Roboty wyszukiwarek akceptują pliki mapy witryny z mniej niż 50 000 URL-i i rozmiarem pliku poniżej 10 MB"
+    },
+    "Sitemap.FilenameSeparator": {
+      "title": "Separator nazwy pliku",
+      "description": "Zdefiniuj separator używany między nazwą pliku mapy witryny a jego częścią, jeśli liczba elementów przekracza limit rekordów na plik"
+    },
+    "Sitemap.SearchBunchSize": {
+      "title": "Rozmiar paczki wyszukiwania",
+      "description": "Określ rozmiar paczek elementów wyszukiwania, na przykład, dla wyszukiwania katalogu"
+    },
+    "Sitemap.AcceptedFilenameExtensions": {
+      "title": "Akceptowane rozszerzenia plików",
+      "description": "Wymień rozszerzenia plików dla treści statycznych do uwzględnienia w mapie witryny, oddzielone przecinkami. Na przykład: '.md, .html'"
+    },
+    "Sitemap.IncludeImages": {
+      "title": "Uwzględnienie obrazów w mapie witryny",
+      "description": "Włącz/wyłącz uwzględnienie obrazów w generowaniu mapy witryny"
+    },
+    "Sitemap.ProductPageUpdateFrequency": {
+      "title": "Częstotliwość aktualizacji strony produktu",
+      "description": "Ustaw, jak często strony produktów są aktualizowane. To informuje wyszukiwarki, ale może nie odpowiadać dokładnie ich częstotliwości przeszukiwania"
+    },
+    "Sitemap.ProductPagePriority": {
+      "title": "Priorytet strony produktu",
+      "description": "Zdefiniuj priorytet URL-i strony produktu w stosunku do innych na swojej stronie. Użyj wartości od 0,0 do 1,0. To tylko wskazuje znaczenie dla robotów i nie wpływa na porównania z innymi stronami"
+    },
+    "Sitemap.CategoryPageUpdateFrequency": {
+      "title": "Częstotliwość aktualizacji strony kategorii",
+      "description": "Ustaw, jak często strony kategorii są aktualizowane. To informuje wyszukiwarki, ale może nie odpowiadać dokładnie ich częstotliwości przeszukiwania"
+    },
+    "Sitemap.BlogPageUpdateFrequency": {
+      "title": "Częstotliwość aktualizacji strony bloga",
+      "description": "Ustaw, jak często strony bloga są aktualizowane. To informuje wyszukiwarki, ale może nie odpowiadać dokładnie ich częstotliwości przeszukiwania"
+    },
+    "Sitemap.CategoryPagePriority": {
+      "title": "Priorytet strony kategorii",
+      "description": "Zdefiniuj priorytet URL-i strony kategorii w stosunku do innych na swojej stronie. Użyj wartości od 0,0 do 1,0. To tylko wskazuje znaczenie dla robotów i nie wpływa na porównania z innymi stronami"
+    },
+    "Sitemap.BlogPagePriority": {
+      "title": "Priorytet strony bloga",
+      "description": "Zdefiniuj priorytet URL-i strony bloga w stosunku do innych na swojej stronie. Użyj wartości od 0,0 do 1,0. To tylko wskazuje znaczenie dla robotów i nie wpływa na porównania z innymi stronami"
+    },
+    "Sitemap.ExportToAssets.EnableExportToAssetsJob": {
+      "title": "Eksportuj pliki mapy witryny przez zadanie",
+      "description": "Włącz/wyłącz eksport do folderu zasobów sklepu. Zapisz wszystkie artefakty mapy witryny w folderze zasobów 'stores/{storeId}/sitemap'"
+    },
+    "Sitemap.ExportToAssets.JobCronExpression": {
+      "title": "Wyrażenie cron dla eksportu do zasobów",
+      "description": "Skonfiguruj wyrażenie cron dla eksportu plików mapy witryny do folderu zasobów sklepu według harmonogramu. Domyślnie '0 0 * * *' codziennie o 00:00."
+    }
+  },
+  "module": {
+    "VirtoCommerce.Sitemaps": {
+      "description": "Eksportuj/Importuj mapy witryn ze wszystkimi elementami mapy witryny"
+    }
+  }
+}
