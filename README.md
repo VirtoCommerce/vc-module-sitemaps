@@ -1,5 +1,4 @@
-
-# Overview
+# Virto Commerce Sitemaps Module
 
 [![CI status](https://github.com/VirtoCommerce/vc-module-sitemaps/workflows/Module%20CI/badge.svg?branch=dev)](https://github.com/VirtoCommerce/vc-module-sitemaps/actions?query=workflow%3A"Module+CI") [![Quality gate](https://sonarcloud.io/api/project_badges/measure?project=VirtoCommerce_vc-module-sitemaps&metric=alert_status&branch=dev)](https://sonarcloud.io/dashboard?id=VirtoCommerce_vc-module-sitemaps) [![Reliability rating](https://sonarcloud.io/api/project_badges/measure?project=VirtoCommerce_vc-module-sitemaps&metric=reliability_rating&branch=dev)](https://sonarcloud.io/dashboard?id=VirtoCommerce_vc-module-sitemaps) [![Security rating](https://sonarcloud.io/api/project_badges/measure?project=VirtoCommerce_vc-module-sitemaps&metric=security_rating&branch=dev)](https://sonarcloud.io/dashboard?id=VirtoCommerce_vc-module-sitemaps) [![Sqale rating](https://sonarcloud.io/api/project_badges/measure?project=VirtoCommerce_vc-module-sitemaps&metric=sqale_rating&branch=dev)](https://sonarcloud.io/dashboard?id=VirtoCommerce_vc-module-sitemaps)
 
@@ -9,32 +8,27 @@ Web crawlers usually discover pages from links within the site and from other si
 
 Virto Commerce provides multiple sitemap files, each sitemap file must include no more than 10,000 URLs (by default, maximum value - 50000 URLs) and must be no larger than 50MB (52,428,800 bytes). Each sitemap file will be placed in a sitemap index file "sitemap.xml". In case of sitemap file has more than maximum records number, it would be separated to several sitemap files, i.e.: "products.xml" sitemap file with 15000 records would be transformed to "products--1.xml" (10000 records) and "products--2.xml" (5000 records). Each of these partial sitemap files would be included in sitemap index file too.
 
-## Key Features
+## Key features
 
-1. Async Sitemap generator
-1. Support big catalogs 
-1. Export products and categories
-1. Rich API
+* Async Sitemap generator
+* Support big catalogs 
+* Export products and categories
+* Rich API
 
 ## Documentation
 
-* [Sitemaps Module Document](/docs/index.md)
+* [Sitemaps module users documentation](https://docs.virtocommerce.org/platform/user-guide/sitemaps/overview/)
+* [REST API](https://virtostart-demo-admin.govirto.com/docs/index.html?urls.primaryName=VirtoCommerce.Sitemaps)
+* [View on GitHub](https://github.com/VirtoCommerce/vc-module-sitemaps/)
 
-* [View on GitHub](https://github.com/VirtoCommerce/vc-module-sitemaps/tree/dev)
-
-## Installation
-
-1. Automatically: in VC Manager go to More -> Modules -> Sitemaps module -> Install;
-
-1. Manually: download module zip package from https://github.com/VirtoCommerce/vc-module-sitemaps/releases. In VC Manager go to More -> Modules -> Advanced -> upload module package -> Install.
 
 ## References
 
-* Deploy: https://virtocommerce.com/docs/latest/developer-guide/deploy-module-from-source-code/
-* Installation: https://www.virtocommerce.com/docs/latest/user-guide/modules/
-* Home: https://virtocommerce.com
-* Community: https://www.virtocommerce.org
-* [Download Latest Release](https://github.com/VirtoCommerce/vc-module-sitemaps/releases)
+* [Deployment](https://docs.virtocommerce.org/platform/developer-guide/Tutorials-and-How-tos/Tutorials/deploy-module-from-source-code/)
+* [Installation](https://docs.virtocommerce.org/platform/user-guide/modules-installation/)
+* [Home](https://virtocommerce.com)
+* [Community](https://www.virtocommerce.org)
+* [Download latest release](https://github.com/VirtoCommerce/vc-module-sitemaps/releases/latest)
 
 ## License
 
