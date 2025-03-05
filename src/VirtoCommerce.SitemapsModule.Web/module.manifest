@@ -4,10 +4,10 @@
   <version>3.812.0</version>
   <version-tag />
 
-  <platformVersion>3.853.0</platformVersion>
+  <platformVersion>3.877.0</platformVersion>
   <dependencies>
     <dependency id="VirtoCommerce.Assets" version="3.808.0" />
-    <dependency id="VirtoCommerce.Catalog" version="3.822.0" />
+    <dependency id="VirtoCommerce.Catalog" version="3.847.0-alpha.2301-vcst-2821" />
     <dependency id="VirtoCommerce.Content" version="3.823.0" />
     <dependency id="VirtoCommerce.Core" version="3.808.0" />
     <dependency id="VirtoCommerce.Customer" version="3.817.0" />
@@ -26,7 +26,7 @@
   <iconUrl>Modules/$(VirtoCommerce.Sitemaps)/Content/logo.png</iconUrl>
   <requireLicenseAcceptance>false</requireLicenseAcceptance>
   <releaseNotes>First version.</releaseNotes>
-  <copyright>Copyright © 2011-2024 Virto Commerce. All rights reserved</copyright>
+  <copyright>Copyright © 2011–2025 Virto Commerce. All rights reserved</copyright>
   <tags>sitemaps</tags>
   <assemblyFile>VirtoCommerce.SitemapsModule.Web.dll</assemblyFile>
   <moduleType>VirtoCommerce.SitemapsModule.Web.Module, VirtoCommerce.SitemapsModule.Web</moduleType>

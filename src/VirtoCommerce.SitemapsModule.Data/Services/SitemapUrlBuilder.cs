@@ -1,73 +1,92 @@
+using System;
 using System.Linq;
+using System.Text;
+using VirtoCommerce.CatalogModule.Core.Extensions;
 using VirtoCommerce.CatalogModule.Core.Model.ListEntry;
 using VirtoCommerce.CoreModule.Core.Outlines;
 using VirtoCommerce.CoreModule.Core.Seo;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
-using VirtoCommerce.SitemapsModule.Data.Converters;
-using VirtoCommerce.SitemapsModule.Data.Extensions;
-using VirtoCommerce.Tools;
-using VirtoCommerce.Tools.Models;
-using Store = VirtoCommerce.StoreModule.Core.Model.Store;
+using VirtoCommerce.StoreModule.Core.Model;
+using StoreSettings = VirtoCommerce.StoreModule.Core.ModuleConstants.Settings.SEO;
 
-namespace VirtoCommerce.SitemapsModule.Data.Services
+namespace VirtoCommerce.SitemapsModule.Data.Services;
+
+public class SitemapUrlBuilder : ISitemapUrlBuilder
 {
-    public class SitemapUrlBuilder : ISitemapUrlBuilder
+    public virtual string BuildStoreUrl(Store store, string language, string urlTemplate, string baseUrl, IEntity entity = null)
     {
-        public SitemapUrlBuilder(IUrlBuilder urlBuilder)
+        // Remove unused {language} template
+        urlTemplate = urlTemplate.Replace(UrlTemplatePatterns.Language, string.Empty);
+
+        // Replace {slug} template in the provided URL template
+        var slug = GetSlug(store, language, entity);
+        urlTemplate = urlTemplate.Replace(UrlTemplatePatterns.Slug, slug);
+
+        // Don't process absolute URL
+        if (Uri.TryCreate(urlTemplate, UriKind.Absolute, out var absoluteUri) && absoluteUri.Scheme != "file")
         {
-            UrlBuilder = urlBuilder;
+            return urlTemplate;
         }
 
-        protected IUrlBuilder UrlBuilder { get; private set; }
+        var builder = new StringBuilder("~");
 
-        #region ISitemapUrlBuilder members
-        public virtual string BuildStoreUrl(Store store, string language, string urlTemplate, string baseUrl, IEntity entity = null)
+        if (store != null)
         {
-            var toolsStore = store.ToToolsStore(baseUrl);
-            if (!string.IsNullOrEmpty(baseUrl))
+            // If store has public or secure URL, use them
+            if (!string.IsNullOrEmpty(baseUrl) || !string.IsNullOrEmpty(store.Url) || !string.IsNullOrEmpty(store.SecureUrl))
             {
-                toolsStore.Url = baseUrl;
+                baseUrl = baseUrl.EmptyToNull() ?? store.Url.EmptyToNull() ?? store.SecureUrl.EmptyToNull() ?? string.Empty;
+
+                builder.Clear();
+                builder.Append(baseUrl.TrimEnd('/'));
             }
 
-            var seoSupport = entity as ISeoSupport;
-
-            //remove unused {language} template
-            urlTemplate = urlTemplate.Replace(UrlTemplatePatterns.Language, string.Empty);
-
-            var slug = string.Empty;
-            if (seoSupport != null)
+            // Do not add language to URL if store has only one language
+            if (store.Languages?.Count > 1)
             {
-                var hasOutlines = entity as IHasOutlines;
-                var seoInfos = seoSupport.SeoInfos?.Select(x => x.JsonConvert<Tools.Models.SeoInfo>());
-                seoInfos = seoInfos?.GetBestMatchingSeoInfos(toolsStore.Id, toolsStore.DefaultLanguage, language, null);
-                if (toolsStore.SeoLinksType == SeoLinksType.None)
-                {
-                    slug = entity is ListEntryBase @base ? $"{@base.Type}/{entity.Id}" : entity.Id;
-                }
-                else if (!seoInfos.IsNullOrEmpty())
-                {
-                    slug = seoInfos.Select(x => x.SemanticUrl).FirstOrDefault();
-                }
+                var actualLanguage = store.Languages.FirstOrDefault(x => x.EqualsIgnoreCase(language)) ?? store.DefaultLanguage;
 
-                if (hasOutlines != null && !hasOutlines.Outlines.IsNullOrEmpty())
+                if (!urlTemplate.Contains($"/{actualLanguage}/", StringComparison.OrdinalIgnoreCase))
                 {
-                    var outlines = hasOutlines.Outlines.Select(x => x.JsonConvert<Tools.Models.Outline>());
-                    slug = outlines.GetSeoPath(toolsStore, language, slug);
+                    builder.Append('/');
+                    builder.Append(actualLanguage);
                 }
             }
-            var toolsContext = new Tools.Models.UrlBuilderContext
-            {
-                AllStores = new[] { toolsStore },
-                CurrentLanguage = language,
-                CurrentStore = toolsStore
-            };
-            //Replace {slug} template in passed url template
-            urlTemplate = urlTemplate.Replace(UrlTemplatePatterns.Slug, slug);
-            var result = UrlBuilder.BuildStoreUrl(toolsContext, urlTemplate);
-            return result;
         }
-        #endregion
+
+        builder.Append('/');
+        builder.Append(urlTemplate.TrimStart('~', '/'));
+
+        return builder.ToString();
+    }
+
+    private static string GetSlug(Store store, string language, IEntity entity)
+    {
+        if (entity is not ISeoSupport seoSupport)
+        {
+            return string.Empty;
+        }
+
+        string slug;
+
+        var seoLinksType = store?.Settings?.GetValue<string>(StoreSettings.SeoLinksType);
+        if (seoLinksType == "None")
+        {
+            slug = entity is ListEntryBase listEntry ? $"{listEntry.Type}/{entity.Id}" : entity.Id;
+        }
+        else
+        {
+            slug = seoSupport.GetBestMatchingSeoInfo(store, language)?.SemanticUrl ?? string.Empty;
+        }
+
+        if (entity is IHasOutlines hasOutlines)
+        {
+            slug = hasOutlines.GetSeoPath(store, language) ?? slug;
+        }
+
+        return slug;
     }
 }
