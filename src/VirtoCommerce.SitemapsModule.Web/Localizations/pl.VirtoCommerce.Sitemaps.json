@@ -31,7 +31,8 @@
           "sitemapIndexErrorMessage": "Unikaj używania \"sitemap.xml\" jako lokalizacji mapy witryny",
           "sitemapSitemapLocationExistErrorMessage": "Ta lokalizacja mapy witryny jest już używana",
           "labelSitemapItemsLocation": "Lokalizacja elementów mapy witryny",
-          "descriptionSitemapItemsLocation": "Zdefiniuj wzorzec generowania URL-i elementów mapy witryny. Użyj {slug}, aby uwzględnić semantyczną część URL SEO opartą na zasadach 'Ustawień linków' SEO sklepu. Na przykład: /moja-strona/{slug}",
+          "descriptionSitemapItemsLocation": "Zdefiniuj wzorzec generowania URL-i elementów mapy witryny. Użyj {slug}, aby uwzględnić semantyczną część URL SEO na podstawie zasad 'Ustawień linków' sklepu. Na przykład: /moja-strona/{slug}.\n\nOto pełna lista obsługiwanych formatów slug:\n{slug} – URL-e zgodne z określonym ustawieniem 'linków SEO' w sklepie.\n{slug_short} – URL-e zgodne z SeoLinksType.Short.\n{slug_long} – URL-e zgodne z SeoLinksType.Long.\n{slug_collapsed} – URL-e zgodne z SeoLinksType.Collapsed.",
+          "hide-description": "Ukryj",
           "labelSitemapItems": "Elementy mapy witryny",
           "sitemapMode": "Eksportuj elementy katalogu"
         },

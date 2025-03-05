@@ -31,7 +31,8 @@
           "sitemapIndexErrorMessage": "Vermeiden Sie die Verwendung von \"sitemap.xml\" als Sitemap-Standort",
           "sitemapSitemapLocationExistErrorMessage": "Dieser Sitemap-Standort wird bereits verwendet",
           "labelSitemapItemsLocation": "Standort der Sitemap-Elemente",
-          "descriptionSitemapItemsLocation": "Definieren Sie das Muster zur Generierung von URLs für Sitemap-Elemente. Verwenden Sie {slug}, um den SEO-semantischen URL-Teil basierend auf den SEO-„Linkeinstellungen“ des Shops einzuschließen. Zum Beispiel: /meine-seite/{slug}",
+          "descriptionSitemapItemsLocation": "Definieren Sie das Muster zur Generierung von Sitemap-Element-URLs. Verwenden Sie {slug}, um den SEO-semantischen URL-Teil basierend auf den 'Links-Einstellungen' des Shops einzuschließen. Zum Beispiel: /meine-seite/{slug}.\n\nHier ist die vollständige Liste der unterstützten Slug-Formate:\n{slug} – URLs entsprechen der angegebenen 'SEO-Links'-Einstellung im Shop.\n{slug_short} – URLs entsprechen SeoLinksType.Short.\n{slug_long} – URLs entsprechen SeoLinksType.Long.\n{slug_collapsed}– URLs entsprechen SeoLinksType.Collapsed.",
+          "hide-description": "Verbergen",
           "labelSitemapItems": "Sitemap-Elemente",
           "sitemapMode": "Katalogelemente exportieren"
         },

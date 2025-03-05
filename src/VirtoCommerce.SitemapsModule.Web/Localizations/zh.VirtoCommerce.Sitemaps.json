@@ -31,7 +31,8 @@
           "sitemapIndexErrorMessage": "避免使用 \"sitemap.xml\" 作为网站地图位置",
           "sitemapSitemapLocationExistErrorMessage": "此网站地图位置已被使用",
           "labelSitemapItemsLocation": "网站地图项目位置",
-          "descriptionSitemapItemsLocation": "定义生成网站地图项目 URL 的模式。使用 {slug} 包含基于商店 SEO '链接设置' 规则的 SEO 语义 URL 部分。例如：/my-page/{slug}",
+          "descriptionSitemapItemsLocation": "定义生成网站地图项目 URL 的模式。使用 {slug} 包含基于商店 SEO '链接设置' 规则的 SEO 语义 URL 部分。例如：/my-page/{slug}。\n\n以下是支持的 slug 格式的完整列表：\n{slug} – URL 符合商店指定的 'SEO 链接' 设置。\n{slug_short} – URL 符合 SeoLinksType.Short。\n{slug_long} – URL 符合 SeoLinksType.Long。\n{slug_collapsed} – URL 符合 SeoLinksType.Collapsed",
+          "hide-description": "隐藏",
           "labelSitemapItems": "网站地图项目",
           "sitemapMode": "导出目录项目"
         },

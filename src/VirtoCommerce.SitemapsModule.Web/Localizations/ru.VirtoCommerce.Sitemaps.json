@@ -31,7 +31,8 @@
           "sitemapIndexErrorMessage": "Избегайте использования \"sitemap.xml\" в качестве местоположения карты сайта",
           "sitemapSitemapLocationExistErrorMessage": "Это местоположение карты сайта уже используется",
           "labelSitemapItemsLocation": "Местоположение элементов карты сайта",
-          "descriptionSitemapItemsLocation": "Определите шаблон для генерации URL элементов карты сайта. Используйте {slug}, чтобы включить семантическую часть URL SEO на основе правил 'Настройки ссылок' SEO магазина. Например: /моя-страница/{slug}",
+          "descriptionSitemapItemsLocation": "Определите шаблон для генерации URL-адресов элементов карты сайта. Используйте {slug}, чтобы включить SEO-семантическую часть URL на основе правил 'Настройки ссылок' магазина. Например: /my-page/{slug}.\n\nВот полный список поддерживаемых форматов slug:\n{slug} – URL-адреса соответствуют указанной настройке 'SEO links' в магазине.\n{slug_short} – URL-адреса соответствуют SeoLinksType.Short.\n{slug_long} – URL-адреса соответствуют SeoLinksType.Long.\n{slug_collapsed} – URL-адреса соответствуют SeoLinksType.Collapsed.",  
+          "hide-description": "Скрыть",
           "labelSitemapItems": "Элементы карты сайта",
           "sitemapMode": "Экспортировать элементы каталога"
         },
