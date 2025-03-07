@@ -31,7 +31,8 @@
           "sitemapIndexErrorMessage": "Evite usar \"sitemap.xml\" como localização do sitemap",
           "sitemapSitemapLocationExistErrorMessage": "Esta localização do sitemap já está em uso",
           "labelSitemapItemsLocation": "Localização dos itens do sitemap",
-          "descriptionSitemapItemsLocation": "Defina o padrão para gerar URLs de itens do sitemap. Use {slug} para incluir a parte semântica SEO da URL com base nas regras de 'Configurações de Links' SEO da loja. Por exemplo: /minha-pagina/{slug}",
+          "descriptionSitemapItemsLocation": "Defina o padrão para gerar URLs de itens do sitemap. Use {slug} para incluir a parte semântica da URL de SEO com base nas regras de 'Configurações de Links' da loja. Por exemplo: /minha-pagina/{slug}.\n\nAqui está a lista completa de formatos de slug suportados:\n{slug} – URLs conforme a configuração de 'links de SEO' especificada na loja.\n{slug_short} – URLs conforme SeoLinksType.Short.\n{slug_long} – URLs conforme SeoLinksType.Long.\n{slug_collapsed} – URLs conforme SeoLinksType.Collapsed.",
+          "hide-description": "Esconder",
           "labelSitemapItems": "Itens do sitemap",
           "sitemapMode": "Exportar itens do catálogo"
         },

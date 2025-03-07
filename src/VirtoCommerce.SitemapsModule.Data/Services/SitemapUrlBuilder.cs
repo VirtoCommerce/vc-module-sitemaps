@@ -1,5 +1,6 @@
 using System.Linq;
 using VirtoCommerce.CatalogModule.Core.Model.ListEntry;
+using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.CoreModule.Core.Outlines;
 using VirtoCommerce.CoreModule.Core.Seo;
 using VirtoCommerce.Platform.Core.Common;
@@ -15,9 +16,12 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
 {
     public class SitemapUrlBuilder : ISitemapUrlBuilder
     {
-        public SitemapUrlBuilder(IUrlBuilder urlBuilder)
+        private readonly ICategoryService _categoryService;
+
+        public SitemapUrlBuilder(IUrlBuilder urlBuilder, ICategoryService categoryService)
         {
             UrlBuilder = urlBuilder;
+            _categoryService = categoryService;
         }
 
         protected IUrlBuilder UrlBuilder { get; private set; }
@@ -29,6 +33,20 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             if (!string.IsNullOrEmpty(baseUrl))
             {
                 toolsStore.Url = baseUrl;
+            }
+
+            // Override SEO link type, if explicitly set in urlTemplate
+            switch (urlTemplate)
+            {
+                case UrlTemplatePatterns.SlugLong:
+                    toolsStore.SeoLinksType = SeoLinksType.Long;
+                    break;
+                case UrlTemplatePatterns.SlugShort:
+                    toolsStore.SeoLinksType = SeoLinksType.Short;
+                    break;
+                case UrlTemplatePatterns.SlugCollapsed:
+                    toolsStore.SeoLinksType = SeoLinksType.Collapsed;
+                    break;
             }
 
             var seoSupport = entity as ISeoSupport;
@@ -56,6 +74,16 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                     var outlines = hasOutlines.Outlines.Select(x => x.JsonConvert<Tools.Models.Outline>());
                     slug = outlines.GetSeoPath(toolsStore, language, slug);
                 }
+
+                var categoryNeedsOutlines = new[] { SeoLinksType.Long, SeoLinksType.Collapsed }.Contains(toolsStore.SeoLinksType);
+                if (categoryNeedsOutlines && entity is CategoryListEntry categoryListEntry)
+                {
+                    // CategoryListEntry does not have IHasOutlines interface, but Categoy does
+                    // And we need outlines to build long and collapsed SEO path, so retrieve Category by id to have outlines
+                    var category = _categoryService.GetByIdAsync(categoryListEntry.Id).GetAwaiter().GetResult();
+                    var outlines = category.Outlines.Select(x => x.JsonConvert<Tools.Models.Outline>());
+                    slug = outlines.GetSeoPath(toolsStore, language, slug);
+                }
             }
             var toolsContext = new Tools.Models.UrlBuilderContext
             {
@@ -64,6 +92,9 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 CurrentStore = toolsStore
             };
             //Replace {slug} template in passed url template
+            urlTemplate = urlTemplate.Replace(UrlTemplatePatterns.SlugLong, slug);
+            urlTemplate = urlTemplate.Replace(UrlTemplatePatterns.SlugShort, slug);
+            urlTemplate = urlTemplate.Replace(UrlTemplatePatterns.SlugCollapsed, slug);
             urlTemplate = urlTemplate.Replace(UrlTemplatePatterns.Slug, slug);
             var result = UrlBuilder.BuildStoreUrl(toolsContext, urlTemplate);
             return result;
