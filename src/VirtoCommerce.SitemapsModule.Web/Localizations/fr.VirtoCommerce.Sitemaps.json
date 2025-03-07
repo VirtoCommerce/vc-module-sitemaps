@@ -31,7 +31,8 @@
           "sitemapIndexErrorMessage": "Évitez d'utiliser \"sitemap.xml\" comme emplacement du plan de site",
           "sitemapSitemapLocationExistErrorMessage": "Cet emplacement de plan de site est déjà utilisé",
           "labelSitemapItemsLocation": "Emplacement des éléments du plan de site",
-          "descriptionSitemapItemsLocation": "Définissez le modèle pour générer les URL des éléments du plan de site. Utilisez {slug} pour inclure la partie URL sémantique SEO basée sur les règles des 'Paramètres de liens' SEO du magasin. Par exemple : /ma-page/{slug}",
+          "descriptionSitemapItemsLocation": "Définissez le modèle pour générer les URL des éléments du plan de site. Utilisez {slug} pour inclure la partie URL sémantique SEO basée sur les règles 'Paramètres des liens' du magasin. Par exemple : /ma-page/{slug}.\n\nVoici la liste complète des formats de slug pris en charge :\n{slug} – Les URL sont conformes au paramètre 'Liens SEO' spécifié sur le magasin.\n{slug_short} – Les URL sont conformes à SeoLinksType.Short.\n{slug_long} – Les URL sont conformes à SeoLinksType.Long.\n{slug_collapsed} – Les URL sont conformes à SeoLinksType.Collapsed.",
+          "hide-description": "Cacher",
           "labelSitemapItems": "Éléments du plan de site",
           "sitemapMode": "Exporter les éléments du catalogue"
         },

@@ -31,7 +31,8 @@
           "sitemapIndexErrorMessage": "Evite usar \"sitemap.xml\" como ubicación del mapa del sitio",
           "sitemapSitemapLocationExistErrorMessage": "Esta ubicación del mapa del sitio ya está en uso",
           "labelSitemapItemsLocation": "Ubicación de los elementos del mapa del sitio",
-          "descriptionSitemapItemsLocation": "Defina el patrón para generar URLs de elementos del mapa del sitio. Use {slug} para incluir la parte semántica SEO de la URL basada en las reglas de 'Configuración de Enlaces' SEO de la tienda. Por ejemplo: /mi-pagina/{slug}",
+          "descriptionSitemapItemsLocation": "Defina el patrón para generar URLs de elementos del mapa del sitio. Use {slug} para incluir la parte semántica de la URL SEO basada en las reglas de 'Configuración de Enlaces' de la tienda. Por ejemplo: /mi-pagina/{slug}.\n\nAquí está la lista completa de formatos de slug soportados:\n{slug} – Las URLs se ajustan a la 'Configuración de Enlaces SEO' especificada en la tienda.\n{slug_short} – Las URLs se ajustan a SeoLinksType.Short.\n{slug_long} – Las URLs se ajustan a SeoLinksType.Long.\n{slug_collapsed} – Las URLs se ajustan a SeoLinksType.Collapsed.",
+          "hide-description": "Ocultar",
           "labelSitemapItems": "Elementos del mapa del sitio",
           "sitemapMode": "Exportar elementos del catálogo"
         },
