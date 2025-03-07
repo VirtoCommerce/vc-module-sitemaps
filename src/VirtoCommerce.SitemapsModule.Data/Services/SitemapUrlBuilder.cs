@@ -2,40 +2,36 @@ using System;
 using System.Linq;
 using System.Text;
 using VirtoCommerce.CatalogModule.Core.Extensions;
+//using VirtoCommerce.CatalogModule.Core.Extensions;
 using VirtoCommerce.CatalogModule.Core.Model.ListEntry;
+using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.CoreModule.Core.Outlines;
 using VirtoCommerce.CoreModule.Core.Seo;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
+using VirtoCommerce.StoreModule.Core.Extensions;
 using VirtoCommerce.StoreModule.Core.Model;
-using StoreSettings = VirtoCommerce.StoreModule.Core.ModuleConstants.Settings.SEO;
+using static VirtoCommerce.StoreModule.Core.ModuleConstants.Settings.SEO;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services;
 
-public class SitemapUrlBuilder : ISitemapUrlBuilder
+public class SitemapUrlBuilder(ICategoryService categoryService) : ISitemapUrlBuilder
 {
     public virtual string BuildStoreUrl(Store store, string language, string urlTemplate, string baseUrl, IEntity entity = null)
     {
-        // Remove unused {language} template
-        urlTemplate = urlTemplate.Replace(UrlTemplatePatterns.Language, string.Empty);
+        var url = ResolveTemplate(urlTemplate, entity, store, language);
 
-        // Replace {slug} template in the provided URL template
-        var slug = GetSlug(store, language, entity);
-        urlTemplate = urlTemplate.Replace(UrlTemplatePatterns.Slug, slug);
-
-        // Don't process absolute URL
-        if (Uri.TryCreate(urlTemplate, UriKind.Absolute, out var absoluteUri) && absoluteUri.Scheme != "file")
+        if (IsAbsoluteUri(url))
         {
-            return urlTemplate;
+            return url;
         }
 
         var builder = new StringBuilder("~");
 
         if (store != null)
         {
-            // If store has public or secure URL, use them
+            // Add store URL
             if (!string.IsNullOrEmpty(baseUrl) || !string.IsNullOrEmpty(store.Url) || !string.IsNullOrEmpty(store.SecureUrl))
             {
                 baseUrl = baseUrl.EmptyToNull() ?? store.Url.EmptyToNull() ?? store.SecureUrl.EmptyToNull() ?? string.Empty;
@@ -44,12 +40,12 @@ public class SitemapUrlBuilder : ISitemapUrlBuilder
                 builder.Append(baseUrl.TrimEnd('/'));
             }
 
-            // Do not add language to URL if store has only one language
+            // Add language if store has multiple languages
             if (store.Languages?.Count > 1)
             {
                 var actualLanguage = store.Languages.FirstOrDefault(x => x.EqualsIgnoreCase(language)) ?? store.DefaultLanguage;
 
-                if (!urlTemplate.Contains($"/{actualLanguage}/", StringComparison.OrdinalIgnoreCase))
+                if (!url.Contains($"/{actualLanguage}/", StringComparison.OrdinalIgnoreCase))
                 {
                     builder.Append('/');
                     builder.Append(actualLanguage);
@@ -58,35 +54,70 @@ public class SitemapUrlBuilder : ISitemapUrlBuilder
         }
 
         builder.Append('/');
-        builder.Append(urlTemplate.TrimStart('~', '/'));
+        builder.Append(url.TrimStart('~', '/'));
 
         return builder.ToString();
     }
 
-    private static string GetSlug(Store store, string language, IEntity entity)
+    private string ResolveTemplate(string urlTemplate, IEntity entity, Store store, string language)
     {
-        if (entity is not ISeoSupport seoSupport)
+        // Override SEO links type if explicitly set in urlTemplate
+        var seoLinksType = urlTemplate switch
         {
-            return string.Empty;
-        }
+            UrlTemplatePatterns.SlugLong => SeoLong,
+            UrlTemplatePatterns.SlugShort => SeoShort,
+            UrlTemplatePatterns.SlugCollapsed => SeoCollapsed,
+            _ => store?.GetSeoLinksType(),
+        };
 
-        string slug;
+        var seoPath = entity is ISeoSupport seoSupport
+            ? GetSeoPath(seoSupport, seoLinksType, store, language)
+            : string.Empty;
 
-        var seoLinksType = store?.Settings?.GetValue<string>(StoreSettings.SeoLinksType);
-        if (seoLinksType == "None")
+        var builder = new StringBuilder(urlTemplate);
+
+        // Remove unused {language} template
+        builder.Replace(UrlTemplatePatterns.Language, string.Empty);
+
+        // Replace {slug} templates with actual SEO path
+        builder.Replace(UrlTemplatePatterns.SlugLong, seoPath);
+        builder.Replace(UrlTemplatePatterns.SlugShort, seoPath);
+        builder.Replace(UrlTemplatePatterns.SlugCollapsed, seoPath);
+        builder.Replace(UrlTemplatePatterns.Slug, seoPath);
+
+        return builder.ToString();
+    }
+
+    private string GetSeoPath(ISeoSupport entity, string seoLinksType, Store store, string language)
+    {
+        string seoPath;
+
+        if (seoLinksType == SeoNone)
         {
-            slug = entity is ListEntryBase listEntry ? $"{listEntry.Type}/{entity.Id}" : entity.Id;
+            seoPath = entity is ListEntryBase listEntry ? $"{listEntry.Type}/{entity.Id}" : entity.Id;
         }
         else
         {
-            slug = seoSupport.GetBestMatchingSeoInfo(store, language)?.SemanticUrl ?? string.Empty;
+            seoPath = entity.GetBestMatchingSeoInfo(store, language)?.SemanticUrl ?? string.Empty;
+
+            // CategoryListEntry does not have IHasOutlines interface, but Category does,
+            // and we need outlines to build long or collapsed SEO path, so retrieve Category by id to have outlines
+            if (entity is CategoryListEntry categoryListEntry && seoLinksType is SeoLong or SeoCollapsed)
+            {
+                entity = categoryService.GetByIdAsync(categoryListEntry.Id).GetAwaiter().GetResult();
+            }
         }
 
         if (entity is IHasOutlines hasOutlines)
         {
-            slug = hasOutlines.GetSeoPath(store, language) ?? slug;
+            seoPath = hasOutlines.GetSeoPath(store, language, defaultValue: seoPath, seoLinksType);
         }
 
-        return slug;
+        return seoPath;
+    }
+
+    private static bool IsAbsoluteUri(string uriString)
+    {
+        return Uri.TryCreate(uriString, UriKind.Absolute, out var uri) && uri.Scheme != "file";
     }
 }
