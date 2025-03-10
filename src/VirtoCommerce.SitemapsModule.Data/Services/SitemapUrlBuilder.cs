@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Text;
 using VirtoCommerce.CatalogModule.Core.Extensions;
-//using VirtoCommerce.CatalogModule.Core.Extensions;
 using VirtoCommerce.CatalogModule.Core.Model.ListEntry;
 using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.CoreModule.Core.Outlines;
