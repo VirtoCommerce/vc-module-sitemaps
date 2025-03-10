@@ -31,7 +31,8 @@
           "sitemapIndexErrorMessage": "Evita di usare \"sitemap.xml\" come posizione della sitemap",
           "sitemapSitemapLocationExistErrorMessage": "Questa posizione della sitemap è già in uso",
           "labelSitemapItemsLocation": "Posizione degli elementi della sitemap",
-          "descriptionSitemapItemsLocation": "Definisci il modello per generare gli URL degli elementi della sitemap. Usa {slug} per includere la parte semantica SEO dell'URL basata sulle regole delle 'Impostazioni dei link' SEO del negozio. Ad esempio: /mia-pagina/{slug}",
+          "descriptionSitemapItemsLocation": "Definisci il modello per generare gli URL degli elementi della sitemap. Usa {slug} per includere la parte URL semantica SEO basata sulle regole 'Impostazioni Link' del negozio. Ad esempio: /mia-pagina/{slug}.\n\nEcco l'elenco completo dei formati slug supportati:\n{slug} – Gli URL sono conformi all'impostazione 'Link SEO' specificata nel negozio.\n{slug_short} – Gli URL sono conformi a SeoLinksType.Short.\n{slug_long} – Gli URL sono conformi a SeoLinksType.Long.\n{slug_collapsed} – Gli URL sono conformi a SeoLinksType.Collapsed.",
+          "hide-description": "Nascondi",
           "labelSitemapItems": "Elementi della sitemap",
           "sitemapMode": "Esporta elementi del catalogo"
         },

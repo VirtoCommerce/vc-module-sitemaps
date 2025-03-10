@@ -31,7 +31,8 @@
           "sitemapIndexErrorMessage": "\"sitemap.xml\" をサイトマップの場所として使用しないでください",
           "sitemapSitemapLocationExistErrorMessage": "このサイトマップの場所は既に使用されています",
           "labelSitemapItemsLocation": "サイトマップアイテムの場所",
-          "descriptionSitemapItemsLocation": "サイトマップアイテムのURLを生成するパターンを定義します。ストアのSEO「リンク設定」ルールに基づいて、SEOセマンティックURL部分を含めるには {slug} を使用します。例：/my-page/{slug}",
+          "descriptionSitemapItemsLocation": "サイトマップアイテムのURLを生成するパターンを定義します。{slug} を使用して、ストアのSEO「リンク設定」ルールに基づいたSEOセマンティックURL部分を含めます。例：/my-page/{slug}。\n\nサポートされているスラッグ形式の完全なリストは次のとおりです：\n{slug} – ストアで指定された「SEOリンク」設定に準拠したURL。\n{slug_short} – SeoLinksType.Shortに準拠したURL。\n{slug_long} – SeoLinksType.Longに準拠したURL。\n{slug_collapsed} – SeoLinksType.Collapsedに準拠したURL",
+          "hide-description": "非表示",
           "labelSitemapItems": "サイトマップアイテム",
           "sitemapMode": "カタログアイテムをエクスポート"
         },

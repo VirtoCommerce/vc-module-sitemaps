@@ -31,9 +31,10 @@
           "sitemapIndexErrorMessage": "Avoid using \"sitemap.xml\" as the sitemap location",
           "sitemapSitemapLocationExistErrorMessage": "This sitemap location is already in use",
           "labelSitemapItemsLocation": "Sitemap items location",
-          "descriptionSitemapItemsLocation": "Define the pattern to generate sitemap item URLs.  Use {slug} to include the SEO semantic URL part based on the store's SEO 'Links Settings' rules. For example: /my-page/{slug}",
+          "descriptionSitemapItemsLocation": "Define the pattern to generate sitemap item URLs. Use {slug} to include the SEO semantic URL part based on the store's SEO 'Links Settings' rules. For example: /my-page/{slug}.\n\nHere is the complete list of supported slug formats:\n{slug} – URLs conform to the specified 'SEO links' setting on the store.\n{slug_short} – URLs conform to SeoLinksType.Short.\n{slug_long} – URLs conform to SeoLinksType.Long.\n{slug_collapsed} – URLs conform to SeoLinksType.Collapsed.",
           "labelSitemapItems": "Sitemap items",
-          "sitemapMode": "Export catalog items"
+          "sitemapMode": "Export catalog items",
+          "hide-description": "Hide"
         },
         "sitemapModes": {
           "sitemapFullMode": "Сategories and products",
