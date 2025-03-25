@@ -15,9 +15,8 @@ using VirtoCommerce.SitemapsModule.Core;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
 using VirtoCommerce.SitemapsModule.Data.Extensions;
-using VirtoCommerce.Tools;
+using VirtoCommerce.StoreModule.Core.Model;
 using YamlDotNet.RepresentationModel;
-using Store = VirtoCommerce.StoreModule.Core.Model.Store;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 {
@@ -69,7 +68,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
                 if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.Folder))
                 {
-                    await LoadPagesRecursivly(sitemap.StoreId, sitemapItem.UrlTemplate, allowedExtensions, validSitemapItems);
+                    await LoadPagesRecursively(sitemap.StoreId, sitemapItem.UrlTemplate, allowedExtensions, validSitemapItems);
                 }
                 else if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem) &&
                     IsExtensionAllowed(allowedExtensions, sitemapItem.UrlTemplate) &&
@@ -115,12 +114,12 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             }
         }
 
-        private async Task LoadPagesRecursivly(string storeId, string folrderUrl, List<string> allowedExtensions, List<string> validSitemapItems)
+        private async Task LoadPagesRecursively(string storeId, string folderUrl, List<string> allowedExtensions, List<string> validSitemapItems)
         {
             var criteria = AbstractTypeFactory<FilterItemsCriteria>.TryCreateInstance();
             criteria.ContentType = PagesContentType;
             criteria.StoreId = storeId;
-            criteria.FolderUrl = folrderUrl;
+            criteria.FolderUrl = folderUrl;
 
             var searchResult = await _contentFileService.FilterItemsAsync(criteria);
             //In case if we not find any content in the pages try to search in the blogs
@@ -138,7 +137,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             // Load Pages from SubFolders
             foreach (var folder in searchResult.Where(file => file.Type == "folder"))
             {
-                await LoadPagesRecursivly(storeId, folder.RelativeUrl, allowedExtensions, validSitemapItems);
+                await LoadPagesRecursively(storeId, folder.RelativeUrl, allowedExtensions, validSitemapItems);
             }
         }
 
@@ -276,4 +275,3 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         }
     }
 }
-;
