@@ -15,9 +15,6 @@
     <None Remove="node_modules\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="VirtoCommerce.Platform.Hangfire" Version="3.853.0" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\VirtoCommerce.SitemapsModule.Core\VirtoCommerce.SitemapsModule.Core.csproj" />
     <ProjectReference Include="..\VirtoCommerce.SitemapsModule.Data.MySql\VirtoCommerce.SitemapsModule.Data.MySql.csproj" />
     <ProjectReference Include="..\VirtoCommerce.SitemapsModule.Data.PostgreSql\VirtoCommerce.SitemapsModule.Data.PostgreSql.csproj" />

@@ -24,7 +24,6 @@ using VirtoCommerce.SitemapsModule.Data.Services;
 using VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders;
 using VirtoCommerce.SitemapsModule.Data.SqlServer;
 using VirtoCommerce.StoreModule.Core.Model;
-using VirtoCommerce.Tools;
 
 namespace VirtoCommerce.SitemapsModule.Web
 {
@@ -63,7 +62,6 @@ namespace VirtoCommerce.SitemapsModule.Web
             serviceCollection.AddTransient<ISitemapItemService, SitemapItemService>();
             serviceCollection.AddTransient<ISitemapSearchService, SitemapSearchService>();
             serviceCollection.AddTransient<ISitemapItemSearchService, SitemapItemSearchService>();
-            serviceCollection.AddTransient<IUrlBuilder, UrlBuilder>();
             serviceCollection.AddTransient<ISitemapUrlBuilder, SitemapUrlBuilder>();
             serviceCollection.AddTransient<ISitemapItemRecordProvider, CatalogSitemapItemRecordProvider>();
             serviceCollection.AddTransient<ISitemapItemRecordProvider, CustomSitemapItemRecordProvider>();

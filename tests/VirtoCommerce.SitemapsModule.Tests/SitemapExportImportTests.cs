@@ -13,7 +13,7 @@ using VirtoCommerce.SitemapsModule.Core.Services;
 using VirtoCommerce.SitemapsModule.Data.ExportImport;
 using Xunit;
 
-namespace VirtoCommerce.SitemapsModule.Test
+namespace VirtoCommerce.SitemapsModule.Tests
 {
     public class SitemapExportImportTests
     {
