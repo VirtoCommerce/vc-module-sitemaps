@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
+using Newtonsoft.Json;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.SitemapsModule.Core.Models
@@ -26,15 +26,18 @@ namespace VirtoCommerce.SitemapsModule.Core.Models
 
         public SitemapContentMode SitemapMode { get; set; }
 
+        [JsonIgnore]
+        public IList<SitemapItemRecord> AllRecords { get; set; }
+
         public ICollection<string> PagedLocations { get; set; }
 
         #region ICloneable members
 
         public virtual object Clone()
         {
-            var result = MemberwiseClone() as Sitemap;
+            var result = (Sitemap)MemberwiseClone();
 
-            result.Items = Items?.Select(x => x.Clone()).OfType<SitemapItem>().ToList();
+            result.Items = Items?.Select(x => x.CloneTyped()).ToList();
 
             return result;
         }
