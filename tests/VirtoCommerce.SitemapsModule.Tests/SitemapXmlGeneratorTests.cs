@@ -56,7 +56,8 @@ public class SitemapXmlGeneratorTests
         sitemapSearchServiceMock
             .Setup(x => x.SearchAsync(It.IsAny<SitemapSearchCriteria>()))
             .ReturnsAsync(
-                new SitemapSearchResult { Results = [new Sitemap { UrlTemplate = "{slug}" }], });
+                new SitemapSearchResult { Results = [new Sitemap { Location = "products.xml", UrlTemplate = "{slug}" }] });
+
         return sitemapSearchServiceMock;
     }
 

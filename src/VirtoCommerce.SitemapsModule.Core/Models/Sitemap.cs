@@ -1,24 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.SitemapsModule.Core.Models
 {
     public class Sitemap : AuditableEntity, ICloneable
     {
-        public Sitemap()
-        {
-            Items = new List<SitemapItem>();
-            PagedLocations = new List<string>();
-        }
-
         public string Location { get; set; }
 
         public string StoreId { get; set; }
 
-        public ICollection<SitemapItem> Items { get; set; }
+        public ICollection<SitemapItem> Items { get; set; } = [];
 
         public string UrlTemplate { get; set; }
 
@@ -26,10 +19,7 @@ namespace VirtoCommerce.SitemapsModule.Core.Models
 
         public SitemapContentMode SitemapMode { get; set; }
 
-        [JsonIgnore]
-        public IList<SitemapItemRecord> AllRecords { get; set; }
-
-        public ICollection<string> PagedLocations { get; set; }
+        public ICollection<string> PagedLocations { get; } = [];
 
         #region ICloneable members
 

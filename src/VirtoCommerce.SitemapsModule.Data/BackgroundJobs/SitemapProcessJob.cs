@@ -14,7 +14,6 @@ using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SitemapsModule.Core;
 using VirtoCommerce.SitemapsModule.Data.Model.PushNotifications;
 using VirtoCommerce.SitemapsModule.Data.Services;
-using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Model.Search;
 using VirtoCommerce.StoreModule.Core.Services;
 using SystemFile = System.IO.File;
@@ -23,21 +22,22 @@ namespace VirtoCommerce.SitemapsModule.Data.BackgroundJobs;
 
 public class SitemapExportToAssetsJob
 {
-    private readonly ISitemapXmlGenerator _sitemapXmlGenerator;
+    private readonly ISitemapGenerator _sitemapGenerator;
     private readonly IStoreSearchService _storeSearchService;
     private readonly IBlobStorageProvider _blobStorageProvider;
     private readonly ILogger<SitemapExportToAssetsJob> _logger;
     private readonly IPushNotificationManager _notifier;
     private readonly IBlobUrlResolver _blobUrlResolver;
 
-    public SitemapExportToAssetsJob(ISitemapXmlGenerator sitemapXmlGenerator,
+    public SitemapExportToAssetsJob(
+        ISitemapGenerator sitemapGenerator,
         IStoreSearchService storeSearchService,
         IBlobStorageProvider blobStorageProvider,
         ILogger<SitemapExportToAssetsJob> logger,
         IPushNotificationManager notifier,
         IBlobUrlResolver blobUrlResolver)
     {
-        _sitemapXmlGenerator = sitemapXmlGenerator;
+        _sitemapGenerator = sitemapGenerator;
         _storeSearchService = storeSearchService;
         _blobStorageProvider = blobStorageProvider;
         _logger = logger;
@@ -51,13 +51,13 @@ public class SitemapExportToAssetsJob
 
         await foreach (var searchResult in _storeSearchService.SearchBatchesAsync(searchCriteria))
         {
-            foreach (var store in searchResult.Results.Where(x => x.Settings.GetValue<bool>(Core.ModuleConstants.Settings.General.EnableExportToAssetsJob)))
+            foreach (var store in searchResult.Results.Where(x => x.Settings.GetValue<bool>(ModuleConstants.Settings.General.EnableExportToAssetsJob)))
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
                 try
                 {
-                    await ProcessStore(store);
+                    await SaveSitemapToBlob(store.Id, store.Url, progressCallback: null);
                     _logger.LogInformation("Sitemap for store {storeId} exported successfully.", store.Id); // Log success
                 }
                 catch (Exception ex)
@@ -70,7 +70,7 @@ public class SitemapExportToAssetsJob
 
     public Task BackgroundDownload(string storeId, string baseUrl, string localTmpFolder, SitemapDownloadNotification notification)
     {
-        ArgumentNullException.ThrowIfNullOrWhiteSpace(storeId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(storeId);
 
         if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out _))
         {
@@ -82,7 +82,7 @@ public class SitemapExportToAssetsJob
 
     public Task BackgroundExportToAssets(string storeId, string baseUrl, SitemapExportToAssetNotification notification)
     {
-        ArgumentNullException.ThrowIfNullOrWhiteSpace(storeId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(storeId);
 
         if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out _))
         {
@@ -94,16 +94,9 @@ public class SitemapExportToAssetsJob
 
     private async Task InnerBackgroundExportToAssets(string storeId, string baseUrl, SitemapExportToAssetNotification notification)
     {
-        var outputAssetFolder = string.Format(Core.ModuleConstants.StoreAssetsOutputFolderTemplate, storeId);
-
         try
         {
-            var sitemapXmlBlobInfo = await ExportSitemapPartAsync(storeId, baseUrl, outputAssetFolder, ModuleConstants.SitemapFileName, progress => SendProgressNotification(notification, progress));
-
-            foreach (var sitemapUrl in await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId, baseUrl))
-            {
-                await ExportSitemapPartAsync(storeId, baseUrl, outputAssetFolder, sitemapUrl, progress => SendProgressNotification(notification, progress));
-            }
+            var sitemapXmlBlobInfo = await SaveSitemapToBlob(storeId, baseUrl, progress => SendProgressNotification(notification, progress));
 
             notification.Description = "Sitemap export to store assets finished";
             notification.SitemapXmlUrl = sitemapXmlBlobInfo.Url;
@@ -141,23 +134,16 @@ public class SitemapExportToAssetsJob
                 SystemFile.Delete(localTmpPath);
             }
 
-            //Import first to local tmp folder because Azure blob storage doesn't support some special file access mode
-            using (var stream = SystemFile.Open(localTmpPath, FileMode.CreateNew))
+            //Save to local folder because Azure blob storage doesn't support some special file access modes
+            await using (var stream = SystemFile.Open(localTmpPath, FileMode.CreateNew))
             using (var zipArchive = new ZipArchive(stream, ZipArchiveMode.Create, true))
             {
-                // Create default sitemap.xml
-                await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, ModuleConstants.SitemapFileName, progress => SendProgressNotification(notification, progress));
-
-                var sitemapUrls = await _sitemapXmlGenerator.GetSitemapUrlsAsync(storeId, baseUrl);
-                foreach (var sitemapUrl in sitemapUrls.Where(url => !string.IsNullOrEmpty(url)))
-                {
-                    await CreateSitemapPartAsync(zipArchive, storeId, baseUrl, sitemapUrl, progress => SendProgressNotification(notification, progress));
-                }
+                await SaveSitemapToZip(storeId, baseUrl, zipArchive, progress => SendProgressNotification(notification, progress));
             }
 
-            //Copy export data to blob provider for get public download url
-            using (var localStream = SystemFile.Open(localTmpPath, FileMode.Open, FileAccess.Read))
-            using (var blobStream = _blobStorageProvider.OpenWrite(relativeUrl))
+            //Copy data to blob provider to get public download URL
+            await using (var localStream = SystemFile.Open(localTmpPath, FileMode.Open, FileAccess.Read))
+            await using (var blobStream = await _blobStorageProvider.OpenWriteAsync(relativeUrl))
             {
                 await localStream.CopyToAsync(blobStream);
             }
@@ -178,40 +164,48 @@ public class SitemapExportToAssetsJob
         }
     }
 
-    private async Task ProcessStore(Store store)
+    private async Task<BlobInfo> SaveSitemapToBlob(string storeId, string baseUrl, Action<ExportImportProgressInfo> progressCallback)
     {
-        var outputAssetFolder = string.Format(Core.ModuleConstants.StoreAssetsOutputFolderTemplate, store.Id);
+        BlobInfo firstBlobInfo = null;
+        var files = await _sitemapGenerator.GetSitemapFilesAsync(storeId, baseUrl, progressCallback);
 
-        _logger.LogInformation("Starting export {sitemapUrl} for store {storeId} to {outputAssetFolder}.", Core.ModuleConstants.SitemapFileName, store.Id, outputAssetFolder); // Log success
-
-        await ExportSitemapPartAsync(store.Id, store.Url, outputAssetFolder, Core.ModuleConstants.SitemapFileName, null);
-
-        foreach (var sitemapUrl in await _sitemapXmlGenerator.GetSitemapUrlsAsync(store.Id, store.Url))
+        foreach (var file in files)
         {
-            _logger.LogInformation("Starting export {sitemapUrl} for store {storeId} to {outputAssetFolder}.", sitemapUrl, store.Id, outputAssetFolder); // Log success
+            var blobInfo = await SaveXmlToBlob(stream => _sitemapGenerator.SaveSitemapFile(file, stream, progressCallback), file.Name, storeId);
+            firstBlobInfo ??= blobInfo;
+        }
 
-            await ExportSitemapPartAsync(store.Id, store.Url, outputAssetFolder, sitemapUrl, null);
+        return firstBlobInfo;
+    }
+
+    private async Task SaveSitemapToZip(string storeId, string baseUrl, ZipArchive zipArchive, Action<ExportImportProgressInfo> progressCallback)
+    {
+        var files = await _sitemapGenerator.GetSitemapFilesAsync(storeId, baseUrl, progressCallback);
+
+        foreach (var file in files)
+        {
+            await SaveXmlToZip(stream => _sitemapGenerator.SaveSitemapFile(file, stream, progressCallback), file.Name, zipArchive);
         }
     }
 
-    private async Task CreateSitemapPartAsync(ZipArchive zipArchive, string storeId, string baseUrl, string sitemapUrl, Action<ExportImportProgressInfo> progressCallback)
+    private async Task<BlobInfo> SaveXmlToBlob(Action<Stream> saveAction, string fileName, string storeId)
     {
-        var sitemapPart = zipArchive.CreateEntry(sitemapUrl, CompressionLevel.Optimal);
+        var outputAssetFolder = string.Format(ModuleConstants.StoreAssetsOutputFolderTemplate, storeId);
+        var relativeUrl = $"{outputAssetFolder.Trim('/')}/{fileName.Trim('/')}";
 
-        using var sitemapPartStream = sitemapPart.Open();
-        using var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(storeId, baseUrl, sitemapUrl, progressCallback);
-        await stream.CopyToAsync(sitemapPartStream);
-    }
+        _logger.LogInformation("Starting export {fileName} for store {storeId} to {outputAssetFolder}.", fileName, storeId, outputAssetFolder);
 
-    private async Task<BlobInfo> ExportSitemapPartAsync(string storeId, string storeUrl, string outputAssetFolder, string sitemapUrl, Action<ExportImportProgressInfo> progressCallback)
-    {
-        var relativeUrl = $"{outputAssetFolder.Trim('/')}/{sitemapUrl.Trim('/')}";
-
-        using var stream = await _sitemapXmlGenerator.GenerateSitemapXmlAsync(storeId, storeUrl, sitemapUrl, progressCallback);
-        using var blobStream = _blobStorageProvider.OpenWrite(relativeUrl);
-        await stream.CopyToAsync(blobStream);
+        await using var targetStream = await _blobStorageProvider.OpenWriteAsync(relativeUrl);
+        saveAction(targetStream);
 
         return await _blobStorageProvider.GetBlobInfoAsync(relativeUrl);
+    }
+
+    private static async Task SaveXmlToZip(Action<Stream> saveAction, string fileName, ZipArchive zipArchive)
+    {
+        var entry = zipArchive.CreateEntry(fileName, CompressionLevel.Optimal);
+        await using var targetStream = entry.Open();
+        saveAction(targetStream);
     }
 
     private void SendProgressNotification(SitemapNotification notification, ExportImportProgressInfo progressInfo)
