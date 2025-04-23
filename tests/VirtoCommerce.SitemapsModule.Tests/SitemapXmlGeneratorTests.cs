@@ -85,11 +85,6 @@ public class SitemapXmlGeneratorTests
         return sitemapItemSearchServiceMock;
     }
 
-    private static SitemapUrlBuilder GetSitemapUrlBuilder()
-    {
-        return new SitemapUrlBuilder(new Mock<ICategoryService>().Object);
-    }
-
     private static CatalogSitemapItemRecordProvider GetCatalogSitemapItemRecordProvider()
     {
         return new CatalogSitemapItemRecordProvider(
@@ -97,6 +92,11 @@ public class SitemapXmlGeneratorTests
             new Mock<ISettingsManager>().Object,
             new Mock<IItemService>().Object,
             GetListEntrySearchServiceMock().Object);
+    }
+
+    private static SitemapUrlBuilder GetSitemapUrlBuilder()
+    {
+        return new SitemapUrlBuilder();
     }
 
     private static Mock<IStoreService> GetStoreServiceMock(string seoLinksType, string languages)
@@ -128,6 +128,16 @@ public class SitemapXmlGeneratorTests
                 {
                     Results =
                     [
+                        new CategoryListEntry
+                        {
+                            Id = "category3",
+                            SeoInfos = GetSeoInfos("category3", ["en","de"]),
+                            Outlines = [
+                                GetOutline("catalog1/category1/category3", ["en","de"]),
+                                GetOutline("catalog1/category2/category3", ["en","de"]),
+                                GetOutline("catalog1/category4/category3", ["en","de"]),
+                            ],
+                        },
                         new ProductListEntry
                         {
                             Id = "product1",

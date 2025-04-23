@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using Moq;
-using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.CoreModule.Core.Outlines;
 using VirtoCommerce.CoreModule.Core.Seo;
 using VirtoCommerce.Platform.Core.Common;
@@ -12,7 +10,7 @@ namespace VirtoCommerce.SitemapsModule.Tests;
 
 public class SitemapUrlBuilderTests
 {
-    private readonly SitemapUrlBuilder _sitemapUrlBuilder = new(new Mock<ICategoryService>().Object);
+    private readonly SitemapUrlBuilder _sitemapUrlBuilder = new();
 
     private static readonly Store _singleLanguageStore = new()
     {

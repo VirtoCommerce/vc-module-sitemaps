@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text;
 using VirtoCommerce.CatalogModule.Core.Extensions;
 using VirtoCommerce.CatalogModule.Core.Model.ListEntry;
-using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.CoreModule.Core.Outlines;
 using VirtoCommerce.CoreModule.Core.Seo;
 using VirtoCommerce.Platform.Core.Common;
@@ -15,7 +14,7 @@ using static VirtoCommerce.StoreModule.Core.ModuleConstants.Settings.SEO;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services;
 
-public class SitemapUrlBuilder(ICategoryService categoryService) : ISitemapUrlBuilder
+public class SitemapUrlBuilder : ISitemapUrlBuilder
 {
     public virtual string BuildStoreUrl(Store store, string language, string urlTemplate, string baseUrl, IEntity entity = null, Outline outline = null)
     {
@@ -98,13 +97,6 @@ public class SitemapUrlBuilder(ICategoryService categoryService) : ISitemapUrlBu
         else
         {
             seoPath = entity.GetBestMatchingSeoInfo(store, language)?.SemanticUrl ?? string.Empty;
-
-            // CategoryListEntry does not have IHasOutlines interface, but Category does,
-            // and we need outlines to build long or collapsed SEO path, so retrieve Category by id to have outlines
-            if (entity is CategoryListEntry categoryListEntry && seoLinksType is SeoLong or SeoCollapsed)
-            {
-                entity = categoryService.GetByIdAsync(categoryListEntry.Id).GetAwaiter().GetResult();
-            }
         }
 
         if (outline != null)

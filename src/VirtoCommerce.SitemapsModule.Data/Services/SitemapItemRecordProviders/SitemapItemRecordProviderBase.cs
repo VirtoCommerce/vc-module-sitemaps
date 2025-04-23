@@ -29,7 +29,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
         public IList<SitemapItemRecord> GetSitemapItemRecords(Store store, SitemapItemOptions options, string urlTemplate, string baseUrl, IEntity entity, string parentCategoryId)
         {
-            if (string.IsNullOrEmpty(parentCategoryId) || entity is not IHasOutlines hasOutlines)
+            if (string.IsNullOrEmpty(parentCategoryId) || entity is not IHasOutlines hasOutlines || hasOutlines.Outlines.IsNullOrEmpty())
             {
                 return [GetMainRecord(store, options, urlTemplate, baseUrl, entity, outline: null)];
             }
