@@ -20,6 +20,7 @@ using VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
 using Xunit;
+using static VirtoCommerce.CatalogModule.Core.Extensions.SeoExtensions;
 using static VirtoCommerce.StoreModule.Core.ModuleConstants.Settings.SEO;
 
 namespace VirtoCommerce.SitemapsModule.Tests;
@@ -131,22 +132,25 @@ public class SitemapXmlGeneratorTests
                         new CategoryListEntry
                         {
                             Id = "category3",
-                            SeoInfos = GetSeoInfos("category3", ["en","de"]),
+                            SeoInfos = GetSeoInfos("category3"),
                             Outlines = [
-                                GetOutline("catalog1/category1/category3", ["en","de"]),
-                                GetOutline("catalog1/category2/category3", ["en","de"]),
-                                GetOutline("catalog1/category4/category3", ["en","de"]),
+                                GetOutline("catalog2/category1/category3"),
+                                GetOutline("catalog1/category1/category3"),
+                                GetOutline("catalog1/category2/category3"),
+                                GetOutline("catalog1/category4/category3"),
                             ],
                         },
                         new ProductListEntry
                         {
                             Id = "product1",
-                            SeoInfos = GetSeoInfos("product1", ["en","de"]),
+                            SeoInfos = GetSeoInfos("product1"),
                             Outlines = [
-                                GetOutline("catalog1/category1/product1", ["en","de"]),
-                                GetOutline("catalog1/category2/product1", ["en","de"]),
-                                GetOutline("catalog1/category2/category3/product1", ["en","de"]),
-                                GetOutline("catalog1/category4/product1", ["en","de"]),
+                                GetOutline("catalog2/category1/product1"),
+                                GetOutline("catalog2/category1/category5/product1"),
+                                GetOutline("catalog1/category1/product1"),
+                                GetOutline("catalog1/category2/product1"),
+                                GetOutline("catalog1/category4/product1"),
+                                GetOutline("catalog1/category2/category3/product1"),
                             ],
                         },
                     ],
@@ -155,24 +159,24 @@ public class SitemapXmlGeneratorTests
         return listEntrySearchServiceMock;
     }
 
-    private static Outline GetOutline(string template, string[] languages)
+    private static Outline GetOutline(string template)
     {
         return new Outline
         {
             Items = template
                 .Split('/')
-                .Select(id => GetOutlineItem(id, languages))
+                .Select(GetOutlineItem)
                 .ToList(),
         };
     }
 
-    private static OutlineItem GetOutlineItem(string id, string[] languages)
+    private static OutlineItem GetOutlineItem(string id)
     {
         return new OutlineItem
         {
             Id = id,
             SeoObjectType = GetSeoType(id),
-            SeoInfos = GetSeoInfos(id, languages),
+            SeoInfos = GetSeoInfos(id),
         };
     }
 
@@ -180,27 +184,39 @@ public class SitemapXmlGeneratorTests
     {
         if (id.StartsWith("catalog", StringComparison.OrdinalIgnoreCase))
         {
-            return "Catalog";
+            return SeoCatalog;
         }
 
         if (id.StartsWith("category", StringComparison.OrdinalIgnoreCase))
         {
-            return "Category";
+            return SeoCategory;
         }
 
         if (id.StartsWith("product", StringComparison.OrdinalIgnoreCase))
         {
-            return "CatalogProduct";
+            return SeoProduct;
         }
 
         throw new ArgumentException($"Cannot get object type from id '{id}'");
     }
 
-    private static List<SeoInfo> GetSeoInfos(string id, string[] languages)
+    private static readonly string[] _seoStoreIds = [null, "store2", "store1"];
+    private static readonly string[] _seoLanguages = [null, "en", "de"];
+
+    private static List<SeoInfo> GetSeoInfos(string id)
     {
-        return languages
-            .Select(language => new SeoInfo { StoreId = "store1", LanguageCode = language, SemanticUrl = $"{id}-{language}" })
-            .ToList();
+        var result = new List<SeoInfo>();
+
+
+        foreach (var storeId in _seoStoreIds)
+        {
+            foreach (var language in _seoLanguages)
+            {
+                result.Add(new SeoInfo { StoreId = storeId, LanguageCode = language, SemanticUrl = $"{id}-{language}-{storeId}" });
+            }
+        }
+
+        return result;
     }
 
     private async Task<string> GetEmbeddedResourceString(string filePath)

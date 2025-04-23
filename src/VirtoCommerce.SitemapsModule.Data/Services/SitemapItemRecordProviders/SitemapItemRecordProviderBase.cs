@@ -35,8 +35,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
             var outlines = hasOutlines.Outlines
                 .Where(outline =>
-                    outline.Items.Any(item =>
-                        item.IsCategory() && item.Id.EqualsIgnoreCase(parentCategoryId)));
+                    outline.Items.ContainsCatalog(store.Catalog) &&
+                    outline.Items.ContainsCategory(parentCategoryId));
 
             return outlines
                 .Select(outline => GetMainRecord(store, options, urlTemplate, baseUrl, entity, outline))
@@ -64,9 +64,13 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             if (entity is ISeoSupport seoSupport)
             {
                 var alternateLanguages = seoSupport.SeoInfos
-                    .Where(seo => seo.IsActive)
-                    .Select(seo => seo.LanguageCode)
-                    .Where(language => store.Languages.Contains(language) && !store.DefaultLanguage.EqualsIgnoreCase(language));
+                    .Where(x =>
+                        x.IsActive &&
+                        (x.StoreId is null || x.StoreId.EqualsIgnoreCase(store.Id)) &&
+                        !x.LanguageCode.EqualsIgnoreCase(store.DefaultLanguage) &&
+                        store.Languages.Contains(x.LanguageCode))
+                    .Select(x => x.LanguageCode)
+                    .Distinct(StringComparer.OrdinalIgnoreCase);
 
                 var alternateRecords = alternateLanguages
                     .Select(x => GetAlternateRecord(store, x, urlTemplate, baseUrl, entity, outline))

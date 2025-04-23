@@ -7,7 +7,7 @@
   <platformVersion>3.877.0</platformVersion>
   <dependencies>
     <dependency id="VirtoCommerce.Assets" version="3.808.0" />
-    <dependency id="VirtoCommerce.Catalog" version="3.856.0-alpha.2319-vcst-2972" />
+    <dependency id="VirtoCommerce.Catalog" version="3.856.0-alpha.2320-vcst-2972" />
     <dependency id="VirtoCommerce.Content" version="3.823.0" />
     <dependency id="VirtoCommerce.Core" version="3.808.0" />
     <dependency id="VirtoCommerce.Customer" version="3.817.0" />
