@@ -64,11 +64,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             if (entity is ISeoSupport seoSupport)
             {
                 var alternateLanguages = seoSupport.SeoInfos
-                    .Where(x =>
-                        x.IsActive &&
-                        (x.StoreId is null || x.StoreId.EqualsIgnoreCase(store.Id)) &&
-                        !x.LanguageCode.EqualsIgnoreCase(store.DefaultLanguage) &&
-                        store.Languages.Contains(x.LanguageCode))
+                    .Where(x => x.IsActive && IsMatchingStore(x, store) && IsMatchingLanguage(x, store))
                     .Select(x => x.LanguageCode)
                     .Distinct(StringComparer.OrdinalIgnoreCase);
 
@@ -97,6 +93,18 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 Language = language,
                 Type = "alternate",
             };
+        }
+
+
+        private static bool IsMatchingStore(SeoInfo seo, Store store)
+        {
+            return seo.StoreId is null || seo.StoreId.EqualsIgnoreCase(store.Id);
+        }
+
+        private static bool IsMatchingLanguage(SeoInfo seo, Store store)
+        {
+            return !seo.LanguageCode.EqualsIgnoreCase(store.DefaultLanguage) &&
+                   store.Languages.Contains(seo.LanguageCode);
         }
     }
 }

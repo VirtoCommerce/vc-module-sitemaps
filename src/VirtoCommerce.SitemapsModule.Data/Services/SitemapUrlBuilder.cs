@@ -30,12 +30,10 @@ public class SitemapUrlBuilder : ISitemapUrlBuilder
         if (store != null)
         {
             // Add store URL
-            if (!string.IsNullOrEmpty(baseUrl) || !string.IsNullOrEmpty(store.Url) || !string.IsNullOrEmpty(store.SecureUrl))
+            if (TryGetBaseUrl(baseUrl, store, out var newBaseUrl))
             {
-                baseUrl = baseUrl.EmptyToNull() ?? store.Url.EmptyToNull() ?? store.SecureUrl.EmptyToNull() ?? string.Empty;
-
                 builder.Clear();
-                builder.Append(baseUrl.TrimEnd('/'));
+                builder.Append(newBaseUrl.TrimEnd('/'));
             }
 
             // Add language if store has multiple languages
@@ -57,7 +55,32 @@ public class SitemapUrlBuilder : ISitemapUrlBuilder
         return builder.ToString();
     }
 
-    private string ResolveTemplate(string urlTemplate, IEntity entity, Store store, string language, Outline outline)
+
+    private static bool TryGetBaseUrl(string baseUrl, Store store, out string newBaseUrl)
+    {
+        if (!string.IsNullOrEmpty(baseUrl))
+        {
+            newBaseUrl = baseUrl;
+            return true;
+        }
+
+        if (!string.IsNullOrEmpty(store.Url))
+        {
+            newBaseUrl = store.Url;
+            return true;
+        }
+
+        if (!string.IsNullOrEmpty(store.SecureUrl))
+        {
+            newBaseUrl = store.SecureUrl;
+            return true;
+        }
+
+        newBaseUrl = null;
+        return false;
+    }
+
+    private static string ResolveTemplate(string urlTemplate, IEntity entity, Store store, string language, Outline outline)
     {
         // Override SEO links type if explicitly set in urlTemplate
         var seoLinksType = urlTemplate switch
@@ -86,7 +109,7 @@ public class SitemapUrlBuilder : ISitemapUrlBuilder
         return builder.ToString();
     }
 
-    private string GetSeoPath(ISeoSupport entity, string seoLinksType, Store store, string language, Outline outline)
+    private static string GetSeoPath(ISeoSupport entity, string seoLinksType, Store store, string language, Outline outline)
     {
         string seoPath;
 
