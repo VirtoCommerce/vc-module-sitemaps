@@ -17,9 +17,9 @@ namespace VirtoCommerce.SitemapsModule.Data.Services;
 
 public class SitemapUrlBuilder(ICategoryService categoryService) : ISitemapUrlBuilder
 {
-    public virtual string BuildStoreUrl(Store store, string language, string urlTemplate, string baseUrl, IEntity entity = null)
+    public virtual string BuildStoreUrl(Store store, string language, string urlTemplate, string baseUrl, IEntity entity = null, Outline outline = null)
     {
-        var url = ResolveTemplate(urlTemplate, entity, store, language);
+        var url = ResolveTemplate(urlTemplate, entity, store, language, outline);
 
         if (IsAbsoluteUri(url))
         {
@@ -58,7 +58,7 @@ public class SitemapUrlBuilder(ICategoryService categoryService) : ISitemapUrlBu
         return builder.ToString();
     }
 
-    private string ResolveTemplate(string urlTemplate, IEntity entity, Store store, string language)
+    private string ResolveTemplate(string urlTemplate, IEntity entity, Store store, string language, Outline outline)
     {
         // Override SEO links type if explicitly set in urlTemplate
         var seoLinksType = urlTemplate switch
@@ -70,7 +70,7 @@ public class SitemapUrlBuilder(ICategoryService categoryService) : ISitemapUrlBu
         };
 
         var seoPath = entity is ISeoSupport seoSupport
-            ? GetSeoPath(seoSupport, seoLinksType, store, language)
+            ? GetSeoPath(seoSupport, seoLinksType, store, language, outline)
             : string.Empty;
 
         var builder = new StringBuilder(urlTemplate);
@@ -87,7 +87,7 @@ public class SitemapUrlBuilder(ICategoryService categoryService) : ISitemapUrlBu
         return builder.ToString();
     }
 
-    private string GetSeoPath(ISeoSupport entity, string seoLinksType, Store store, string language)
+    private string GetSeoPath(ISeoSupport entity, string seoLinksType, Store store, string language, Outline outline)
     {
         string seoPath;
 
@@ -107,7 +107,11 @@ public class SitemapUrlBuilder(ICategoryService categoryService) : ISitemapUrlBu
             }
         }
 
-        if (entity is IHasOutlines hasOutlines)
+        if (outline != null)
+        {
+            seoPath = outline.Items.GetSeoPath(store, language, defaultValue: seoPath, seoLinksType);
+        }
+        else if (entity is IHasOutlines hasOutlines)
         {
             seoPath = hasOutlines.GetSeoPath(store, language, defaultValue: seoPath, seoLinksType);
         }

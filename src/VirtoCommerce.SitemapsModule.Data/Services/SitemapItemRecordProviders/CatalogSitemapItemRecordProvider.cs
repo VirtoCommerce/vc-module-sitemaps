@@ -38,14 +38,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         #region ISitemapItemRecordProvider members
         public virtual async Task LoadSitemapItemRecordsAsync(Store store, Sitemap sitemap, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
         {
-            if (store == null)
-            {
-                throw new ArgumentNullException(nameof(store));
-            }
-            if (sitemap == null)
-            {
-                throw new ArgumentNullException(nameof(sitemap));
-            }
+            ArgumentNullException.ThrowIfNull(store);
+            ArgumentNullException.ThrowIfNull(sitemap);
 
             await LoadCategoriesSitemapItemRecordsAsync(store, sitemap, baseUrl, progressCallback);
             await LoadProductsSitemapItemRecordsAsync(store, sitemap, baseUrl, progressCallback);
@@ -70,8 +64,10 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 foreach (var categorySiteMapItem in categorySitemapItems)
                 {
                     int totalCount;
+                    var categoryId = categorySiteMapItem.ObjectId;
+
                     var listEntrySearchCriteria = AbstractTypeFactory<CatalogListEntrySearchCriteria>.TryCreateInstance();
-                    listEntrySearchCriteria.CategoryId = categorySiteMapItem.ObjectId;
+                    listEntrySearchCriteria.CategoryId = categoryId;
                     listEntrySearchCriteria.Take = batchSize;
                     listEntrySearchCriteria.HideDirectLinkedCategories = true;
                     listEntrySearchCriteria.SearchInChildren = true;
@@ -85,7 +81,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                         listEntrySearchCriteria.Skip += batchSize;
 
                         // Only used if should include images
-                        List<CatalogProduct> products = new List<CatalogProduct>();
+                        var products = new List<CatalogProduct>();
                         if (shouldIncludeImages)
                         {
                             // If images need to be included - run a search for picked products to get variations with images
@@ -95,7 +91,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
                         foreach (var listEntry in result.Results)
                         {
-                            var itemRecords = GetSitemapItemRecords(store, categoryOptions, sitemap.UrlTemplate, baseUrl, listEntry).ToList();
+                            var itemRecords = GetSitemapItemRecords(store, categoryOptions, sitemap.UrlTemplate, baseUrl, listEntry, categoryId).ToList();
 
                             if (shouldIncludeImages && listEntry is ProductListEntry)
                             {
@@ -114,7 +110,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                                 }
                             }
 
-                            foreach(var record in itemRecords)
+                            foreach (var record in itemRecords)
                             {
                                 record.ObjectType = listEntry is ProductListEntry ? "product" : "category";
                             }

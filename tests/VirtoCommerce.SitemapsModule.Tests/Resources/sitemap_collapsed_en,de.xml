@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<urlset xmlns:xhtml="https://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://test.local/en/category1-en/product1-en</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <link href="https://test.local/de/category1-de/product1-de" hreflang="de" rel="alternate" xmlns="http://www.w3.org/1999/xhtml" />
+  </url>
+  <url>
+    <loc>https://test.local/en/category2-en/product1-en</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <link href="https://test.local/de/category2-de/product1-de" hreflang="de" rel="alternate" xmlns="http://www.w3.org/1999/xhtml" />
+  </url>
+  <url>
+    <loc>https://test.local/en/category2-en/category3-en/product1-en</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <link href="https://test.local/de/category2-de/category3-de/product1-de" hreflang="de" rel="alternate" xmlns="http://www.w3.org/1999/xhtml" />
+  </url>
+</urlset>

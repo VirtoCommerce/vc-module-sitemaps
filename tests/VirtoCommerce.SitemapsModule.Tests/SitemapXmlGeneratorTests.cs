@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -25,9 +27,11 @@ namespace VirtoCommerce.SitemapsModule.Tests;
 public class SitemapXmlGeneratorTests
 {
     [Theory]
-    [InlineData(SeoShort, "sitemap_short.xml")]
-    //[InlineData(SeoCollapsed, "sitemap_collapsed.xml")]
-    public async Task GenerateSitemapXml_ShouldReturnValidXml(string seoLinksType, string expectedXmlFileName)
+    [InlineData(SeoShort, "en", "sitemap_short_en.xml")]
+    [InlineData(SeoShort, "en,de", "sitemap_short_en,de.xml")]
+    [InlineData(SeoCollapsed, "en", "sitemap_collapsed_en.xml")]
+    [InlineData(SeoCollapsed, "en,de", "sitemap_collapsed_en,de.xml")]
+    public async Task GenerateSitemapXml_ShouldReturnValidXml(string seoLinksType, string languages, string expectedXmlFileName)
     {
         // Arrange  
         var sitemapGenerator = new SitemapXmlGenerator(
@@ -37,7 +41,7 @@ public class SitemapXmlGeneratorTests
             [GetCatalogSitemapItemRecordProvider()],
             new Mock<ISettingsManager>().Object,
             new Mock<ILogger<SitemapXmlGenerator>>().Object,
-            GetStoreServiceMock(seoLinksType).Object);
+            GetStoreServiceMock(seoLinksType, languages).Object);
 
         var expectedXml = await GetEmbeddedResourceString($"Resources.{expectedXmlFileName}");
 
@@ -53,6 +57,7 @@ public class SitemapXmlGeneratorTests
     private static Mock<ISitemapSearchService> GetSitemapSearchServiceMock()
     {
         var sitemapSearchServiceMock = new Mock<ISitemapSearchService>();
+
         sitemapSearchServiceMock
             .Setup(x => x.SearchAsync(It.IsAny<SitemapSearchCriteria>()))
             .ReturnsAsync(
@@ -64,6 +69,7 @@ public class SitemapXmlGeneratorTests
     private static Mock<ISitemapItemSearchService> GetSitemapItemSearchServiceMock()
     {
         var sitemapItemSearchServiceMock = new Mock<ISitemapItemSearchService>();
+
         sitemapItemSearchServiceMock
             .Setup(x => x.SearchAsync(It.IsAny<SitemapItemSearchCriteria>()))
             .ReturnsAsync(
@@ -75,6 +81,7 @@ public class SitemapXmlGeneratorTests
                         new SitemapItem { ObjectType = "category", ObjectId = "category2" },
                     ],
                 });
+
         return sitemapItemSearchServiceMock;
     }
 
@@ -92,7 +99,7 @@ public class SitemapXmlGeneratorTests
             GetListEntrySearchServiceMock().Object);
     }
 
-    private static Mock<IStoreService> GetStoreServiceMock(string seoLinksType)
+    private static Mock<IStoreService> GetStoreServiceMock(string seoLinksType, string languages)
     {
         var storeServiceMock = new Mock<IStoreService>();
 
@@ -103,7 +110,7 @@ public class SitemapXmlGeneratorTests
                 Id = "store1",
                 Catalog = "catalog1",
                 DefaultLanguage = "en",
-                Languages = ["en"],
+                Languages = languages.Split(','),
                 Settings = [new ObjectSettingEntry { Name = SeoLinksType.Name, Value = seoLinksType }],
             }]);
 
@@ -124,81 +131,66 @@ public class SitemapXmlGeneratorTests
                         new ProductListEntry
                         {
                             Id = "product1",
-                            SeoInfos = [
-                                new SeoInfo { StoreId = "store1", LanguageCode = "en", SemanticUrl = "product1-en" },
-                                new SeoInfo { StoreId = "store1", LanguageCode = "de", SemanticUrl = "product1-de" },
-                            ],
+                            SeoInfos = GetSeoInfos("product1", ["en","de"]),
                             Outlines = [
-                                new Outline
-                                {
-                                    Items = [
-                                        new OutlineItem
-                                        {
-                                            Id = "catalog1",
-                                            SeoObjectType = "Catalog",
-                                            SeoInfos = [
-                                                new SeoInfo { StoreId = "store1", LanguageCode = "en", SemanticUrl = "catalog1-en" },
-                                                new SeoInfo { StoreId = "store1", LanguageCode = "de", SemanticUrl = "catalog1-de" },
-                                            ],
-                                        },
-                                        new OutlineItem
-                                        {
-                                            Id = "category1",
-                                            SeoObjectType = "Category",
-                                            SeoInfos = [
-                                                new SeoInfo { StoreId = "store1", LanguageCode = "en", SemanticUrl = "category1-en" },
-                                                new SeoInfo { StoreId = "store1", LanguageCode = "de", SemanticUrl = "category1-de" },
-                                            ],
-                                        },
-                                        new OutlineItem
-                                        {
-                                            Id = "product1",
-                                            SeoObjectType = "CatalogProduct",
-                                            SeoInfos = [
-                                                new SeoInfo { StoreId = "store1", LanguageCode = "en", SemanticUrl = "product1-en" },
-                                                new SeoInfo { StoreId = "store1", LanguageCode = "de", SemanticUrl = "product1-de" },
-                                            ],
-                                        },
-                                    ],
-                                },
-                                new Outline
-                                {
-                                    Items = [
-                                        new OutlineItem
-                                        {
-                                            Id = "catalog1",
-                                            SeoObjectType = "Catalog",
-                                            SeoInfos = [
-                                                new SeoInfo { StoreId = "store1", LanguageCode = "en", SemanticUrl = "catalog1-en" },
-                                                new SeoInfo { StoreId = "store1", LanguageCode = "de", SemanticUrl = "catalog1-de" },
-                                            ],
-                                        },
-                                        new OutlineItem
-                                        {
-                                            Id = "category2",
-                                            SeoObjectType = "Category",
-                                            SeoInfos = [
-                                                new SeoInfo { StoreId = "store1", LanguageCode = "en", SemanticUrl = "category2-en" },
-                                                new SeoInfo { StoreId = "store1", LanguageCode = "de", SemanticUrl = "category2-de" },
-                                            ],
-                                        },
-                                        new OutlineItem
-                                        {
-                                            Id = "product1",
-                                            SeoObjectType = "CatalogProduct",
-                                            SeoInfos = [
-                                                new SeoInfo { StoreId = "store1", LanguageCode = "en", SemanticUrl = "product1-en" },
-                                                new SeoInfo { StoreId = "store1", LanguageCode = "de", SemanticUrl = "product1-de" },
-                                            ],
-                                        },
-                                    ],
-                                },
+                                GetOutline("catalog1/category1/product1", ["en","de"]),
+                                GetOutline("catalog1/category2/product1", ["en","de"]),
+                                GetOutline("catalog1/category2/category3/product1", ["en","de"]),
+                                GetOutline("catalog1/category4/product1", ["en","de"]),
                             ],
                         },
                     ],
                 });
 
         return listEntrySearchServiceMock;
+    }
+
+    private static Outline GetOutline(string template, string[] languages)
+    {
+        return new Outline
+        {
+            Items = template
+                .Split('/')
+                .Select(id => GetOutlineItem(id, languages))
+                .ToList(),
+        };
+    }
+
+    private static OutlineItem GetOutlineItem(string id, string[] languages)
+    {
+        return new OutlineItem
+        {
+            Id = id,
+            SeoObjectType = GetSeoType(id),
+            SeoInfos = GetSeoInfos(id, languages),
+        };
+    }
+
+    private static string GetSeoType(string id)
+    {
+        if (id.StartsWith("catalog", StringComparison.OrdinalIgnoreCase))
+        {
+            return "Catalog";
+        }
+
+        if (id.StartsWith("category", StringComparison.OrdinalIgnoreCase))
+        {
+            return "Category";
+        }
+
+        if (id.StartsWith("product", StringComparison.OrdinalIgnoreCase))
+        {
+            return "CatalogProduct";
+        }
+
+        throw new ArgumentException($"Cannot get object type from id '{id}'");
+    }
+
+    private static List<SeoInfo> GetSeoInfos(string id, string[] languages)
+    {
+        return languages
+            .Select(language => new SeoInfo { StoreId = "store1", LanguageCode = language, SemanticUrl = $"{id}-{language}" })
+            .ToList();
     }
 
     private async Task<string> GetEmbeddedResourceString(string filePath)
