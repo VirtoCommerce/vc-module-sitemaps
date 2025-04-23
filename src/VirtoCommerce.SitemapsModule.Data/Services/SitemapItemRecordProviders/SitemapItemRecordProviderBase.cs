@@ -20,18 +20,17 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             _urlBuilder = urlBuilder;
         }
 
-        public ICollection<SitemapItemRecord> GetSitemapItemRecords(Store store, SitemapItemOptions options, string urlTemplate, string baseUrl, IEntity entity = null)
+        public IList<SitemapItemRecord> GetSitemapItemRecords(Store store, SitemapItemOptions options, string urlTemplate, string baseUrl, IEntity entity = null)
         {
-            var record = GetMainRecord(store, options, urlTemplate, baseUrl, entity, outline: null);
-
-            return record != null ? [record] : [];
+            return GetSitemapItemRecords(store, options, urlTemplate, baseUrl, entity, parentCategoryId: null);
         }
 
         public IList<SitemapItemRecord> GetSitemapItemRecords(Store store, SitemapItemOptions options, string urlTemplate, string baseUrl, IEntity entity, string parentCategoryId)
         {
             if (string.IsNullOrEmpty(parentCategoryId) || entity is not IHasOutlines hasOutlines || hasOutlines.Outlines.IsNullOrEmpty())
             {
-                return [GetMainRecord(store, options, urlTemplate, baseUrl, entity, outline: null)];
+                var record = GetMainRecord(store, options, urlTemplate, baseUrl, entity, outline: null);
+                return record != null ? [record] : [];
             }
 
             var outlines = hasOutlines.Outlines
@@ -54,14 +53,12 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
                 return null;
             }
 
-            var auditableEntity = entity as AuditableEntity;
-
             var result = new SitemapItemRecord
             {
-                ModifiedDate = auditableEntity?.ModifiedDate ?? DateTime.UtcNow,
-                Priority = options.Priority,
-                UpdateFrequency = options.UpdateFrequency,
                 Url = url,
+                ModifiedDate = (entity as AuditableEntity)?.ModifiedDate ?? DateTime.UtcNow,
+                UpdateFrequency = options.UpdateFrequency,
+                Priority = options.Priority,
             };
 
             if (entity is ISeoSupport seoSupport)

@@ -19,8 +19,6 @@ namespace VirtoCommerce.SitemapsModule.Core.Models
 
         public SitemapContentMode SitemapMode { get; set; }
 
-        public ICollection<string> PagedLocations { get; } = [];
-
         #region ICloneable members
 
         public virtual object Clone()

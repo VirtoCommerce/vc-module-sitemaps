@@ -98,7 +98,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             }
 
             var indexRecords = files
-                .Select(x => new SitemapItemRecord { Url = _sitemapUrlBuilder.BuildStoreUrl(store, store.DefaultLanguage, x.Name, baseUrl) })
+                .Select(x => new SitemapRecord { Url = _sitemapUrlBuilder.BuildStoreUrl(store, store.DefaultLanguage, x.Name, baseUrl) })
                 .ToList();
 
             files.Insert(0, new SitemapFile(ModuleConstants.SitemapFileName, indexRecords));
@@ -147,6 +147,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             return new SitemapXmlRecord
             {
                 Items = file.Records
+                    .OfType<SitemapItemRecord>()
                     .Select(x => new SitemapItemXmlRecord().ToXmlModel(x))
                     .ToList(),
             };
@@ -210,7 +211,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             }
         }
 
-        private static List<SitemapItemRecord> GetAllRecords(Sitemap sitemap)
+        private static List<SitemapRecord> GetAllRecords(Sitemap sitemap)
         {
             var records = sitemap.Items.SelectMany(x => x.ItemsRecords);
 
@@ -230,7 +231,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             return records
                 .GroupBy(x => x.Url)
                 .Select(g => g.First())
-                .ToList();
+                .ToList<SitemapRecord>();
         }
     }
 }
