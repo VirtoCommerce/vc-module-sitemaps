@@ -32,14 +32,14 @@ public class SitemapXmlGeneratorTests
 {
     [Theory]
     [InlineData(SeoShort, "en", false, "sitemap_short_en.xml")]
-    [InlineData(SeoShort, "en,de", false, "sitemap_short_en,de.xml")]
+    [InlineData(SeoShort, "en,de", false, "sitemap_short_en_de.xml")]
     [InlineData(SeoCollapsed, "en", false, "sitemap_collapsed_en.xml")]
-    [InlineData(SeoCollapsed, "en,de", false, "sitemap_collapsed_en,de.xml")]
+    [InlineData(SeoCollapsed, "en,de", false, "sitemap_collapsed_en_de.xml")]
 
     [InlineData(SeoShort, "en", true, "sitemap_short_en_images.xml")]
-    [InlineData(SeoShort, "en,de", true, "sitemap_short_en,de_images.xml")]
+    [InlineData(SeoShort, "en,de", true, "sitemap_short_en_de_images.xml")]
     [InlineData(SeoCollapsed, "en", true, "sitemap_collapsed_en_images.xml")]
-    [InlineData(SeoCollapsed, "en,de", true, "sitemap_collapsed_en,de_images.xml")]
+    [InlineData(SeoCollapsed, "en,de", true, "sitemap_collapsed_en_de_images.xml")]
     public async Task GenerateSitemapXml_ShouldReturnValidXml(string seoLinksType, string languages, bool withImages, string expectedXmlFileName)
     {
         // Arrange
