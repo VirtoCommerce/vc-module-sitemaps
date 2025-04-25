@@ -154,6 +154,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
         [HttpPost]
         [Route("{sitemapId}/items")]
+        [Authorize(ModuleConstants.Security.Permissions.Update)]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         public async Task<ActionResult> AddSitemapItems(string sitemapId, [FromBody] SitemapItem[] items)
         {
@@ -177,6 +178,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
         [HttpDelete]
         [Route("items")]
+        [Authorize(ModuleConstants.Security.Permissions.Update)]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         public async Task<ActionResult> RemoveSitemapItems(string[] itemIds)
         {

@@ -18,7 +18,7 @@ using VirtoCommerce.StoreModule.Core.Services;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services
 {
-    public class SitemapXmlGenerator : ISitemapXmlGenerator
+    public class SitemapXmlGenerator : ISitemapXmlGenerator, ISitemapGenerator
     {
         private readonly ISitemapSearchService _sitemapSearchService;
         private readonly ISitemapItemSearchService _sitemapItemSearchService;
@@ -48,136 +48,130 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
 
         public virtual async Task<ICollection<string>> GetSitemapUrlsAsync(string storeId, string baseUrl)
         {
-            if (string.IsNullOrEmpty(storeId))
-            {
-                throw new ArgumentException(nameof(storeId));
-            }
+            ArgumentException.ThrowIfNullOrEmpty(storeId);
 
-            var sitemapUrls = new List<string>();
-            var store = await _storeService.GetByIdAsync(storeId, StoreResponseGroup.StoreInfo.ToString());
+            var files = await GetSitemapFilesAsync(storeId, baseUrl);
 
-            var sitemaps = await LoadStoreSitemaps(store, baseUrl);
-            foreach (var sitemap in sitemaps)
-            {
-                sitemapUrls.AddRange(sitemap.PagedLocations);
-            }
-
-            return sitemapUrls;
+            return files[0].Records
+                .Select(x => x.Url)
+                .ToList();
         }
 
         public virtual async Task<Stream> GenerateSitemapXmlAsync(string storeId, string baseUrl, string sitemapUrl, Action<ExportImportProgressInfo> progressCallback = null)
         {
+            var files = await GetSitemapFilesAsync(storeId, baseUrl, progressCallback);
+            var file = files.FirstOrDefault(x => x.Name.EqualsIgnoreCase(sitemapUrl));
+
             var stream = new MemoryStream();
 
-            var filenameSeparator = await _settingsManager.GetValueAsync<string>(ModuleConstants.Settings.General.FilenameSeparator);
-            var recordsLimitPerFile = await _settingsManager.GetValueAsync<int>(ModuleConstants.Settings.General.RecordsLimitPerFile);
+            if (file != null)
+            {
+                SaveSitemapFile(file, stream, progressCallback);
+                stream.Seek(0, SeekOrigin.Begin);
+            }
+
+            return stream;
+        }
+
+        public virtual async Task<IList<SitemapFile>> GetSitemapFilesAsync(string storeId, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
+        {
+            var store = await _storeService.GetByIdAsync(storeId, nameof(StoreResponseGroup.StoreInfo));
+
+            return await GetSitemapFilesAsync(store, baseUrl, progressCallback);
+        }
+
+        public virtual async Task<IList<SitemapFile>> GetSitemapFilesAsync(Store store, string baseUrl, Action<ExportImportProgressInfo> progressCallback)
+        {
+            var sitemapSearchCriteria = new SitemapSearchCriteria
+            {
+                StoreId = store.Id,
+                Take = int.MaxValue,
+            };
+
+            var sitemaps = (await _sitemapSearchService.SearchAsync(sitemapSearchCriteria)).Results;
+            var files = new List<SitemapFile>();
+
+            foreach (var sitemap in sitemaps)
+            {
+                await LoadSitemapRecords(sitemap, store, baseUrl, progressCallback);
+                await AddSitemapFiles(sitemap, files);
+            }
+
+            var indexRecords = files
+                .Select(x => new SitemapRecord { Url = _sitemapUrlBuilder.BuildStoreUrl(store, store.DefaultLanguage, x.Name, baseUrl) })
+                .ToList();
+
+            files.Insert(0, new SitemapFile(ModuleConstants.SitemapFileName, indexRecords));
+
+            return files;
+        }
+
+        public virtual void SaveSitemapFile(SitemapFile file, Stream stream, Action<ExportImportProgressInfo> progressCallback = null)
+        {
+            ArgumentNullException.ThrowIfNull(file);
+            ArgumentNullException.ThrowIfNull(stream);
+
+            if (file.Records.Count == 0)
+            {
+                return;
+            }
+
+            progressCallback?.Invoke(new ExportImportProgressInfo
+            {
+                Description = $"Creating {file.Name}...",
+            });
+
+            object xmlRecord = file.Name.EqualsIgnoreCase(ModuleConstants.SitemapFileName)
+                ? GenerateSitemapIndex(file)
+                : GenerateUrlSet(file);
+
+            if (xmlRecord != null)
+            {
+                SaveXml(xmlRecord, stream);
+            }
+        }
+
+
+        private static SitemapIndexXmlRecord GenerateSitemapIndex(SitemapFile file)
+        {
+            return new SitemapIndexXmlRecord
+            {
+                Sitemaps = file.Records
+                    .Select(x => new SitemapIndexItemXmlRecord { Url = x.Url })
+                    .ToList(),
+            };
+        }
+
+        private static SitemapXmlRecord GenerateUrlSet(SitemapFile file)
+        {
+            return new SitemapXmlRecord
+            {
+                Items = file.Records
+                    .OfType<SitemapItemRecord>()
+                    .Select(x => new SitemapItemXmlRecord().ToXmlModel(x))
+                    .ToList(),
+            };
+        }
+
+        private static void SaveXml(object xmlRecord, Stream stream)
+        {
+            var xmlSerializer = new XmlSerializer(xmlRecord.GetType());
 
             var xmlNamespaces = new XmlSerializerNamespaces();
             xmlNamespaces.Add("xhtml", "https://www.w3.org/1999/xhtml");
             xmlNamespaces.Add("image", "http://www.google.com/schemas/sitemap-image/1.1");
 
-            var sitemapLocation = SitemapLocation.Parse(sitemapUrl, filenameSeparator);
-            var store = await _storeService.GetByIdAsync(storeId, StoreResponseGroup.StoreInfo.ToString());
-            if (sitemapLocation.Location.EqualsInvariant(ModuleConstants.SitemapFileName))
-            {
-                progressCallback?.Invoke(new ExportImportProgressInfo
-                {
-                    Description = $"Creating {ModuleConstants.SitemapFileName}..."
-                });
-
-                var storeSitemaps = await LoadStoreSitemaps(store, baseUrl);
-
-                var sitemapIndexXmlRecord = new SitemapIndexXmlRecord();
-
-                foreach (var sitemap in storeSitemaps)
-                {
-                    var xmlSiteMapRecords = sitemap.PagedLocations.Select(location => new SitemapIndexItemXmlRecord
-                    {
-                        Url = _sitemapUrlBuilder.BuildStoreUrl(store, store.DefaultLanguage, location, baseUrl),
-                    }).ToList();
-
-                    sitemapIndexXmlRecord.Sitemaps.AddRange(xmlSiteMapRecords);
-                }
-
-                var xmlSerializer = new XmlSerializer(sitemapIndexXmlRecord.GetType());
-                xmlSerializer.Serialize(stream, sitemapIndexXmlRecord, xmlNamespaces);
-            }
-            else
-            {
-                var sitemapSearchResult = await _sitemapSearchService.SearchAsync(new SitemapSearchCriteria { Location = sitemapLocation.Location, StoreId = storeId, Skip = 0, Take = 1 });
-                var sitemap = sitemapSearchResult.Results.FirstOrDefault();
-                if (sitemap != null)
-                {
-                    await LoadSitemapRecords(store, sitemap, baseUrl, progressCallback);
-
-                    var requiredItems = new List<SitemapItemRecord>();
-
-                    switch (sitemap.SitemapMode)
-                    {
-                        case SitemapContentMode.OnlyCategories:
-                            requiredItems = sitemap.Items.SelectMany(x => x.ItemsRecords).Where(x => x.ObjectType == "category").ToList();
-                            break;
-                        case SitemapContentMode.OnlyProducts:
-                            requiredItems = sitemap.Items.SelectMany(x => x.ItemsRecords).Where(x => x.ObjectType == "product").ToList();
-                            break;
-                        case SitemapContentMode.Full:
-                        default:
-                            requiredItems = sitemap.Items.SelectMany(x => x.ItemsRecords).ToList();
-                            break;
-                    }
-
-                    var sitemapItemRecords = requiredItems.Skip((sitemapLocation.PageNumber - 1) * recordsLimitPerFile).Take(recordsLimitPerFile).ToArray();
-
-                    var sitemapRecord = new SitemapXmlRecord
-                    {
-                        xmlns = xmlNamespaces,
-                        Items = sitemapItemRecords.Select(i => new SitemapItemXmlRecord().ToXmlModel(i)).ToList()
-                    };
-
-                    if (sitemapRecord.Items.Count > 0)
-                    {
-                        var xmlSerializer = new XmlSerializer(sitemapRecord.GetType());
-                        xmlSerializer.Serialize(stream, sitemapRecord, xmlNamespaces);
-                    }
-                }
-            }
-            stream.Seek(0, SeekOrigin.Begin);
-            return stream;
+            xmlSerializer.Serialize(stream, xmlRecord, xmlNamespaces);
         }
 
-        private async Task<ICollection<Sitemap>> LoadStoreSitemaps(Store store, string baseUrl)
+        private async Task LoadSitemapRecords(Sitemap sitemap, Store store, string baseUrl, Action<ExportImportProgressInfo> progressCallback)
         {
-            var sitemapSearchCriteria = new SitemapSearchCriteria
-            {
-                StoreId = store.Id,
-                Skip = 0,
-                Take = int.MaxValue
-            };
-
-            var sitemapSearchResult = await _sitemapSearchService.SearchAsync(sitemapSearchCriteria);
-
-            var sitemaps = new List<Sitemap>();
-            foreach (var sitemap in sitemapSearchResult.Results)
-            {
-                await LoadSitemapRecords(store, sitemap, baseUrl);
-
-                sitemaps.Add(sitemap);
-            }
-
-            return sitemaps;
-        }
-
-        private async Task LoadSitemapRecords(Store store, Sitemap sitemap, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
-        {
-            var recordsLimitPerFile = await _settingsManager.GetValueAsync<int>(ModuleConstants.Settings.General.RecordsLimitPerFile);
-            var filenameSeparator = await _settingsManager.GetValueAsync<string>(ModuleConstants.Settings.General.FilenameSeparator);
-
             var sitemapItemSearchCriteria = new SitemapItemSearchCriteria
             {
                 SitemapId = sitemap.Id,
-                Skip = 0,
-                Take = int.MaxValue
+                Take = int.MaxValue,
             };
+
             sitemap.Items = (await _sitemapItemSearchService.SearchAsync(sitemapItemSearchCriteria)).Results;
 
             foreach (var recordProvider in _sitemapItemRecordProviders)
@@ -189,16 +183,55 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, $"Failed to load sitemap item records for store #{store.Id}, sitemap #{sitemap.Id} and baseURL '{baseUrl}'");
+                    _logger.LogError(ex, "Failed to load sitemap item records for store #{StoreId}, sitemap #{SitemapId} and baseURL '{BaseUrl}'", store.Id, sitemap.Id, baseUrl);
                 }
             }
-            sitemap.PagedLocations.Clear();
-            var totalRecordsCount = sitemap.Items.SelectMany(x => x.ItemsRecords).GroupBy(x => x.Url).Count();
-            var pagesCount = totalRecordsCount > 0 ? (int)Math.Ceiling(totalRecordsCount / (double)recordsLimitPerFile) : 0;
-            for (var i = 1; i <= pagesCount; i++)
+        }
+
+        private async Task AddSitemapFiles(Sitemap sitemap, List<SitemapFile> files)
+        {
+            var recordsLimitPerFile = await _settingsManager.GetValueAsync<int>(ModuleConstants.Settings.General.RecordsLimitPerFile);
+            var filenameSeparator = await _settingsManager.GetValueAsync<string>(ModuleConstants.Settings.General.FilenameSeparator);
+
+            var allRecords = GetAllRecords(sitemap);
+            var totalRecordsCount = allRecords.Count;
+            var filesCount = totalRecordsCount > 0 ? (int)Math.Ceiling(totalRecordsCount / (double)recordsLimitPerFile) : 0;
+            var addFileNumber = filesCount > 1;
+            var fileNumber = 0;
+
+            foreach (var records in allRecords.Paginate(recordsLimitPerFile))
             {
-                sitemap.PagedLocations.Add(new SitemapLocation(sitemap.Location, i, filenameSeparator).ToString(pagesCount > 1));
+                fileNumber++;
+
+                var fileName = addFileNumber
+                    ? $"{sitemap.Location.Replace(".xml", string.Empty)}{filenameSeparator}{fileNumber}.xml"
+                    : sitemap.Location;
+
+                files.Add(new SitemapFile(fileName, records));
             }
+        }
+
+        private static List<SitemapRecord> GetAllRecords(Sitemap sitemap)
+        {
+            var records = sitemap.Items.SelectMany(x => x.ItemsRecords);
+
+            switch (sitemap.SitemapMode)
+            {
+                case SitemapContentMode.OnlyCategories:
+                    records = records.Where(x => x.ObjectType == "category");
+                    break;
+                case SitemapContentMode.OnlyProducts:
+                    records = records.Where(x => x.ObjectType == "product");
+                    break;
+                case SitemapContentMode.Full:
+                default:
+                    break;
+            }
+
+            return records
+                .GroupBy(x => x.Url)
+                .Select(g => g.First())
+                .ToList<SitemapRecord>();
         }
     }
 }

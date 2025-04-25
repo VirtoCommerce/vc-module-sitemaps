@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text;
 using VirtoCommerce.CatalogModule.Core.Extensions;
 using VirtoCommerce.CatalogModule.Core.Model.ListEntry;
-using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.CoreModule.Core.Outlines;
 using VirtoCommerce.CoreModule.Core.Seo;
 using VirtoCommerce.Platform.Core.Common;
@@ -15,11 +14,11 @@ using static VirtoCommerce.StoreModule.Core.ModuleConstants.Settings.SEO;
 
 namespace VirtoCommerce.SitemapsModule.Data.Services;
 
-public class SitemapUrlBuilder(ICategoryService categoryService) : ISitemapUrlBuilder
+public class SitemapUrlBuilder : ISitemapUrlBuilder
 {
-    public virtual string BuildStoreUrl(Store store, string language, string urlTemplate, string baseUrl, IEntity entity = null)
+    public virtual string BuildStoreUrl(Store store, string language, string urlTemplate, string baseUrl, IEntity entity = null, Outline outline = null)
     {
-        var url = ResolveTemplate(urlTemplate, entity, store, language);
+        var url = ResolveTemplate(urlTemplate, entity, store, language, outline);
 
         if (IsAbsoluteUri(url))
         {
@@ -31,12 +30,10 @@ public class SitemapUrlBuilder(ICategoryService categoryService) : ISitemapUrlBu
         if (store != null)
         {
             // Add store URL
-            if (!string.IsNullOrEmpty(baseUrl) || !string.IsNullOrEmpty(store.Url) || !string.IsNullOrEmpty(store.SecureUrl))
+            if (TryGetBaseUrl(baseUrl, store, out var newBaseUrl))
             {
-                baseUrl = baseUrl.EmptyToNull() ?? store.Url.EmptyToNull() ?? store.SecureUrl.EmptyToNull() ?? string.Empty;
-
                 builder.Clear();
-                builder.Append(baseUrl.TrimEnd('/'));
+                builder.Append(newBaseUrl.TrimEnd('/'));
             }
 
             // Add language if store has multiple languages
@@ -58,7 +55,32 @@ public class SitemapUrlBuilder(ICategoryService categoryService) : ISitemapUrlBu
         return builder.ToString();
     }
 
-    private string ResolveTemplate(string urlTemplate, IEntity entity, Store store, string language)
+
+    private static bool TryGetBaseUrl(string baseUrl, Store store, out string newBaseUrl)
+    {
+        if (!string.IsNullOrEmpty(baseUrl))
+        {
+            newBaseUrl = baseUrl;
+            return true;
+        }
+
+        if (!string.IsNullOrEmpty(store.Url))
+        {
+            newBaseUrl = store.Url;
+            return true;
+        }
+
+        if (!string.IsNullOrEmpty(store.SecureUrl))
+        {
+            newBaseUrl = store.SecureUrl;
+            return true;
+        }
+
+        newBaseUrl = null;
+        return false;
+    }
+
+    private static string ResolveTemplate(string urlTemplate, IEntity entity, Store store, string language, Outline outline)
     {
         // Override SEO links type if explicitly set in urlTemplate
         var seoLinksType = urlTemplate switch
@@ -70,7 +92,7 @@ public class SitemapUrlBuilder(ICategoryService categoryService) : ISitemapUrlBu
         };
 
         var seoPath = entity is ISeoSupport seoSupport
-            ? GetSeoPath(seoSupport, seoLinksType, store, language)
+            ? GetSeoPath(seoSupport, seoLinksType, store, language, outline)
             : string.Empty;
 
         var builder = new StringBuilder(urlTemplate);
@@ -87,7 +109,7 @@ public class SitemapUrlBuilder(ICategoryService categoryService) : ISitemapUrlBu
         return builder.ToString();
     }
 
-    private string GetSeoPath(ISeoSupport entity, string seoLinksType, Store store, string language)
+    private static string GetSeoPath(ISeoSupport entity, string seoLinksType, Store store, string language, Outline outline)
     {
         string seoPath;
 
@@ -98,16 +120,13 @@ public class SitemapUrlBuilder(ICategoryService categoryService) : ISitemapUrlBu
         else
         {
             seoPath = entity.GetBestMatchingSeoInfo(store, language)?.SemanticUrl ?? string.Empty;
-
-            // CategoryListEntry does not have IHasOutlines interface, but Category does,
-            // and we need outlines to build long or collapsed SEO path, so retrieve Category by id to have outlines
-            if (entity is CategoryListEntry categoryListEntry && seoLinksType is SeoLong or SeoCollapsed)
-            {
-                entity = categoryService.GetByIdAsync(categoryListEntry.Id).GetAwaiter().GetResult();
-            }
         }
 
-        if (entity is IHasOutlines hasOutlines)
+        if (outline != null)
+        {
+            seoPath = outline.Items.GetSeoPath(store, language, defaultValue: seoPath, seoLinksType);
+        }
+        else if (entity is IHasOutlines hasOutlines)
         {
             seoPath = hasOutlines.GetSeoPath(store, language, defaultValue: seoPath, seoLinksType);
         }

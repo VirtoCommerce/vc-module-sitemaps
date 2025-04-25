@@ -67,6 +67,7 @@ namespace VirtoCommerce.SitemapsModule.Web
             serviceCollection.AddTransient<ISitemapItemRecordProvider, CustomSitemapItemRecordProvider>();
             serviceCollection.AddTransient<ISitemapItemRecordProvider, VendorSitemapItemRecordProvider>();
             serviceCollection.AddTransient<ISitemapItemRecordProvider, StaticContentSitemapItemRecordProvider>();
+            serviceCollection.AddTransient<ISitemapGenerator, SitemapXmlGenerator>();
             serviceCollection.AddTransient<ISitemapXmlGenerator, SitemapXmlGenerator>();
             serviceCollection.AddTransient<SitemapExportImport>();
         }
