@@ -23,6 +23,9 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         private readonly IItemService _itemService;
         private readonly IListEntrySearchService _listEntrySearchService;
 
+        private const ItemResponseGroup _noImages = ItemResponseGroup.Seo | ItemResponseGroup.Outlines;
+        private const ItemResponseGroup _withImages = ItemResponseGroup.Seo | ItemResponseGroup.Outlines | ItemResponseGroup.WithImages;
+
         public CatalogSitemapItemRecordProvider(
             ISitemapUrlBuilder urlBuilder,
             ISettingsManager settingsManager,
@@ -38,14 +41,8 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         #region ISitemapItemRecordProvider members
         public virtual async Task LoadSitemapItemRecordsAsync(Store store, Sitemap sitemap, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
         {
-            if (store == null)
-            {
-                throw new ArgumentNullException(nameof(store));
-            }
-            if (sitemap == null)
-            {
-                throw new ArgumentNullException(nameof(sitemap));
-            }
+            ArgumentNullException.ThrowIfNull(store);
+            ArgumentNullException.ThrowIfNull(sitemap);
 
             await LoadCategoriesSitemapItemRecordsAsync(store, sitemap, baseUrl, progressCallback);
             await LoadProductsSitemapItemRecordsAsync(store, sitemap, baseUrl, progressCallback);
@@ -55,219 +52,166 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
 
         protected virtual async Task LoadCategoriesSitemapItemRecordsAsync(Store store, Sitemap sitemap, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
         {
-            var shouldIncludeImages = store.Settings.GetValue<bool>(ModuleConstants.Settings.ProductLinks.IncludeImages);
+            var categoryItems = GetSitemapItems(sitemap, SitemapItemTypes.Category);
+            if (categoryItems.Count == 0)
+            {
+                return;
+            }
+
+            var batchSize = await _settingsManager.GetValueAsync<int>(ModuleConstants.Settings.General.SearchBunchSize);
+            var includeImages = store.Settings.GetValue<bool>(ModuleConstants.Settings.ProductLinks.IncludeImages);
 
             var progressInfo = new ExportImportProgressInfo();
             var categoryOptions = GetCategoryOptions(store);
-            var batchSize = await _settingsManager.GetValueAsync<int>(ModuleConstants.Settings.General.SearchBunchSize);
 
-            var categorySitemapItems = sitemap.Items.Where(x => x.ObjectType.EqualsInvariant(SitemapItemTypes.Category)).ToList();
-            if (categorySitemapItems.Count > 0)
+            progressInfo.Description = $"Catalog: Starting records generation for {categoryItems.Count} category items";
+            progressCallback?.Invoke(progressInfo);
+
+            foreach (var categoryItem in categoryItems)
             {
-                progressInfo.Description = $"Catalog: Starting records generation for {categorySitemapItems.Count} category items";
-                progressCallback?.Invoke(progressInfo);
+                int totalCount;
+                var categoryId = categoryItem.ObjectId;
 
-                foreach (var categorySiteMapItem in categorySitemapItems)
+                var searchCriteria = AbstractTypeFactory<CatalogListEntrySearchCriteria>.TryCreateInstance();
+                searchCriteria.CategoryId = categoryId;
+                searchCriteria.Take = batchSize;
+                searchCriteria.HideDirectLinkedCategories = true;
+                searchCriteria.SearchInChildren = true;
+                searchCriteria.WithHidden = false;
+                searchCriteria.SearchInVariations = true;
+
+                do
                 {
-                    int totalCount;
-                    var listEntrySearchCriteria = AbstractTypeFactory<CatalogListEntrySearchCriteria>.TryCreateInstance();
-                    listEntrySearchCriteria.CategoryId = categorySiteMapItem.ObjectId;
-                    listEntrySearchCriteria.Take = batchSize;
-                    listEntrySearchCriteria.HideDirectLinkedCategories = true;
-                    listEntrySearchCriteria.SearchInChildren = true;
-                    listEntrySearchCriteria.WithHidden = false;
-                    listEntrySearchCriteria.SearchInVariations = true;
+                    var searchResult = await _listEntrySearchService.SearchAsync(searchCriteria);
+                    var listEntries = searchResult.Results;
+                    totalCount = searchResult.TotalCount;
+                    searchCriteria.Skip += batchSize;
 
-                    do
+                    // Load products only if we need images
+                    var products = new List<CatalogProduct>();
+                    if (includeImages)
                     {
-                        var result = await _listEntrySearchService.SearchAsync(listEntrySearchCriteria);
-                        totalCount = result.TotalCount;
-                        listEntrySearchCriteria.Skip += batchSize;
-
-                        // Only used if should include images
-                        List<CatalogProduct> products = new List<CatalogProduct>();
-                        if (shouldIncludeImages)
-                        {
-                            // If images need to be included - run a search for picked products to get variations with images
-                            var productIds = result.Results.Where(x => x is ProductListEntry).Select(x => x.Id).ToArray();
-                            products = await SearchProductsWithVariations(productIds);
-                        }
-
-                        foreach (var listEntry in result.Results)
-                        {
-                            var itemRecords = GetSitemapItemRecords(store, categoryOptions, sitemap.UrlTemplate, baseUrl, listEntry).ToList();
-
-                            if (shouldIncludeImages && listEntry is ProductListEntry)
-                            {
-                                var item = products.FirstOrDefault(x => x.Id == listEntry.Id);
-
-                                if (item != null)
-                                {
-                                    // for each record per product add image urls to sitemap
-                                    foreach (var record in itemRecords)
-                                    {
-                                        record.Images.AddRange(item.Images.Select(x => new SitemapItemImageRecord
-                                        {
-                                            Loc = x.Url
-                                        }));
-                                    }
-                                }
-                            }
-
-                            foreach(var record in itemRecords)
-                            {
-                                record.ObjectType = listEntry is ProductListEntry ? "product" : "category";
-                            }
-
-                            categorySiteMapItem.ItemsRecords.AddRange(itemRecords);
-                        }
-                        progressInfo.Description = $"Catalog: Have been generated  {Math.Min(listEntrySearchCriteria.Skip, totalCount)} of {totalCount} records for category {categorySiteMapItem.Title} item";
-                        progressCallback?.Invoke(progressInfo);
-
+                        var productIds = listEntries.Where(x => x is ProductListEntry).Select(x => x.Id).ToArray();
+                        products = await GetActiveProducts(productIds, _withImages);
                     }
-                    while (listEntrySearchCriteria.Skip < totalCount);
+
+                    foreach (var listEntry in listEntries)
+                    {
+                        var records = GetSitemapItemRecords(store, categoryOptions, sitemap.UrlTemplate, baseUrl, listEntry, categoryId).ToList();
+
+                        if (includeImages && listEntry is ProductListEntry)
+                        {
+                            var product = products.FirstOrDefault(x => x.Id == listEntry.Id);
+                            if (product != null)
+                            {
+                                AddImages(product, records);
+                            }
+                        }
+
+                        foreach (var record in records)
+                        {
+                            record.ObjectType = listEntry is ProductListEntry ? "product" : "category";
+                        }
+
+                        categoryItem.ItemsRecords.AddRange(records);
+                    }
+
+                    progressInfo.Description = $"Catalog: Have been generated  {Math.Min(searchCriteria.Skip, totalCount)} of {totalCount} records for category {categoryItem.Title} item";
+                    progressCallback?.Invoke(progressInfo);
                 }
+                while (searchCriteria.Skip < totalCount);
             }
         }
 
-        /// <summary>
-        /// This helps keeping the imageless flow untouched for products
-        /// </summary>
-        /// <param name="store"></param>
-        /// <param name="sitemap"></param>
-        /// <param name="baseUrl"></param>
-        /// <param name="progressCallback"></param>
-        /// <returns></returns>
         protected virtual async Task LoadProductsSitemapItemRecordsAsync(Store store, Sitemap sitemap, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
         {
-            var shouldIncludeImages = store.Settings.GetValue<bool>(ModuleConstants.Settings.ProductLinks.IncludeImages);
-
-            if (shouldIncludeImages)
+            var productItems = GetSitemapItems(sitemap, SitemapItemTypes.Product);
+            if (productItems.Count == 0)
             {
-                await LoadProductsWithImages(store, sitemap, baseUrl, progressCallback);
+                return;
             }
-            else
-            {
-                await LoadProductsWithoutImages(store, sitemap, baseUrl, progressCallback);
-            }
-        }
 
-        private async Task<List<CatalogProduct>> SearchProductsWithVariations(string[] productIds = null)
-        {
-            var products = (await _itemService.GetAsync(productIds, (ItemResponseGroup.Seo | ItemResponseGroup.Outlines | ItemResponseGroup.WithImages).ToString()))
-    .Where(p => !p.IsActive.HasValue || p.IsActive.Value).ToList();
-
-            return products;
-        }
-
-        /// <summary>
-        /// This is used to load products with images
-        /// Images are attached to corresponding product per item record
-        /// </summary>
-        /// <param name="store"></param>
-        /// <param name="sitemap"></param>
-        /// <param name="baseUrl"></param>
-        /// <param name="progressCallback"></param>
-        /// <returns></returns>
-        private async Task LoadProductsWithImages(Store store, Sitemap sitemap, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
-        {
-            var productSitemapItems = sitemap.Items.Where(x => x.ObjectType.EqualsInvariant(SitemapItemTypes.Product)).ToList();
-
-            var productOptions = GetProductOptions(store);
-
-            var productIds = productSitemapItems.Select(x => x.ObjectId).ToArray();
-
-            var products = await SearchProductsWithVariations(productIds);
-
-            var progressInfo = new ExportImportProgressInfo();
-
-            var count = 0;
-
-            foreach (var product in products)
-            {
-                var productSitemapItem = productSitemapItems.FirstOrDefault(x => x.ObjectId.EqualsInvariant(product.Id));
-                if (productSitemapItem != null)
-                {
-                    var itemRecords = GetSitemapItemRecords(store, productOptions, sitemap.UrlTemplate, baseUrl, product);
-
-                    foreach (var item in itemRecords)
-                    {
-                        var existingImages = product.Images.Where(x => !string.IsNullOrWhiteSpace(x.Url)).ToList();
-                        if (existingImages.Count > 0)
-                        {
-                            item.Images.AddRange(existingImages.Select(x => new SitemapItemImageRecord
-                            {
-                                Loc = x.Url
-                            }));
-                        }
-                    }
-
-                    productSitemapItem.ItemsRecords.AddRange(itemRecords);
-                }
-
-                count++;
-                progressInfo.Description = $"Catalog: Have been generated  {count} of {products.Count} records for products items";
-                progressCallback?.Invoke(progressInfo);
-            }
-        }
-
-        private async Task LoadProductsWithoutImages(Store store, Sitemap sitemap, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
-        {
             var batchSize = await _settingsManager.GetValueAsync<int>(ModuleConstants.Settings.General.SearchBunchSize);
+            var includeImages = store.Settings.GetValue<bool>(ModuleConstants.Settings.ProductLinks.IncludeImages);
 
-            var productSitemapItems = sitemap.Items.Where(x => x.ObjectType.EqualsInvariant(SitemapItemTypes.Product)).ToList();
-            var skip = 0;
-            var productOptions = GetProductOptions(store);
+            var responseGroup = includeImages ? _withImages : _noImages;
 
             var progressInfo = new ExportImportProgressInfo();
+            var productOptions = GetProductOptions(store);
+            var processedCount = 0;
 
-            do
+            foreach (var items in productItems.Paginate(batchSize))
             {
-                var productIds = productSitemapItems.Select(x => x.ObjectId).Skip(skip).Take(batchSize).ToArray();
-
-                var products = (await _itemService.GetAsync(productIds, (ItemResponseGroup.Seo | ItemResponseGroup.Outlines).ToString()))
-                    .Where(p => !p.IsActive.HasValue || p.IsActive.Value);
-
-                skip += batchSize;
+                var productIds = items.Select(x => x.ObjectId).ToArray();
+                var products = await GetActiveProducts(productIds, responseGroup);
 
                 foreach (var product in products)
                 {
-                    var productSitemapItem = productSitemapItems.FirstOrDefault(x => x.ObjectId.EqualsInvariant(product.Id));
-                    if (productSitemapItem != null)
+                    var item = items.FirstOrDefault(x => x.ObjectId.EqualsIgnoreCase(product.Id));
+                    if (item != null)
                     {
-                        var itemRecords = GetSitemapItemRecords(store, productOptions, sitemap.UrlTemplate, baseUrl, product);
+                        var records = GetSitemapItemRecords(store, productOptions, sitemap.UrlTemplate, baseUrl, product);
+                        item.ItemsRecords.AddRange(records);
 
-                        productSitemapItem.ItemsRecords.AddRange(itemRecords);
+                        if (includeImages)
+                        {
+                            AddImages(product, records);
+                        }
                     }
                 }
-                progressInfo.Description = $"Catalog: Have been generated  {Math.Min(skip, productSitemapItems.Count)} of {productSitemapItems.Count} records for products items";
+
+                processedCount += items.Count;
+                progressInfo.Description = $"Catalog: Have been generated  {processedCount} of {productItems.Count} records for products items";
                 progressCallback?.Invoke(progressInfo);
             }
-            while (skip < productSitemapItems.Count);
         }
 
-        private SitemapItemOptions GetProductOptions(Store store)
+        private static List<SitemapItem> GetSitemapItems(Sitemap sitemap, string itemType)
         {
-            var storeOptionProductPriority = store.Settings.GetValue<decimal>(ModuleConstants.Settings.ProductLinks.ProductPagePriority);
-            var storeOptionProductUpdateFrequency = store.Settings.GetValue<string>(ModuleConstants.Settings.ProductLinks.ProductPageUpdateFrequency);
+            return sitemap.Items
+                .Where(x => x.ObjectType.EqualsIgnoreCase(itemType))
+                .GroupBy(x => x.ObjectId, StringComparer.OrdinalIgnoreCase)
+                .Select(g => g.First())
+                .ToList();
+        }
 
+        private static SitemapItemOptions GetProductOptions(Store store)
+        {
             return new SitemapItemOptions
             {
-                Priority = storeOptionProductPriority,
-                UpdateFrequency = storeOptionProductUpdateFrequency
+                Priority = store.Settings.GetValue<decimal>(ModuleConstants.Settings.ProductLinks.ProductPagePriority),
+                UpdateFrequency = store.Settings.GetValue<string>(ModuleConstants.Settings.ProductLinks.ProductPageUpdateFrequency),
             };
         }
 
-        private SitemapItemOptions GetCategoryOptions(Store store)
+        private static SitemapItemOptions GetCategoryOptions(Store store)
         {
-            var storeOptionCategoryPriority = store.Settings.GetValue<decimal>(ModuleConstants.Settings.CategoryLinks.CategoryPagePriority);
-            var storeOptionCategoryUpdateFrequency = store.Settings.GetValue<string>(ModuleConstants.Settings.CategoryLinks.CategoryPageUpdateFrequency);
-
             return new SitemapItemOptions
             {
-                Priority = storeOptionCategoryPriority,
-                UpdateFrequency = storeOptionCategoryUpdateFrequency
+                Priority = store.Settings.GetValue<decimal>(ModuleConstants.Settings.CategoryLinks.CategoryPagePriority),
+                UpdateFrequency = store.Settings.GetValue<string>(ModuleConstants.Settings.CategoryLinks.CategoryPageUpdateFrequency),
             };
+        }
+
+        private async Task<List<CatalogProduct>> GetActiveProducts(IList<string> ids, ItemResponseGroup responseGroup)
+        {
+            var products = await _itemService.GetAsync(ids, responseGroup.ToString());
+
+            return products
+                .Where(x => x.IsActive is null || x.IsActive.Value)
+                .ToList();
+        }
+
+        private static void AddImages(CatalogProduct product, IList<SitemapItemRecord> records)
+        {
+            foreach (var record in records)
+            {
+                var images = product.Images.Where(x => !string.IsNullOrWhiteSpace(x.Url)).ToList();
+                if (images.Count > 0)
+                {
+                    record.Images.AddRange(images.Select(x => new SitemapItemImageRecord { Loc = x.Url }));
+                }
+            }
         }
     }
 }

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VirtoCommerce.CatalogModule.Core.Extensions;
+using VirtoCommerce.CoreModule.Core.Outlines;
 using VirtoCommerce.CoreModule.Core.Seo;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.SitemapsModule.Core.Models;
@@ -18,36 +20,91 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             _urlBuilder = urlBuilder;
         }
 
-        public ICollection<SitemapItemRecord> GetSitemapItemRecords(Store store, SitemapItemOptions options, string urlTemplate, string baseUrl, IEntity entity = null)
+        public IList<SitemapItemRecord> GetSitemapItemRecords(Store store, SitemapItemOptions options, string urlTemplate, string baseUrl, IEntity entity = null)
         {
-            var auditableEntity = entity as AuditableEntity;
+            return GetSitemapItemRecords(store, options, urlTemplate, baseUrl, entity, parentCategoryId: null);
+        }
+
+        public IList<SitemapItemRecord> GetSitemapItemRecords(Store store, SitemapItemOptions options, string urlTemplate, string baseUrl, IEntity entity, string parentCategoryId)
+        {
+            if (string.IsNullOrEmpty(parentCategoryId) || entity is not IHasOutlines hasOutlines || hasOutlines.Outlines.IsNullOrEmpty())
+            {
+                var record = GetMainRecord(store, options, urlTemplate, baseUrl, entity, outline: null);
+                return record != null ? [record] : [];
+            }
+
+            var outlines = hasOutlines.Outlines
+                .Where(outline =>
+                    outline.Items.ContainsCatalog(store.Catalog) &&
+                    outline.Items.ContainsCategory(parentCategoryId));
+
+            return outlines
+                .Select(outline => GetMainRecord(store, options, urlTemplate, baseUrl, entity, outline))
+                .Where(record => record != null)
+                .ToList();
+        }
+
+        public SitemapItemRecord GetMainRecord(Store store, SitemapItemOptions options, string urlTemplate, string baseUrl, IEntity entity, Outline outline)
+        {
+            var url = _urlBuilder.BuildStoreUrl(store, store.DefaultLanguage, urlTemplate, baseUrl, entity, outline);
+
+            if (string.IsNullOrEmpty(url))
+            {
+                return null;
+            }
 
             var result = new SitemapItemRecord
             {
-                ModifiedDate = auditableEntity?.ModifiedDate ?? DateTime.UtcNow,
-                Priority = options.Priority,
+                Url = url,
+                ModifiedDate = (entity as AuditableEntity)?.ModifiedDate ?? DateTime.UtcNow,
                 UpdateFrequency = options.UpdateFrequency,
-                Url = _urlBuilder.BuildStoreUrl(store, store.DefaultLanguage, urlTemplate, baseUrl, entity)
+                Priority = options.Priority,
             };
 
             if (entity is ISeoSupport seoSupport)
             {
-                foreach (var languageCode in seoSupport.SeoInfos.Where(x => x.IsActive).Select(x => x.LanguageCode))
-                {
-                    if (store.Languages.Contains(languageCode) && !store.DefaultLanguage.EqualsInvariant(languageCode))
-                    {
-                        var alternate = new SitemapItemAlternateLinkRecord
-                        {
-                            Language = languageCode,
-                            Type = "alternate",
-                            Url = _urlBuilder.BuildStoreUrl(store, languageCode, urlTemplate, baseUrl, entity)
-                        };
-                        result.Alternates.Add(alternate);
-                    }
-                }
+                var alternateLanguages = seoSupport.SeoInfos
+                    .Where(x => x.IsActive && IsMatchingStore(x, store) && IsMatchingLanguage(x, store))
+                    .Select(x => x.LanguageCode)
+                    .Distinct(StringComparer.OrdinalIgnoreCase);
+
+                var alternateRecords = alternateLanguages
+                    .Select(x => GetAlternateRecord(store, x, urlTemplate, baseUrl, entity, outline))
+                    .Where(x => x != null);
+
+                result.Alternates.AddRange(alternateRecords);
             }
 
-            return new List<SitemapItemRecord> { result };
+            return result;
+        }
+
+        public SitemapItemAlternateLinkRecord GetAlternateRecord(Store store, string language, string urlTemplate, string baseUrl, IEntity entity, Outline outline)
+        {
+            var url = _urlBuilder.BuildStoreUrl(store, language, urlTemplate, baseUrl, entity, outline);
+
+            if (string.IsNullOrEmpty(url))
+            {
+                return null;
+            }
+
+            return new SitemapItemAlternateLinkRecord
+            {
+                Url = url,
+                Language = language,
+                Type = "alternate",
+            };
+        }
+
+
+        private static bool IsMatchingStore(SeoInfo seo, Store store)
+        {
+            return seo.StoreId is null || seo.StoreId.EqualsIgnoreCase(store.Id);
+        }
+
+        private static bool IsMatchingLanguage(SeoInfo seo, Store store)
+        {
+            return !seo.LanguageCode.EqualsIgnoreCase(store.DefaultLanguage) &&
+                   store.Languages.Contains(seo.LanguageCode);
         }
     }
 }

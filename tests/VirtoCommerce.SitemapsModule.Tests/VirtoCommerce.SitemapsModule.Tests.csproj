@@ -7,6 +7,14 @@
   <ItemGroup>
     <None Remove="Resources\SerializedSitemapsData.json" />
     <EmbeddedResource Include="Resources\SerializedSitemapsData.json" />
+    <EmbeddedResource Include="Resources\sitemap_collapsed_en_de_images.xml" />
+    <EmbeddedResource Include="Resources\sitemap_collapsed_en_images.xml" />
+    <EmbeddedResource Include="Resources\sitemap_collapsed_en.xml" />
+    <EmbeddedResource Include="Resources\sitemap_collapsed_en_de.xml" />
+    <EmbeddedResource Include="Resources\sitemap_short_en_de_images.xml" />
+    <EmbeddedResource Include="Resources\sitemap_short_en_images.xml" />
+    <EmbeddedResource Include="Resources\sitemap_short_en.xml" />
+    <EmbeddedResource Include="Resources\sitemap_short_en_de.xml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.4">
