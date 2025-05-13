@@ -28,7 +28,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             var progressInfo = new ExportImportProgressInfo();
             var vendorOptions = new SitemapItemOptions();
 
-            var vendorSitemapItems = sitemap.Items.Where(x => x.ObjectType.EqualsInvariant(SitemapItemTypes.Vendor)).ToList();
+            var vendorSitemapItems = sitemap.Items.Where(x => x.ObjectType.EqualsIgnoreCase(SitemapItemTypes.Vendor)).ToList();
 
             if (vendorSitemapItems.Count > 0)
             {

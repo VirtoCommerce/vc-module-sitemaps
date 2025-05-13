@@ -66,11 +66,11 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
             {
                 var validSitemapItems = new List<string>();
 
-                if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.Folder))
+                if (sitemapItem.ObjectType.EqualsIgnoreCase(SitemapItemTypes.Folder))
                 {
                     await LoadPagesRecursively(sitemap.StoreId, sitemapItem.UrlTemplate, allowedExtensions, validSitemapItems);
                 }
-                else if (sitemapItem.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem) &&
+                else if (sitemapItem.ObjectType.EqualsIgnoreCase(SitemapItemTypes.ContentItem) &&
                     IsExtensionAllowed(allowedExtensions, sitemapItem.UrlTemplate) &&
                     await _contentService.ItemExistsAsync(PagesContentType, sitemap.StoreId, sitemapItem.UrlTemplate))
                 {
@@ -145,7 +145,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services.SitemapItemRecordProviders
         {
             return sitemap.Items
                             .Where(si => !string.IsNullOrEmpty(si.ObjectType))
-                            .Where(si => si.ObjectType.EqualsInvariant(SitemapItemTypes.ContentItem) || si.ObjectType.EqualsInvariant(SitemapItemTypes.Folder))
+                            .Where(si => si.ObjectType.EqualsIgnoreCase(SitemapItemTypes.ContentItem) || si.ObjectType.EqualsIgnoreCase(SitemapItemTypes.Folder))
                             .ToList();
         }
 

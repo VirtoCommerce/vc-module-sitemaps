@@ -3,9 +3,10 @@ using System.Linq;
 using System.Text;
 using VirtoCommerce.CatalogModule.Core.Extensions;
 using VirtoCommerce.CatalogModule.Core.Model.ListEntry;
-using VirtoCommerce.CoreModule.Core.Outlines;
-using VirtoCommerce.CoreModule.Core.Seo;
+using VirtoCommerce.CatalogModule.Core.Outlines;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Seo.Core.Extensions;
+using VirtoCommerce.Seo.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Services;
 using VirtoCommerce.StoreModule.Core.Extensions;
@@ -119,12 +120,12 @@ public class SitemapUrlBuilder : ISitemapUrlBuilder
         }
         else
         {
-            seoPath = entity.GetBestMatchingSeoInfo(store, language)?.SemanticUrl ?? string.Empty;
+            seoPath = entity.GetBestMatchingSeoInfo(store.Id, store.DefaultLanguage, language)?.SemanticUrl ?? string.Empty;
         }
 
         if (outline != null)
         {
-            seoPath = outline.Items.GetSeoPath(store, language, defaultValue: seoPath, seoLinksType);
+            seoPath = outline.Items.GetSeoPath(seoLinksType, store.Id, store.DefaultLanguage, language, defaultValue: seoPath);
         }
         else if (entity is IHasOutlines hasOutlines)
         {
