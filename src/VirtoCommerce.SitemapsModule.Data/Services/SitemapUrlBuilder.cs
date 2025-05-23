@@ -120,12 +120,12 @@ public class SitemapUrlBuilder : ISitemapUrlBuilder
         }
         else
         {
-            seoPath = entity.GetBestMatchingSeoInfo(store.Id, store.DefaultLanguage, language)?.SemanticUrl ?? string.Empty;
+            seoPath = entity.GetBestMatchingSeoInfo(store?.Id, store?.DefaultLanguage, language)?.SemanticUrl ?? string.Empty;
         }
 
         if (outline != null)
         {
-            seoPath = outline.Items.GetSeoPath(seoLinksType, store.Id, store.DefaultLanguage, language, defaultValue: seoPath);
+            seoPath = outline.Items.GetSeoPath(seoLinksType, store?.Id, store?.DefaultLanguage, language, defaultValue: seoPath);
         }
         else if (entity is IHasOutlines hasOutlines)
         {
