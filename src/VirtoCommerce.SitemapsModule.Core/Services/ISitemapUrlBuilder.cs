@@ -1,4 +1,3 @@
-// todo: question, now we have link to catalog module
 using VirtoCommerce.CatalogModule.Core.Outlines;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.StoreModule.Core.Model;
