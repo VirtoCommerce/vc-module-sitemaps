@@ -26,7 +26,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Repositories
                                                    .Select(x => new { SitemapId = x.Key, TotalItemsCount = x.Count() }).ToArrayAsync();
             foreach (var totalItemsCount in totalItemsCounts)
             {
-                var sitemap = result.FirstOrDefault(x => x.Id.EqualsInvariant(totalItemsCount.SitemapId));
+                var sitemap = result.FirstOrDefault(x => x.Id.EqualsIgnoreCase(totalItemsCount.SitemapId));
                 if (sitemap != null)
                 {
                     sitemap.TotalItemsCount = totalItemsCount.TotalItemsCount;
