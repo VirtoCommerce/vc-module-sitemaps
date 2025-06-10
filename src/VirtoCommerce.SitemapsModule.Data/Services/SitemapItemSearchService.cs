@@ -74,7 +74,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
 
             if (!string.IsNullOrEmpty(criteria.ObjectType))
             {
-                query = query.Where(i => i.ObjectType.EqualsInvariant(criteria.ObjectType));
+                query = query.Where(i => i.ObjectType.EqualsIgnoreCase(criteria.ObjectType));
             }
             return query;
         }
