@@ -40,9 +40,9 @@ public class SitemapUrlBuilder : ISitemapUrlBuilder
             // Add language if store has multiple languages
             if (store.Languages?.Count > 1)
             {
-                var actualLanguage = store.Languages.FirstOrDefault(x => x.EqualsIgnoreCase(language)) ?? store.DefaultLanguage;
+                var actualLanguage = store.Languages.FirstOrDefault(x => x.EqualsIgnoreCase(language));
 
-                if (!url.Contains($"/{actualLanguage}/", StringComparison.OrdinalIgnoreCase))
+                if (!string.IsNullOrEmpty(actualLanguage) && actualLanguage != store.DefaultLanguage)
                 {
                     builder.Append('/');
                     builder.Append(actualLanguage);
