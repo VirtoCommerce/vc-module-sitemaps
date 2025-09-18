@@ -210,8 +210,8 @@
       "title": "Export to assets cron expression",
       "description": "Configure the cron expression for export sitemap files to store assets folder by schedule. By default, '0 0 * * *' daily at 00:00"
     },
-    "Sitemap.IncludeLanguageInUrlForDefaultStoreLanguage": {
-      "title": "Include language in URL for default store's' language",
+    "Sitemap.IncludeDefaultStoreLanguageInUrl": {
+      "title": "Include default store's language in URL",
       "description": "Enable/disable inclusion of the language code in URLs for the store's default language. When enabled, URLs will contain the language code even for the default language (e.g., '/en-US/products'"
     }
   },

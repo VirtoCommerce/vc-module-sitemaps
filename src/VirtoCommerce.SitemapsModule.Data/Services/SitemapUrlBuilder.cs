@@ -60,7 +60,7 @@ public class SitemapUrlBuilder : ISitemapUrlBuilder
 
     protected virtual bool IncludeLanguageInUrl(Store store, string actualLanguage)
     {
-        var includeLanguageInUrlForDefaultStore = store.Settings.GetValue<bool>(Core.ModuleConstants.Settings.General.IncludeLanguageInUrlForDefaultStoreLanguage);
+        var includeLanguageInUrlForDefaultStore = store.Settings.GetValue<bool>(Core.ModuleConstants.Settings.General.IncludeDefaultStoreLanguageInUrl);
 
         return includeLanguageInUrlForDefaultStore
             || !actualLanguage.EqualsIgnoreCase(store.DefaultLanguage);

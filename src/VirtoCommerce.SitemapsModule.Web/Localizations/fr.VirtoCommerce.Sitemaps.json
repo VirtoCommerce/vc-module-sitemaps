@@ -210,7 +210,7 @@
       "title": "Expression cron pour l'exportation vers les ressources",
       "description": "Configurez l'expression cron pour exporter les fichiers de plan de site vers le dossier des ressources du magasin par programme. Par défaut, '0 0 * * *' quotidiennement à 00:00."
     },
-    "Sitemap.IncludeLanguageInUrlForDefaultStoreLanguage": {
+    "Sitemap.IncludeDefaultStoreLanguageInUrl": {
       "title": "Inclure la langue dans l'URL pour la langue par défaut du magasin",
       "description": "Activer/désactiver l'inclusion du code de langue dans les URLs pour la langue par défaut du magasin. Lorsque cette option est activée, les URLs contiendront le code de langue même pour la langue par défaut (par exemple, '/fr-FR/produits')."
     }

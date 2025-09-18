@@ -210,7 +210,7 @@
       "title": "Cron-Ausdruck für den Export zu Ressourcen",
       "description": "Konfigurieren Sie den Cron-Ausdruck für den Export von Sitemap-Dateien in den Ressourcenordner des Shops nach Zeitplan. Standardmäßig '0 0 * * *' täglich um 00:00 Uhr"
     },
-    "Sitemap.IncludeLanguageInUrlForDefaultStoreLanguage": {
+    "Sitemap.IncludeDefaultStoreLanguageInUrl": {
       "title": "Sprache in URL für Standardsprache des Shops einfügen",
       "description": "Aktivieren/deaktivieren Sie die Einfügung des Sprachcodes in URLs für die Standardsprache des Shops. Wenn aktiviert, enthalten URLs den Sprachcode auch für die Standardsprache (z. B. '/de-DE/produkte')."
     }
