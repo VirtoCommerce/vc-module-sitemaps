@@ -209,6 +209,10 @@
     "Sitemap.ExportToAssets.JobCronExpression": {
       "title": "导出到资产的 cron 表达式",
       "description": "配置 cron 表达式以按计划将网站地图文件导出到商店资产文件夹。默认情况下，'0 0 * * *' 每天 00:00。"
+    },
+    "Sitemap.IncludeDefaultStoreLanguageInUrl": {
+      "title": "为商店默认语言的URL包含语言代码",
+      "description": "启用/禁用在商店默认语言的URL中包含语言代码。启用后，即使是默认语言，URL也会包含语言代码（例如：'/zh-CN/products'）。"
     }
   },
   "module": {
