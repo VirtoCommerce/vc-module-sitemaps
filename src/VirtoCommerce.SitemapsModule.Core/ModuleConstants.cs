@@ -78,6 +78,14 @@ namespace VirtoCommerce.SitemapsModule.Core
                     ValueType = SettingValueType.Boolean,
                     DefaultValue = false,
                 };
+
+                public static SettingDescriptor IncludeLanguageInUrlForDefaultStoreLanguage { get; } = new()
+                {
+                    Name = "Sitemap.IncludeLanguageInUrlForDefaultStoreLanguage",
+                    GroupName = "Sitemap|General",
+                    ValueType = SettingValueType.Boolean,
+                    DefaultValue = false,
+                };
             }
 
             public static class ProductLinks
@@ -188,6 +196,7 @@ namespace VirtoCommerce.SitemapsModule.Core
                     yield return General.AcceptedFilenameExtensions;
                     yield return General.ExportToAssetsJobCronExpression;
                     yield return General.EnableExportToAssetsJob;
+                    yield return General.IncludeLanguageInUrlForDefaultStoreLanguage;
                     yield return CategoryLinks.CategoryPageUpdateFrequency;
                     yield return CategoryLinks.CategoryPagePriority;
                     yield return ProductLinks.ProductPageUpdateFrequency;
@@ -203,6 +212,7 @@ namespace VirtoCommerce.SitemapsModule.Core
                 get
                 {
                     yield return General.EnableExportToAssetsJob;
+                    yield return General.IncludeLanguageInUrlForDefaultStoreLanguage;
                     yield return CategoryLinks.CategoryPageUpdateFrequency;
                     yield return CategoryLinks.CategoryPagePriority;
                     yield return ProductLinks.ProductPageUpdateFrequency;

@@ -209,6 +209,10 @@
     "Sitemap.ExportToAssets.JobCronExpression": {
       "title": "Expresión cron para exportar a activos",
       "description": "Configure la expresión cron para exportar archivos de mapa del sitio a la carpeta de activos de la tienda por programación. Por defecto, '0 0 * * *' diariamente a las 00:00."
+    },
+    "Sitemap.IncludeLanguageInUrlForDefaultStoreLanguage": {
+      "title": "Incluir idioma en la URL para el idioma predeterminado de la tienda",
+      "description": "Habilite/deshabilite la inclusión del código de idioma en las URLs para el idioma predeterminado de la tienda. Cuando está habilitado, las URLs contendrán el código de idioma incluso para el idioma predeterminado (por ejemplo, '/es-ES/productos')."
     }
   },
   "module": {

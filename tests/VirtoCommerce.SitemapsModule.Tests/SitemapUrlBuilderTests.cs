@@ -19,6 +19,7 @@ public class SitemapUrlBuilderTests
         Languages = ["en-US"],
         DefaultLanguage = "en-US",
         Catalog = "catalog1",
+        Settings = [],
     };
 
     private static readonly Store _multiLanguageStore = new()
@@ -28,6 +29,7 @@ public class SitemapUrlBuilderTests
         Languages = ["en-US", "fr-FR"],
         DefaultLanguage = "en-US",
         Catalog = "catalog2",
+        Settings = [],
     };
 
     private static readonly TestEntity _entity = new()
@@ -95,9 +97,9 @@ public class SitemapUrlBuilderTests
 
             new object[] { _singleLanguageStore, null,               null,    "",                          null,    "https://store.com/" },
             new object[] { _singleLanguageStore, null,               null,    "test",                      null,    "https://store.com/test" },
-            new object[] { _singleLanguageStore, null,               null,    "{slug}",                    _entity, "https://store.com/s1-en-category2" },
-            new object[] { _singleLanguageStore, null,               "en-US",    "{slug}",                    _entity, "https://store.com/s1-en-category2" },
-            new object[] { _singleLanguageStore, null,               "fr-FR",    "{slug}",                    _entity, "https://store.com/s1-en-category2" },
+            new object[] { _singleLanguageStore, null,               null,    "{slug}",                    _entity, "https://store.com/s1-en-category1/s1-en-category2" },
+            new object[] { _singleLanguageStore, null,               "en-US",    "{slug}",                    _entity, "https://store.com/s1-en-category1/s1-en-category2" },
+            new object[] { _singleLanguageStore, null,               "fr-FR",    "{slug}",                    _entity, "https://store.com/s1-en-category1/s1-en-category2" },
             new object[] { _singleLanguageStore, null,               "fr-FR",    "{slug_short}",              _entity, "https://store.com/s1-en-category2" },
             new object[] { _singleLanguageStore, null,               "fr-FR",    "{slug_long}",               _entity, "https://store.com/s1-en-category1/s1-en-category2" },
 

@@ -5,6 +5,7 @@ using VirtoCommerce.CatalogModule.Core.Extensions;
 using VirtoCommerce.CatalogModule.Core.Model.ListEntry;
 using VirtoCommerce.CatalogModule.Core.Outlines;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.Seo.Core.Extensions;
 using VirtoCommerce.Seo.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Models;
@@ -42,7 +43,8 @@ public class SitemapUrlBuilder : ISitemapUrlBuilder
             {
                 var actualLanguage = store.Languages.FirstOrDefault(x => x.EqualsIgnoreCase(language));
 
-                if (!string.IsNullOrEmpty(actualLanguage) && actualLanguage != store.DefaultLanguage)
+                if (!string.IsNullOrEmpty(actualLanguage)
+                    && IncludeLanguageInUrl(store, actualLanguage))
                 {
                     builder.Append('/');
                     builder.Append(actualLanguage);
@@ -54,6 +56,14 @@ public class SitemapUrlBuilder : ISitemapUrlBuilder
         builder.Append(url.TrimStart('~', '/'));
 
         return builder.ToString();
+    }
+
+    protected virtual bool IncludeLanguageInUrl(Store store, string actualLanguage)
+    {
+        var includeLanguageInUrlForDefaultStore = store.Settings.GetValue<bool>(Core.ModuleConstants.Settings.General.IncludeLanguageInUrlForDefaultStoreLanguage);
+
+        return includeLanguageInUrlForDefaultStore
+            || !actualLanguage.EqualsIgnoreCase(store.DefaultLanguage);
     }
 
 
