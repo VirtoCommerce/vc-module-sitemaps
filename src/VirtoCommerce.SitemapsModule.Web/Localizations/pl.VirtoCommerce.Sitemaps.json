@@ -209,6 +209,10 @@
     "Sitemap.ExportToAssets.JobCronExpression": {
       "title": "Wyrażenie cron dla eksportu do zasobów",
       "description": "Skonfiguruj wyrażenie cron dla eksportu plików mapy witryny do folderu zasobów sklepu według harmonogramu. Domyślnie '0 0 * * *' codziennie o 00:00."
+    },
+    "Sitemap.IncludeDefaultStoreLanguageInUrl": {
+      "title": "Dołącz język do adresu URL dla domyślnego języka sklepu",
+      "description": "Włącz/wyłącz dołączanie kodu języka do adresów URL dla domyślnego języka sklepu. Po włączeniu adresy URL będą zawierać kod języka nawet dla domyślnego języka (np. '/pl-PL/produkty')."
     }
   },
   "module": {

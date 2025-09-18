@@ -209,6 +209,10 @@
     "Sitemap.ExportToAssets.JobCronExpression": {
       "title": "リソースへのエクスポートのcron式",
       "description": "スケジュールに従ってサイトマップファイルをストアのリソースフォルダーにエクスポートするためのcron式を設定します。デフォルトでは、'0 0 * * *' 毎日00:00。"
+    },
+    "Sitemap.IncludeDefaultStoreLanguageInUrl": {
+      "title": "ストアのデフォルト言語のURLに言語を含める",
+      "description": "ストアのデフォルト言語のURLに言語コードを含めるかどうかを有効/無効にします。有効にすると、デフォルト言語でもURLに言語コードが含まれます（例：'/ja-JP/products'）。"
     }
   },
   "module": {
