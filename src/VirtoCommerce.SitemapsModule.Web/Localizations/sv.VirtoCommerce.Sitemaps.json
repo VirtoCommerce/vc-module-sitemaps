@@ -1,0 +1,223 @@
+{
+  "sitemapsModule": {
+    "widgets": {
+      "storeSitemaps": {
+        "title": "Sajtkartor"
+      }
+    },
+    "blades": {
+      "sitemapList": {
+        "title": "Sajtkartor",
+        "subtitle": "Hantera sajtkartor för att inkludera dem i indexsajtkartan sitemap.xml",
+        "toolbar": {
+          "download": "Ladda ner som ZIP",
+          "exportToStoreAssets": "Exportera till butikens resurser"
+        },
+        "gridHeaders": {
+          "location": "Plats",
+          "itemsCount": "Antal objekt"
+        },
+        "noSitemapsMessage": "Inga sajtkartor ännu"
+      },
+      "sitemap": {
+        "newSitemapTitle": "Ny sajtkarta",
+        "toolbar": {
+          "addItems": "Lägg till objekt",
+          "removeItems": "Ta bort objekt"
+        },
+        "formSitemap": {
+          "labelSitemapLocation": "Sajtkartans plats",
+          "descriptionSitemapLocation": "Ange en relativ URL för sajtkartan som är unik inom indexsajtkartans kontext. Till exempel: 'kategorier/elektronik.xml', 'produkter.xml'. Undvik att använda 'sitemap.xml' i sajtkartans sökväg",
+          "sitemapIndexErrorMessage": "Undvik att använda \"sitemap.xml\" som sajtkartans plats",
+          "sitemapSitemapLocationExistErrorMessage": "Denna sajtkartaplats används redan",
+          "labelSitemapItemsLocation": "Plats för sajtkartobjekt",
+          "descriptionSitemapItemsLocation": "Definiera mönstret för att generera URL:er för sajtkartobjekt. Använd {slug} för att inkludera den SEO-semantiska URL-delen baserat på butikens 'Länkinställningar'. Till exempel: /min-sida/{slug}.\n\nHär är den kompletta listan över stödda slug-format:\n{slug} – URL:er följer den angivna 'SEO-länkar'-inställningen i butiken.\n{slug_short} – URL:er följer SeoLinksType.Short.\n{slug_long} – URL:er följer SeoLinksType.Long.\n{slug_collapsed} – URL:er följer SeoLinksType.Collapsed.",
+          "labelSitemapItems": "Sajtkartobjekt",
+          "sitemapMode": "Exportera katalogobjekt",
+          "hide-description": "Dölj"
+        },
+        "sitemapModes": {
+          "sitemapFullMode": "Kategorier och produkter",
+          "sitemapOnlyCategoriesMode": "Endast kategorier",
+          "sitemapOnlyProductsMode": "Endast produkter"
+        },
+        "gridHeaders": {
+          "img": "Bild",
+          "title": "Titel",
+          "type": "Typ"
+        },
+        "noSitemapsItemsMessage": "Inga sajtkartobjekt ännu"
+      },
+      "addItems": {
+        "title": "Lägg till objekt",
+        "addCatalogItem": {
+          "title": "Katalogobjekt",
+          "description": "Inkludera produkter och kategorier"
+        },
+        "addVendorItem": {
+          "title": "Leverantörsobjekt",
+          "description": "Inkludera leverantörer"
+        },
+        "addStaticContentItem": {
+          "title": "Statiska innehållsobjekt",
+          "description": "Inkludera sidor och bloggar"
+        },
+        "addCustomItem": {
+          "title": "Anpassat objekt",
+          "description": "Objekt med anpassad URL"
+        }
+      },
+      "addCatalogItems": {
+        "title": "Lägg till katalogobjekt",
+        "toolbar": {
+          "addSelected": "Lägg till valda"
+        }
+      },
+      "addCustomItem": {
+        "title": "Lägg till anpassat objekt",
+        "toolbar": {
+          "save": "Spara"
+        },
+        "formCustomSitemapItem": {
+          "labelUrlTemplate": "URL-mall",
+          "descriptionUrlTemplate": "Ange en relativ URL för anpassade objekt. Till exempel: /om-oss eller /min-mapp/min-sida"
+        }
+      },
+      "addVendorItems": {
+        "title": "Lägg till leverantörsobjekt",
+        "toolbar": {
+          "addSelected": "Lägg till valda"
+        },
+        "bread-crumb-top": "Alla leverantörer"
+      },
+      "addStaticContentItems": {
+        "title": "Lägg till statiska innehållsobjekt",
+        "toolbar": {
+          "addSelected": "Lägg till valda"
+        },
+        "bread-crumb-top": "Alla objekt"
+      },
+      "download": {
+        "title": "Ladda ner sajtkarta",
+        "labels": {
+          "start": "Start",
+          "end": "Slut",
+          "total": "Totalt",
+          "processed": "Bearbetat",
+          "errors-count": "Antal fel",
+          "errors": "Fel",
+          "download-url": "Nedladdnings-URL"
+        }
+      },
+      "exportToStoreAssets": {
+        "title": "Exportera sajtkarta till butikens resurser",
+        "labels": {
+          "start": "Start",
+          "end": "Slut",
+          "total": "Totalt",
+          "processed": "Bearbetat",
+          "errors-count": "Antal fel",
+          "errors": "Fel",
+          "download-url": "Du hittar sitemap.xml på följande URL"
+        }
+      }
+    },
+    "contextMenu": {
+      "manage": "Hantera",
+      "remove": "Ta bort"
+    },
+    "dialogs": {
+      "sitemap-delete": {
+        "title": "Bekräftelse för borttagning",
+        "message": "Är du säker på att du vill ta bort valda sajtkartor?"
+      },
+      "sitemapItems-delete": {
+        "title": "Bekräftelse för borttagning",
+        "message": "Är du säker på att du vill ta bort valda objekt från sajtkartan?"
+      },
+      "confirmBaseUrl": {
+        "title": "Bas-URL",
+        "messageNoBaseUrl": "Ange bas-URL för sajtkartor",
+        "messageConfirmBaseUrl": "Bekräfta bas-URL för sajtkartor"
+      },
+      "discardChanges": {
+        "title": "Spara ändringar",
+        "message": "Sajtkartan har ändrats. Vill du spara ändringarna?"
+      }
+    },
+    "errorMessages": {
+      "filenameNotUnique": "En sajtkarta med detta filnamn finns redan"
+    }
+  },
+  "permissions": {
+    "sitemaps:access": "Tillgång till att öppna sajtkartor-panelen",
+    "sitemaps:create": "Tillgång till att skapa en sajtkarta",
+    "sitemaps:read": "Tillgång till att visa sajtkartdetaljer",
+    "sitemaps:update": "Tillgång till att uppdatera en sajtkarta",
+    "sitemaps:delete": "Tillgång till att ta bort en sajtkarta",
+    "sitemaps:exportToStoreAssets": "Tillåter manuell export till butikens resurser"
+  },
+  "settings": {
+    "Sitemap.RecordsLimitPerFile": {
+      "title": "Postgräns",
+      "description": "Ange det maximala antalet poster som är tillåtna i varje sajtkartfil. Sökmotorer accepterar sajtkartfiler med färre än 50 000 URL:er och en filstorlek under 10 MB"
+    },
+    "Sitemap.FilenameSeparator": {
+      "title": "Filnamnsavgränsare",
+      "description": "Definiera avgränsaren som används mellan sajtkartans filnamn och dess del om antalet objekt överskrider postgränsen per fil"
+    },
+    "Sitemap.SearchBunchSize": {
+      "title": "Sökgruppstorlek",
+      "description": "Ange storleken på sökobjektsgrupper, till exempel för katalogsökning"
+    },
+    "Sitemap.AcceptedFilenameExtensions": {
+      "title": "Godkända filändelser",
+      "description": "Lista filändelser för statiskt innehåll som ska inkluderas i sajtkartan, separerade med kommatecken. Till exempel: '.md, .html'"
+    },
+    "Sitemap.IncludeImages": {
+      "title": "Bildinkludering i sajtkarta",
+      "description": "Aktivera/inaktivera inkludering av bilder i sajtkartgenerering"
+    },
+    "Sitemap.ProductPageUpdateFrequency": {
+      "title": "Uppdateringsfrekvens för produktsidor",
+      "description": "Ange hur ofta produktsidorna uppdateras. Detta informerar sökmotorer men kanske inte stämmer exakt med deras indexeringsfrekvens"
+    },
+    "Sitemap.ProductPagePriority": {
+      "title": "Prioritet för produktsidor",
+      "description": "Definiera prioriteten för produktside-URL:er relativt andra på din webbplats. Använd värden från 0,0 till 1,0. Detta indikerar endast betydelse för indexerare och påverkar inte jämförelser med sidor på andra webbplatser"
+    },
+    "Sitemap.CategoryPageUpdateFrequency": {
+      "title": "Uppdateringsfrekvens för kategorisidor",
+      "description": "Ange hur ofta kategorisidorna uppdateras. Detta informerar sökmotorer men kanske inte stämmer exakt med deras indexeringsfrekvens"
+    },
+    "Sitemap.BlogPageUpdateFrequency": {
+      "title": "Uppdateringsfrekvens för bloggsidor",
+      "description": "Ange hur ofta bloggsidorna uppdateras. Detta informerar sökmotorer men kanske inte stämmer exakt med deras indexeringsfrekvens"
+    },
+    "Sitemap.CategoryPagePriority": {
+      "title": "Prioritet för kategorisidor",
+      "description": "Definiera prioriteten för kategoriside-URL:er relativt andra på din webbplats. Använd värden från 0,0 till 1,0. Detta indikerar endast betydelse för indexerare och påverkar inte jämförelser med sidor på andra webbplatser"
+    },
+    "Sitemap.BlogPagePriority": {
+      "title": "Prioritet för bloggsidor",
+      "description": "Definiera prioriteten för bloggsides-URL:er relativt andra på din webbplats. Använd värden från 0,0 till 1,0. Detta indikerar endast betydelse för indexerare och påverkar inte jämförelser med sidor på andra webbplatser"
+    },
+    "Sitemap.ExportToAssets.EnableExportToAssetsJob": {
+      "title": "Exportera sajtkartfiler via jobb",
+      "description": "Aktivera/inaktivera export till butikens resursmapp. Spara alla sajtkartartefakter i mappen 'stores/{storeId}/sitemap'"
+    },
+    "Sitemap.ExportToAssets.JobCronExpression": {
+      "title": "Cron-uttryck för export till resurser",
+      "description": "Konfigurera cron-uttrycket för export av sajtkartfiler till butikens resursmapp enligt schema. Standard är '0 0 * * *' dagligen kl. 00:00"
+    },
+    "Sitemap.IncludeDefaultStoreLanguageInUrl": {
+      "title": "Inkludera butikens standardspråk i URL",
+      "description": "Aktivera/inaktivera inkludering av språkkoden i URL:er för butikens standardspråk. När aktiverat kommer URL:er att innehålla språkkoden även för standardspråket (t.ex. '/sv-SE/produkter')"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Sitemaps": {
+      "description": "Exportera/importera sajtkartor med alla sajtkartobjekt"
+    }
+  }
+}
