@@ -176,7 +176,7 @@
     },
     "Sitemap.IncludeImages": {
       "title": "Image inclusion in sitemap",
-      "description": "Enable/ disable inclusion of images in sitemap generation"
+      "description": "Enable/disable inclusion of images in sitemap generation"
     },
     "Sitemap.ProductPageUpdateFrequency": {
       "title": "Product page update frequency",
@@ -204,7 +204,7 @@
     },
     "Sitemap.ExportToAssets.EnableExportToAssetsJob": {
       "title": "Export sitemap files by job",
-      "description": "Enable/ disable export to store assets folder. Save all sitemap artifacts to 'stores/{storeId}/sitemap' asset folder"
+      "description": "Enable/disable export to store assets folder. Save all sitemap artifacts to 'stores/{storeId}/sitemap' asset folder"
     },
     "Sitemap.ExportToAssets.JobCronExpression": {
       "title": "Export to assets cron expression",
@@ -217,7 +217,7 @@
   },
   "module": {
     "VirtoCommerce.Sitemaps": {
-      "description": "Export/Import sitemaps with all sitemap items"
+      "description": "Export/import sitemaps with all sitemap items"
     }
   }
 }

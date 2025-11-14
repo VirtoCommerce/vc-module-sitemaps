@@ -1,0 +1,223 @@
+{
+  "sitemapsModule": {
+    "widgets": {
+      "storeSitemaps": {
+        "title": "Nettstedskart"
+      }
+    },
+    "blades": {
+      "sitemapList": {
+        "title": "Nettstedskart",
+        "subtitle": "Administrer nettstedskart for å inkludere dem i indeksnettstedskartet sitemap.xml",
+        "toolbar": {
+          "download": "Last ned som ZIP",
+          "exportToStoreAssets": "Eksporter til butikkens ressurser"
+        },
+        "gridHeaders": {
+          "location": "Plassering",
+          "itemsCount": "Antall elementer"
+        },
+        "noSitemapsMessage": "Ingen nettstedskart ennå"
+      },
+      "sitemap": {
+        "newSitemapTitle": "Nytt nettstedskart",
+        "toolbar": {
+          "addItems": "Legg til elementer",
+          "removeItems": "Fjern elementer"
+        },
+        "formSitemap": {
+          "labelSitemapLocation": "Nettstedskart-plassering",
+          "descriptionSitemapLocation": "Angi en relativ URL for nettstedskartet som er unik innenfor konteksten til indeksnettstedskartet. For eksempel: 'kategorier/elektronikk.xml', 'produkter.xml'. Unngå å bruke 'sitemap.xml' i nettstedskartbanen",
+          "sitemapIndexErrorMessage": "Unngå å bruke \"sitemap.xml\" som nettstedskart-plassering",
+          "sitemapSitemapLocationExistErrorMessage": "Denne nettstedskart-plasseringen er allerede i bruk",
+          "labelSitemapItemsLocation": "Plassering for nettstedskart-elementer",
+          "descriptionSitemapItemsLocation": "Definer mønsteret for å generere URL-er for nettstedskart-elementer. Bruk {slug} for å inkludere den SEO-semantiske URL-delen basert på butikkens 'Lenkeinnstillinger'-regler. For eksempel: /min-side/{slug}.\n\nHer er den komplette listen over støttede slug-formater:\n{slug} – URL-er samsvarer med den angitte 'SEO-lenker'-innstillingen i butikken.\n{slug_short} – URL-er samsvarer med SeoLinksType.Short.\n{slug_long} – URL-er samsvarer med SeoLinksType.Long.\n{slug_collapsed} – URL-er samsvarer med SeoLinksType.Collapsed.",
+          "labelSitemapItems": "Nettstedskart-elementer",
+          "sitemapMode": "Eksporter katalogelementer",
+          "hide-description": "Skjul"
+        },
+        "sitemapModes": {
+          "sitemapFullMode": "Kategorier og produkter",
+          "sitemapOnlyCategoriesMode": "Kun kategorier",
+          "sitemapOnlyProductsMode": "Kun produkter"
+        },
+        "gridHeaders": {
+          "img": "Bilde",
+          "title": "Tittel",
+          "type": "Type"
+        },
+        "noSitemapsItemsMessage": "Ingen nettstedskart-elementer ennå"
+      },
+      "addItems": {
+        "title": "Legg til elementer",
+        "addCatalogItem": {
+          "title": "Katalogelementer",
+          "description": "Inkluder produkter og kategorier"
+        },
+        "addVendorItem": {
+          "title": "Leverandørelementer",
+          "description": "Inkluder leverandører"
+        },
+        "addStaticContentItem": {
+          "title": "Statiske innholdselementer",
+          "description": "Inkluder sider og blogger"
+        },
+        "addCustomItem": {
+          "title": "Egendefinert element",
+          "description": "Element med egendefinert URL"
+        }
+      },
+      "addCatalogItems": {
+        "title": "Legg til katalogelementer",
+        "toolbar": {
+          "addSelected": "Legg til valgte"
+        }
+      },
+      "addCustomItem": {
+        "title": "Legg til egendefinert element",
+        "toolbar": {
+          "save": "Lagre"
+        },
+        "formCustomSitemapItem": {
+          "labelUrlTemplate": "URL-mal",
+          "descriptionUrlTemplate": "Angi en relativ URL for egendefinerte elementer. For eksempel: /om-oss eller /min-mappe/min-side"
+        }
+      },
+      "addVendorItems": {
+        "title": "Legg til leverandørelementer",
+        "toolbar": {
+          "addSelected": "Legg til valgte"
+        },
+        "bread-crumb-top": "Alle leverandører"
+      },
+      "addStaticContentItems": {
+        "title": "Legg til statiske innholdselementer",
+        "toolbar": {
+          "addSelected": "Legg til valgte"
+        },
+        "bread-crumb-top": "Alle elementer"
+      },
+      "download": {
+        "title": "Last ned nettstedskart",
+        "labels": {
+          "start": "Start",
+          "end": "Slutt",
+          "total": "Totalt",
+          "processed": "Behandlet",
+          "errors-count": "Antall feil",
+          "errors": "Feil",
+          "download-url": "Nedlastings-URL"
+        }
+      },
+      "exportToStoreAssets": {
+        "title": "Eksporter nettstedskart til butikkens ressurser",
+        "labels": {
+          "start": "Start",
+          "end": "Slutt",
+          "total": "Totalt",
+          "processed": "Behandlet",
+          "errors-count": "Antall feil",
+          "errors": "Feil",
+          "download-url": "Du finner sitemap.xml på følgende URL"
+        }
+      }
+    },
+    "contextMenu": {
+      "manage": "Administrer",
+      "remove": "Fjern"
+    },
+    "dialogs": {
+      "sitemap-delete": {
+        "title": "Slett bekreftelse",
+        "message": "Er du sikker på at du vil slette valgte nettstedskart?"
+      },
+      "sitemapItems-delete": {
+        "title": "Fjern bekreftelse",
+        "message": "Er du sikker på at du vil fjerne valgte elementer fra nettstedskartet?"
+      },
+      "confirmBaseUrl": {
+        "title": "Base-URL",
+        "messageNoBaseUrl": "Angi base-URL for nettstedskart",
+        "messageConfirmBaseUrl": "Bekreft base-URL for nettstedskart"
+      },
+      "discardChanges": {
+        "title": "Lagre endringer",
+        "message": "Nettstedskartet er endret. Vil du lagre endringene?"
+      }
+    },
+    "errorMessages": {
+      "filenameNotUnique": "Et nettstedskart med dette filnavnet finnes allerede"
+    }
+  },
+  "permissions": {
+    "sitemaps:access": "Tilgang til å åpne nettstedskart-panelet",
+    "sitemaps:create": "Tilgang til å opprette et nettstedskart",
+    "sitemaps:read": "Tilgang til å vise detaljer om nettstedskart",
+    "sitemaps:update": "Tilgang til å oppdatere et nettstedskart",
+    "sitemaps:delete": "Tilgang til å slette et nettstedskart",
+    "sitemaps:exportToStoreAssets": "Tillater manuell eksport til butikkens ressurser"
+  },
+  "settings": {
+    "Sitemap.RecordsLimitPerFile": {
+      "title": "Grense for poster",
+      "description": "Angi maksimalt antall poster tillatt i hver nettstedskartfil. Søkemotorer aksepterer nettstedskartfiler med færre enn 50 000 URL-er og en filstørrelse under 10 MB"
+    },
+    "Sitemap.FilenameSeparator": {
+      "title": "Filnavn-separator",
+      "description": "Definer separatoren som brukes mellom nettstedskartfilnavnet og delen hvis antall elementer overstiger grensen for poster per fil"
+    },
+    "Sitemap.SearchBunchSize": {
+      "title": "Søkebuntstørrelse",
+      "description": "Angi størrelsen på søkeelementbunter, for eksempel for katalogsøk"
+    },
+    "Sitemap.AcceptedFilenameExtensions": {
+      "title": "Godkjente filendelser",
+      "description": "List opp filendelsene for statisk innhold som skal inkluderes i nettstedskartet, adskilt med komma. For eksempel: '.md, .html'"
+    },
+    "Sitemap.IncludeImages": {
+      "title": "Bildeinkludering i nettstedskart",
+      "description": "Aktiver/deaktiver inkludering av bilder i generering av nettstedskart"
+    },
+    "Sitemap.ProductPageUpdateFrequency": {
+      "title": "Oppdateringsfrekvens for produktsider",
+      "description": "Angi hvor ofte produktsidene oppdateres. Dette informerer søkemotorer, men samsvarer kanskje ikke nøyaktig med deres gjennomsøkingsfrekvens"
+    },
+    "Sitemap.ProductPagePriority": {
+      "title": "Prioritet for produktsider",
+      "description": "Definer prioriteten til produktside-URL-er i forhold til andre på nettstedet ditt. Bruk verdier fra 0,0 til 1,0. Dette indikerer kun betydning for gjennomsøkere og påvirker ikke sammenligninger med sider på andre nettsteder"
+    },
+    "Sitemap.CategoryPageUpdateFrequency": {
+      "title": "Oppdateringsfrekvens for kategorisider",
+      "description": "Angi hvor ofte kategorisidene oppdateres. Dette informerer søkemotorer, men samsvarer kanskje ikke nøyaktig med deres gjennomsøkingsfrekvens"
+    },
+    "Sitemap.BlogPageUpdateFrequency": {
+      "title": "Oppdateringsfrekvens for bloggsider",
+      "description": "Angi hvor ofte bloggsidene oppdateres. Dette informerer søkemotorer, men samsvarer kanskje ikke nøyaktig med deres gjennomsøkingsfrekvens"
+    },
+    "Sitemap.CategoryPagePriority": {
+      "title": "Prioritet for kategorisider",
+      "description": "Definer prioriteten til kategoriside-URL-er i forhold til andre på nettstedet ditt. Bruk verdier fra 0,0 til 1,0. Dette indikerer kun betydning for gjennomsøkere og påvirker ikke sammenligninger med sider på andre nettsteder"
+    },
+    "Sitemap.BlogPagePriority": {
+      "title": "Prioritet for bloggsider",
+      "description": "Definer prioriteten til bloggsider-URL-er i forhold til andre på nettstedet ditt. Bruk verdier fra 0,0 til 1,0. Dette indikerer kun betydning for gjennomsøkere og påvirker ikke sammenligninger med sider på andre nettsteder"
+    },
+    "Sitemap.ExportToAssets.EnableExportToAssetsJob": {
+      "title": "Eksporter nettstedskartfiler via jobb",
+      "description": "Aktiver/deaktiver eksport til butikkens ressursmappe. Lagre alle nettstedskart-artifakter i 'stores/{storeId}/sitemap'-ressursmappen"
+    },
+    "Sitemap.ExportToAssets.JobCronExpression": {
+      "title": "Cron-uttrykk for eksport til ressurser",
+      "description": "Konfigurer cron-uttrykket for eksport av nettstedskartfiler til butikkens ressursmappe etter tidsplan. Standard er '0 0 * * *' daglig kl. 00:00"
+    },
+    "Sitemap.IncludeDefaultStoreLanguageInUrl": {
+      "title": "Inkluder butikkens standardspråk i URL",
+      "description": "Aktiver/deaktiver inkludering av språkkoden i URL-er for butikkens standardspråk. Når aktivert, vil URL-er inneholde språkkoden selv for standardspråket (f.eks. '/nb-NO/produkter')"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Sitemaps": {
+      "description": "Eksporter/importer nettstedskart med alle nettstedskart-elementer"
+    }
+  }
+}

@@ -1,0 +1,223 @@
+{
+  "sitemapsModule": {
+    "widgets": {
+      "storeSitemaps": {
+        "title": "Sivukartat"
+      }
+    },
+    "blades": {
+      "sitemapList": {
+        "title": "Sivukartat",
+        "subtitle": "Hallitse sivukarttoja sisällyttääksesi ne indeksi-sivukarttaan sitemap.xml",
+        "toolbar": {
+          "download": "Lataa ZIP-tiedostona",
+          "exportToStoreAssets": "Vie kaupan resursseihin"
+        },
+        "gridHeaders": {
+          "location": "Sijainti",
+          "itemsCount": "Kohteiden määrä"
+        },
+        "noSitemapsMessage": "Ei sivukarttoja vielä"
+      },
+      "sitemap": {
+        "newSitemapTitle": "Uusi sivukartta",
+        "toolbar": {
+          "addItems": "Lisää kohteita",
+          "removeItems": "Poista kohteita"
+        },
+        "formSitemap": {
+          "labelSitemapLocation": "Sivukartan sijainti",
+          "descriptionSitemapLocation": "Määritä suhteellinen URL-osoite sivukartalle, joka on yksilöllinen indeksi-sivukartan kontekstissa. Esimerkiksi: 'kategoriat/elektroniikka.xml', 'tuotteet.xml'. Vältä 'sitemap.xml'-käyttöä sivukartan polussa",
+          "sitemapIndexErrorMessage": "Vältä \"sitemap.xml\" käyttöä sivukartan sijaintina",
+          "sitemapSitemapLocationExistErrorMessage": "Tämä sivukartan sijainti on jo käytössä",
+          "labelSitemapItemsLocation": "Sivukarttakohteiden sijainti",
+          "descriptionSitemapItemsLocation": "Määritä malli sivukarttakohteiden URL-osoitteiden luomiseen. Käytä {slug} sisällyttääksesi SEO-semanttisen URL-osan kaupan 'Linkkiasetukset'-sääntöjen perusteella. Esimerkiksi: /min-sivu/{slug}.\n\nTässä on täydellinen luettelo tuetuista slug-muodoista:\n{slug} – URL-osoitteet noudattavat kaupan määritettyä 'SEO-linkit'-asetusta.\n{slug_short} – URL-osoitteet noudattavat SeoLinksType.Short.\n{slug_long} – URL-osoitteet noudattavat SeoLinksType.Long.\n{slug_collapsed} – URL-osoitteet noudattavat SeoLinksType.Collapsed.",
+          "labelSitemapItems": "Sivukarttakohteet",
+          "sitemapMode": "Vie luettelokohteet",
+          "hide-description": "Piilota"
+        },
+        "sitemapModes": {
+          "sitemapFullMode": "Kategoriat ja tuotteet",
+          "sitemapOnlyCategoriesMode": "Vain kategoriat",
+          "sitemapOnlyProductsMode": "Vain tuotteet"
+        },
+        "gridHeaders": {
+          "img": "Kuva",
+          "title": "Otsikko",
+          "type": "Tyyppi"
+        },
+        "noSitemapsItemsMessage": "Ei sivukarttakohteita vielä"
+      },
+      "addItems": {
+        "title": "Lisää kohteita",
+        "addCatalogItem": {
+          "title": "Luettelokohteet",
+          "description": "Sisällytä tuotteet ja kategoriat"
+        },
+        "addVendorItem": {
+          "title": "Toimittajakohteet",
+          "description": "Sisällytä toimittajat"
+        },
+        "addStaticContentItem": {
+          "title": "Staattiset sisältökohteet",
+          "description": "Sisällytä sivut ja blogit"
+        },
+        "addCustomItem": {
+          "title": "Mukautettu kohde",
+          "description": "Kohde mukautetulla URL-osoitteella"
+        }
+      },
+      "addCatalogItems": {
+        "title": "Lisää luettelokohteita",
+        "toolbar": {
+          "addSelected": "Lisää valitut"
+        }
+      },
+      "addCustomItem": {
+        "title": "Lisää mukautettu kohde",
+        "toolbar": {
+          "save": "Tallenna"
+        },
+        "formCustomSitemapItem": {
+          "labelUrlTemplate": "URL-malli",
+          "descriptionUrlTemplate": "Määritä suhteellinen URL-osoite mukautetuille kohteille. Esimerkiksi: /meista tai /min-kansio/min-sivu"
+        }
+      },
+      "addVendorItems": {
+        "title": "Lisää toimittajakohteita",
+        "toolbar": {
+          "addSelected": "Lisää valitut"
+        },
+        "bread-crumb-top": "Kaikki toimittajat"
+      },
+      "addStaticContentItems": {
+        "title": "Lisää staattisia sisältökohteita",
+        "toolbar": {
+          "addSelected": "Lisää valitut"
+        },
+        "bread-crumb-top": "Kaikki kohteet"
+      },
+      "download": {
+        "title": "Lataa sivukartta",
+        "labels": {
+          "start": "Alku",
+          "end": "Loppu",
+          "total": "Yhteensä",
+          "processed": "Käsitelty",
+          "errors-count": "Virheiden määrä",
+          "errors": "Virheet",
+          "download-url": "Lataus-URL"
+        }
+      },
+      "exportToStoreAssets": {
+        "title": "Vie sivukartta kaupan resursseihin",
+        "labels": {
+          "start": "Alku",
+          "end": "Loppu",
+          "total": "Yhteensä",
+          "processed": "Käsitelty",
+          "errors-count": "Virheiden määrä",
+          "errors": "Virheet",
+          "download-url": "Löydät sitemap.xml seuraavasta URL-osoitteesta"
+        }
+      }
+    },
+    "contextMenu": {
+      "manage": "Hallitse",
+      "remove": "Poista"
+    },
+    "dialogs": {
+      "sitemap-delete": {
+        "title": "Poistovahvistus",
+        "message": "Haluatko varmasti poistaa valitut sivukartat?"
+      },
+      "sitemapItems-delete": {
+        "title": "Poistovahvistus",
+        "message": "Haluatko varmasti poistaa valitut kohteet sivukartasta?"
+      },
+      "confirmBaseUrl": {
+        "title": "Perus-URL",
+        "messageNoBaseUrl": "Anna sivukarttojen perus-URL",
+        "messageConfirmBaseUrl": "Vahvista sivukarttojen perus-URL"
+      },
+      "discardChanges": {
+        "title": "Tallenna muutokset",
+        "message": "Sivukarttaa on muokattu. Haluatko tallentaa muutokset?"
+      }
+    },
+    "errorMessages": {
+      "filenameNotUnique": "Sivukartta tällä tiedostonimellä on jo olemassa"
+    }
+  },
+  "permissions": {
+    "sitemaps:access": "Pääsy avata sivukarttapaneeli",
+    "sitemaps:create": "Pääsy luoda sivukartta",
+    "sitemaps:read": "Pääsy tarkastella sivukartan tietoja",
+    "sitemaps:update": "Pääsy päivittää sivukartta",
+    "sitemaps:delete": "Pääsy poistaa sivukartta",
+    "sitemaps:exportToStoreAssets": "Sallii manuaalisen viennin kaupan resursseihin"
+  },
+  "settings": {
+    "Sitemap.RecordsLimitPerFile": {
+      "title": "Tietueiden raja",
+      "description": "Aseta enimmäismäärä tietueita, jotka sallitaan kussakin sivukarttatiedostossa. Hakukoneet hyväksyvät sivukarttatiedostot, joissa on alle 50 000 URL-osoitetta ja tiedostokoko alle 10 Mt"
+    },
+    "Sitemap.FilenameSeparator": {
+      "title": "Tiedostonimen erotin",
+      "description": "Määritä erotin, jota käytetään sivukartan tiedostonimen ja osan välillä, jos kohteiden määrä ylittää tietueiden rajan tiedostoa kohti"
+    },
+    "Sitemap.SearchBunchSize": {
+      "title": "Hakuerän koko",
+      "description": "Määritä hakukohteiden erien koko, esimerkiksi luettelohaulle"
+    },
+    "Sitemap.AcceptedFilenameExtensions": {
+      "title": "Hyväksytyt tiedostopäätteet",
+      "description": "Listaa staattisen sisällön tiedostopäätteet, jotka sisällytetään sivukarttaan, pilkuilla erotettuina. Esimerkiksi: '.md, .html'"
+    },
+    "Sitemap.IncludeImages": {
+      "title": "Kuvien sisällyttäminen sivukarttaan",
+      "description": "Ota käyttöön tai poista käytöstä kuvien sisällyttäminen sivukartan luontiin"
+    },
+    "Sitemap.ProductPageUpdateFrequency": {
+      "title": "Tuotesivujen päivitystiheys",
+      "description": "Aseta, kuinka usein tuotesivut päivitetään. Tämä ilmoittaa hakukoneille, mutta ei välttämättä vastaa tarkasti niiden indeksointitiheyttä"
+    },
+    "Sitemap.ProductPagePriority": {
+      "title": "Tuotesivujen prioriteetti",
+      "description": "Määritä tuotesivujen URL-osoitteiden prioriteetti suhteessa muihin sivustollasi. Käytä arvoja 0,0–1,0. Tämä ilmaisee vain tärkeyden indeksoijille eikä vaikuta vertailuun muiden sivustojen sivuihin"
+    },
+    "Sitemap.CategoryPageUpdateFrequency": {
+      "title": "Kategoriasivujen päivitystiheys",
+      "description": "Aseta, kuinka usein kategoriasivut päivitetään. Tämä ilmoittaa hakukoneille, mutta ei välttämättä vastaa tarkasti niiden indeksointitiheyttä"
+    },
+    "Sitemap.BlogPageUpdateFrequency": {
+      "title": "Blogisivujen päivitystiheys",
+      "description": "Aseta, kuinka usein blogisivut päivitetään. Tämä ilmoittaa hakukoneille, mutta ei välttämättä vastaa tarkasti niiden indeksointitiheyttä"
+    },
+    "Sitemap.CategoryPagePriority": {
+      "title": "Kategoriasivujen prioriteetti",
+      "description": "Määritä kategoriasivujen URL-osoitteiden prioriteetti suhteessa muihin sivustollasi. Käytä arvoja 0,0–1,0. Tämä ilmaisee vain tärkeyden indeksoijille eikä vaikuta vertailuun muiden sivustojen sivuihin"
+    },
+    "Sitemap.BlogPagePriority": {
+      "title": "Blogisivujen prioriteetti",
+      "description": "Määritä blogisivujen URL-osoitteiden prioriteetti suhteessa muihin sivustollasi. Käytä arvoja 0,0–1,0. Tämä ilmaisee vain tärkeyden indeksoijille eikä vaikuta vertailuun muiden sivustojen sivuihin"
+    },
+    "Sitemap.ExportToAssets.EnableExportToAssetsJob": {
+      "title": "Vie sivukarttatiedostot ajon kautta",
+      "description": "Ota käyttöön tai poista käytöstä vienti kaupan resurssikansioon. Tallenna kaikki sivukartta-artefaktit kansioon 'stores/{storeId}/sitemap'"
+    },
+    "Sitemap.ExportToAssets.JobCronExpression": {
+      "title": "Cron-lauseke vientiin resursseihin",
+      "description": "Määritä cron-lauseke sivukarttatiedostojen vientiin kaupan resurssikansioon aikataulun mukaan. Oletusarvo '0 0 * * *' päivittäin klo 00:00"
+    },
+    "Sitemap.IncludeDefaultStoreLanguageInUrl": {
+      "title": "Sisällytä kaupan oletuskieli URL-osoitteeseen",
+      "description": "Ota käyttöön tai poista käytöstä kielikoodin sisällyttäminen URL-osoitteisiin kaupan oletuskielen osalta. Kun käytössä, URL-osoitteet sisältävät kielikoodin myös oletuskielen osalta (esim. '/fi-FI/tuotteet')"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Sitemaps": {
+      "description": "Vie/tuo sivukarttoja kaikkine sivukarttakohteineen"
+    }
+  }
+}
