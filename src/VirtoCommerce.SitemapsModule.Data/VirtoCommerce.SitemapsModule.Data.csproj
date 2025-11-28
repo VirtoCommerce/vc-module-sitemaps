@@ -10,11 +10,11 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-    <PackageReference Include="VirtoCommerce.AssetsModule.Core" Version="3.814.0-alpha.161-vcst-4203-cleanup" />
-    <PackageReference Include="VirtoCommerce.ContentModule.Core" Version="3.832.0-alpha.1022-vcst-4203-cleanup" />
-    <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.846.0-alpha.929-vcst-4203-cleanup" />
-    <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.916.0-alpha.13164-vcst-4203-cleanup" />
-    <PackageReference Include="VirtoCommerce.Platform.Hangfire" Version="3.916.0-alpha.13164-vcst-4203-cleanup" />
+    <PackageReference Include="VirtoCommerce.AssetsModule.Core" Version="3.814.0" />
+    <PackageReference Include="VirtoCommerce.ContentModule.Core" Version="3.833.0" />
+    <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.846.0" />
+    <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.917.0" />
+    <PackageReference Include="VirtoCommerce.Platform.Hangfire" Version="3.917.0" />
     <PackageReference Include="YamlDotNet" Version="16.1.3" />
   </ItemGroup>
   <ItemGroup>
