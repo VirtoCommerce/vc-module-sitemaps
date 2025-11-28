@@ -8,7 +8,7 @@
   <dependencies>
     <dependency id="VirtoCommerce.Assets" version="3.814.0" />
     <dependency id="VirtoCommerce.Catalog" version="3.904.0" />
-    <dependency id="VirtoCommerce.Content" version="3.833.0" />
+    <dependency id="VirtoCommerce.Content" version="3.834.0" />
     <dependency id="VirtoCommerce.Core" version="3.824.0" />
     <dependency id="VirtoCommerce.Customer" version="3.846.0" />
     <dependency id="VirtoCommerce.Store" version="3.823.0" />
