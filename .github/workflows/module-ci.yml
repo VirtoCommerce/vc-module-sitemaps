@@ -309,7 +309,7 @@ jobs:
     if: ${{ ((github.ref == 'refs/heads/dev') && (github.event_name == 'push')) ||
         (github.event_name == 'workflow_dispatch') || ((github.base_ref == 'dev') && (github.event_name == 'pull_request')) }}
     needs: 'ci'
-    uses: VirtoCommerce/.github/.github/workflows/ui-autotests.yml@v3.800.22
+    uses: VirtoCommerce/.github/.github/workflows/ui-autotests.yml@VCST-3056 #v3.800.22
     with:
       installModules: 'false'
       installCustomModule: 'true'
@@ -342,18 +342,18 @@ jobs:
       envPAT: ${{ secrets.REPO_TOKEN }}
       katalonApiKey: ${{ secrets.KATALON_API_KEY }}
 
-  deploy-cloud:
-    if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev')
-      && github.event_name == 'push'
-      && needs.ci.outputs.deployment-folder-exists == 'true'}}
-    needs: ci
-    uses: VirtoCommerce/.github/.github/workflows/deploy-cloud.yml@v3.800.22
-    with:
-      releaseSource: module
-      moduleId: ${{ needs.ci.outputs.moduleId }}
-      moduleVer: ${{ needs.ci.outputs.version }}
-      moduleBlob: ${{ needs.ci.outputs.blobId }}
-      jiraKeys: ${{ needs.ci.outputs.jira-keys }}
-      argoServer: 'argo.virtocommerce.cloud'
-      matrix: '{"include":${{ needs.ci.outputs.matrix }}}'
-    secrets: inherit
+  # deploy-cloud:
+  #   if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev')
+  #     && github.event_name == 'push'
+  #     && needs.ci.outputs.deployment-folder-exists == 'true'}}
+  #   needs: ci
+  #   uses: VirtoCommerce/.github/.github/workflows/deploy-cloud.yml@v3.800.22
+  #   with:
+  #     releaseSource: module
+  #     moduleId: ${{ needs.ci.outputs.moduleId }}
+  #     moduleVer: ${{ needs.ci.outputs.version }}
+  #     moduleBlob: ${{ needs.ci.outputs.blobId }}
+  #     jiraKeys: ${{ needs.ci.outputs.jira-keys }}
+  #     argoServer: 'argo.virtocommerce.cloud'
+  #     matrix: '{"include":${{ needs.ci.outputs.matrix }}}'
+  #   secrets: inherit
