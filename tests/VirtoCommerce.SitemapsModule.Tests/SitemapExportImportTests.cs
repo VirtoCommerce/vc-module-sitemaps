@@ -274,7 +274,7 @@ namespace VirtoCommerce.SitemapsModule.Tests
             using (var resourceStream = ReadEmbeddedResource("Resources.SerializedSitemapsData.json"))
             using (var textReader = new StreamReader(resourceStream))
             {
-                expectedJson = await textReader.ReadToEndAsync();
+                expectedJson = await textReader.ReadToEndAsync(TestContext.Current.CancellationToken);
             }
 
             // Act
@@ -287,7 +287,7 @@ namespace VirtoCommerce.SitemapsModule.Tests
                 using (var copiedStream = new MemoryStream(targetStreamContents))
                 using (var textReader = new StreamReader(copiedStream))
                 {
-                    actualJson = await textReader.ReadToEndAsync();
+                    actualJson = await textReader.ReadToEndAsync(TestContext.Current.CancellationToken);
                 }
             }
 
