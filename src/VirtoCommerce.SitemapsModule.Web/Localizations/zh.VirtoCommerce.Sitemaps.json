@@ -138,7 +138,11 @@
       "confirmBaseUrl": {
         "title": "基本 URL",
         "messageNoBaseUrl": "输入网站地图的基本 URL",
-        "messageConfirmBaseUrl": "确认网站地图的基本 URL"
+        "messageConfirmBaseUrl": "确认网站地图的基本 URL",
+        "messageExportAll": "将导出所有网站地图。请确认网站地图的基本 URL。",
+        "messageExportSelected": "将导出 {{count}} 个选定的网站地图。请确认网站地图的基本 URL。",
+        "messageDownloadAll": "将以 ZIP 格式下载所有网站地图。请确认网站地图的基本 URL。",
+        "messageDownloadSelected": "将以 ZIP 格式下载 {{count}} 个选定的网站地图。请确认网站地图的基本 URL。"
       },
       "discardChanges": {
         "title": "保存更改",
