@@ -58,7 +58,7 @@ public class SitemapExportToAssetsJob
 
                 try
                 {
-                    await SaveSitemapToBlob(store.Id, store.Url, progressCallback: null);
+                    await SaveSitemapToBlob(store.Id, store.Url, sitemapIds: null, progressCallback: null);
                     _logger.LogInformation("Sitemap for store {storeId} exported successfully.", store.Id); // Log success
                 }
                 catch (Exception ex)
@@ -69,7 +69,7 @@ public class SitemapExportToAssetsJob
         }
     }
 
-    public Task BackgroundDownload(string storeId, string baseUrl, string localTmpFolder, SitemapDownloadNotification notification)
+    public Task BackgroundDownload(string storeId, string baseUrl, string localTmpFolder, string[] sitemapIds, SitemapDownloadNotification notification)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(storeId);
 
@@ -78,10 +78,10 @@ public class SitemapExportToAssetsJob
             throw new ArgumentException($"Incorrect base URL {baseUrl}");
         }
 
-        return InnerBackgroundDownload(storeId, baseUrl, localTmpFolder, notification);
+        return InnerBackgroundDownload(storeId, baseUrl, localTmpFolder, sitemapIds, notification);
     }
 
-    public Task BackgroundExportToAssets(string storeId, string baseUrl, SitemapExportToAssetNotification notification)
+    public Task BackgroundExportToAssets(string storeId, string baseUrl, string[] sitemapIds, SitemapExportToAssetNotification notification)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(storeId);
 
@@ -90,14 +90,14 @@ public class SitemapExportToAssetsJob
             throw new ArgumentException($"Incorrect base URL {baseUrl}");
         }
 
-        return InnerBackgroundExportToAssets(storeId, baseUrl, notification);
+        return InnerBackgroundExportToAssets(storeId, baseUrl, sitemapIds, notification);
     }
 
-    private async Task InnerBackgroundExportToAssets(string storeId, string baseUrl, SitemapExportToAssetNotification notification)
+    private async Task InnerBackgroundExportToAssets(string storeId, string baseUrl, string[] sitemapIds, SitemapExportToAssetNotification notification)
     {
         try
         {
-            var sitemapXmlBlobInfo = await SaveSitemapToBlob(storeId, baseUrl, progress => SendProgressNotification(notification, progress));
+            var sitemapXmlBlobInfo = await SaveSitemapToBlob(storeId, baseUrl, sitemapIds, progress => SendProgressNotification(notification, progress));
 
             notification.Description = "Sitemap export to store assets finished";
             notification.SitemapXmlUrl = sitemapXmlBlobInfo.Url;
@@ -114,7 +114,7 @@ public class SitemapExportToAssetsJob
         }
     }
 
-    private async Task InnerBackgroundDownload(string storeId, string baseUrl, string localTmpFolder, SitemapDownloadNotification notification)
+    private async Task InnerBackgroundDownload(string storeId, string baseUrl, string localTmpFolder, string[] sitemapIds, SitemapDownloadNotification notification)
     {
         var uniqueFileName = $"sitemap-{DateTime.UtcNow:yyyy-MM-dd}-{Guid.NewGuid()}.zip";
 
@@ -139,7 +139,7 @@ public class SitemapExportToAssetsJob
             await using (var stream = SystemFile.Open(localTmpPath, FileMode.CreateNew))
             using (var zipArchive = new ZipArchive(stream, ZipArchiveMode.Create, true))
             {
-                await SaveSitemapToZip(storeId, baseUrl, zipArchive, progress => SendProgressNotification(notification, progress));
+                await SaveSitemapToZip(storeId, baseUrl, sitemapIds, zipArchive, progress => SendProgressNotification(notification, progress));
             }
 
             //Copy data to blob provider to get public download URL
@@ -165,12 +165,12 @@ public class SitemapExportToAssetsJob
         }
     }
 
-    private async Task<BlobInfo> SaveSitemapToBlob(string storeId, string baseUrl, Action<ExportImportProgressInfo> progressCallback)
+    private async Task<BlobInfo> SaveSitemapToBlob(string storeId, string baseUrl, string[] sitemapIds, Action<ExportImportProgressInfo> progressCallback)
     {
         BlobInfo firstBlobInfo = null;
         var outputAssetFolder = string.Format(ModuleConstants.StoreAssetsOutputFolderTemplate, storeId);
 
-        var files = await _sitemapGenerator.GetSitemapFilesAsync(storeId, baseUrl, progressCallback);
+        var files = await _sitemapGenerator.GetSitemapFilesAsync(storeId, baseUrl, progressCallback, sitemapIds);
 
         foreach (var file in files)
         {
@@ -181,9 +181,9 @@ public class SitemapExportToAssetsJob
         return firstBlobInfo;
     }
 
-    private async Task SaveSitemapToZip(string storeId, string baseUrl, ZipArchive zipArchive, Action<ExportImportProgressInfo> progressCallback)
+    private async Task SaveSitemapToZip(string storeId, string baseUrl, string[] sitemapIds, ZipArchive zipArchive, Action<ExportImportProgressInfo> progressCallback)
     {
-        var files = await _sitemapGenerator.GetSitemapFilesAsync(storeId, baseUrl, progressCallback);
+        var files = await _sitemapGenerator.GetSitemapFilesAsync(storeId, baseUrl, progressCallback, sitemapIds);
 
         foreach (var file in files)
         {

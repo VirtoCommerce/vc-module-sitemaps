@@ -138,7 +138,11 @@
       "confirmBaseUrl": {
         "title": "基本URL",
         "messageNoBaseUrl": "サイトマップの基本URLを入力してください",
-        "messageConfirmBaseUrl": "サイトマップの基本URLを確認してください"
+        "messageConfirmBaseUrl": "サイトマップの基本URLを確認してください",
+        "messageExportAll": "すべてのサイトマップがエクスポートされます。サイトマップの基本URLを確認してください。",
+        "messageExportSelected": "{{count}}件の選択されたサイトマップがエクスポートされます。サイトマップの基本URLを確認してください。",
+        "messageDownloadAll": "すべてのサイトマップがZIPとしてダウンロードされます。サイトマップの基本URLを確認してください。",
+        "messageDownloadSelected": "{{count}}件の選択されたサイトマップがZIPとしてダウンロードされます。サイトマップの基本URLを確認してください。"
       },
       "discardChanges": {
         "title": "変更を保存",

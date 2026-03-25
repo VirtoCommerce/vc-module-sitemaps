@@ -138,7 +138,11 @@
       "confirmBaseUrl": {
         "title": "Perus-URL",
         "messageNoBaseUrl": "Anna sivukarttojen perus-URL",
-        "messageConfirmBaseUrl": "Vahvista sivukarttojen perus-URL"
+        "messageConfirmBaseUrl": "Vahvista sivukarttojen perus-URL",
+        "messageExportAll": "Kaikki sivukartat viedään. Vahvista sivukarttojen perus-URL.",
+        "messageExportSelected": "{{count}} valittua sivukarttaa viedään. Vahvista sivukarttojen perus-URL.",
+        "messageDownloadAll": "Kaikki sivukartat ladataan ZIP-tiedostona. Vahvista sivukarttojen perus-URL.",
+        "messageDownloadSelected": "{{count}} valittua sivukarttaa ladataan ZIP-tiedostona. Vahvista sivukarttojen perus-URL."
       },
       "discardChanges": {
         "title": "Tallenna muutokset",

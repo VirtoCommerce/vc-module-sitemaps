@@ -73,14 +73,14 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             return stream;
         }
 
-        public virtual async Task<IList<SitemapFile>> GetSitemapFilesAsync(string storeId, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null)
+        public virtual async Task<IList<SitemapFile>> GetSitemapFilesAsync(string storeId, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null, string[] sitemapIds = null)
         {
             var store = await _storeService.GetByIdAsync(storeId, nameof(StoreResponseGroup.StoreInfo));
 
-            return await GetSitemapFilesAsync(store, baseUrl, progressCallback);
+            return await GetSitemapFilesAsync(store, baseUrl, progressCallback, sitemapIds);
         }
 
-        public virtual async Task<IList<SitemapFile>> GetSitemapFilesAsync(Store store, string baseUrl, Action<ExportImportProgressInfo> progressCallback)
+        public virtual async Task<IList<SitemapFile>> GetSitemapFilesAsync(Store store, string baseUrl, Action<ExportImportProgressInfo> progressCallback, string[] sitemapIds = null)
         {
             var sitemapSearchCriteria = new SitemapSearchCriteria
             {
@@ -89,6 +89,11 @@ namespace VirtoCommerce.SitemapsModule.Data.Services
             };
 
             var sitemaps = (await _sitemapSearchService.SearchAsync(sitemapSearchCriteria)).Results;
+
+            if (sitemapIds?.Length > 0)
+            {
+                sitemaps = sitemaps.Where(s => sitemapIds.Contains(s.Id)).ToList();
+            }
             var files = new List<SitemapFile>();
 
             foreach (var sitemap in sitemaps)
