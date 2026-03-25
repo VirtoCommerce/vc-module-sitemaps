@@ -138,7 +138,11 @@
       "confirmBaseUrl": {
         "title": "URL base",
         "messageNoBaseUrl": "Insira a URL base para os sitemaps",
-        "messageConfirmBaseUrl": "Confirme a URL base para os sitemaps"
+        "messageConfirmBaseUrl": "Confirme a URL base para os sitemaps",
+        "messageExportAll": "Todos os sitemaps serão exportados. Confirme a URL base para os sitemaps.",
+        "messageExportSelected": "{{count}} sitemap(s) selecionado(s) serão exportados. Confirme a URL base para os sitemaps.",
+        "messageDownloadAll": "Todos os sitemaps serão baixados como ZIP. Confirme a URL base para os sitemaps.",
+        "messageDownloadSelected": "{{count}} sitemap(s) selecionado(s) serão baixados como ZIP. Confirme a URL base para os sitemaps."
       },
       "discardChanges": {
         "title": "Salvar alterações",

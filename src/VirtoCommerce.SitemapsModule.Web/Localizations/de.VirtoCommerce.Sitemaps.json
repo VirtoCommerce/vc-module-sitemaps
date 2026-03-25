@@ -138,7 +138,11 @@
       "confirmBaseUrl": {
         "title": "Basis-URL",
         "messageNoBaseUrl": "Geben Sie die Basis-URL für Sitemaps ein",
-        "messageConfirmBaseUrl": "Bestätigen Sie die Basis-URL für Sitemaps"
+        "messageConfirmBaseUrl": "Bestätigen Sie die Basis-URL für Sitemaps",
+        "messageExportAll": "Alle Sitemaps werden exportiert. Bestätigen Sie die Basis-URL für Sitemaps.",
+        "messageExportSelected": "{{count}} ausgewählte Sitemap(s) werden exportiert. Bestätigen Sie die Basis-URL für Sitemaps.",
+        "messageDownloadAll": "Alle Sitemaps werden als ZIP heruntergeladen. Bestätigen Sie die Basis-URL für Sitemaps.",
+        "messageDownloadSelected": "{{count}} ausgewählte Sitemap(s) werden als ZIP heruntergeladen. Bestätigen Sie die Basis-URL für Sitemaps."
       },
       "discardChanges": {
         "title": "Änderungen speichern",

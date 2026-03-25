@@ -138,7 +138,11 @@
       "confirmBaseUrl": {
         "title": "Podstawowy URL",
         "messageNoBaseUrl": "Wprowadź podstawowy URL dla map witryn",
-        "messageConfirmBaseUrl": "Potwierdź podstawowy URL dla map witryn"
+        "messageConfirmBaseUrl": "Potwierdź podstawowy URL dla map witryn",
+        "messageExportAll": "Wszystkie mapy witryn zostaną wyeksportowane. Potwierdź podstawowy URL dla map witryn.",
+        "messageExportSelected": "{{count}} wybranych map witryn zostanie wyeksportowanych. Potwierdź podstawowy URL dla map witryn.",
+        "messageDownloadAll": "Wszystkie mapy witryn zostaną pobrane jako ZIP. Potwierdź podstawowy URL dla map witryn.",
+        "messageDownloadSelected": "{{count}} wybranych map witryn zostanie pobranych jako ZIP. Potwierdź podstawowy URL dla map witryn."
       },
       "discardChanges": {
         "title": "Zapisz zmiany",
