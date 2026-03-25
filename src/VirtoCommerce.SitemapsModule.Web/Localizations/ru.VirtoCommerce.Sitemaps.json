@@ -138,7 +138,11 @@
       "confirmBaseUrl": {
         "title": "Базовый URL",
         "messageNoBaseUrl": "Введите базовый URL для карт сайта",
-        "messageConfirmBaseUrl": "Подтвердите базовый URL для карт сайта"
+        "messageConfirmBaseUrl": "Подтвердите базовый URL для карт сайта",
+        "messageExportAll": "Все карты сайта будут экспортированы. Подтвердите базовый URL для карт сайта.",
+        "messageExportSelected": "Будет экспортировано {{count}} выбранных карт(а) сайта. Подтвердите базовый URL для карт сайта.",
+        "messageDownloadAll": "Все карты сайта будут скачаны в формате ZIP. Подтвердите базовый URL для карт сайта.",
+        "messageDownloadSelected": "{{count}} выбранных карт(а) сайта будут скачаны в формате ZIP. Подтвердите базовый URL для карт сайта."
       },
       "discardChanges": {
         "title": "Сохранить изменения",

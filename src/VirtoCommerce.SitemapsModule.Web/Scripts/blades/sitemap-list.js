@@ -94,11 +94,15 @@ angular.module('virtoCommerce.sitemapsModule').controller('virtoCommerce.sitemap
     }
 
     function showExportToStoreAssetsDialog() {
+        var selectedRows = $scope.gridApi ? $scope.gridApi.selection.getSelectedRows() : [];
+        var sitemapIds = selectedRows.length > 0 ? _.pluck(selectedRows, 'id') : undefined;
         var baseUrl = blade.store.url || blade.store.secureUrl
         var confirmDialog = {
             id: 'confirmBaseUrl',
             originalBaseUrl: angular.copy(baseUrl),
             baseUrl: baseUrl,
+            actionType: 'export',
+            selectedCount: selectedRows.length,
             templateUrl: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/dialogs/confirm-base-url-dialog.tpl.html',
             controller: 'virtoCommerce.sitemapsModule.baseUrlDialogController',
             resolve: {
@@ -117,7 +121,8 @@ angular.module('virtoCommerce.sitemapsModule').controller('virtoCommerce.sitemap
                     controller: 'virtoCommerce.sitemapsModule.sitemapExportToStoreAssetsController',
                     template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/sitemap-export-to-assets.tpl.html',
                     storeId: blade.store.id,
-                    baseUrl: baseUrl
+                    baseUrl: baseUrl,
+                    sitemapIds: sitemapIds
                 };
                 bladeNavigationService.showBlade(newBlade, blade);
             }
@@ -125,11 +130,15 @@ angular.module('virtoCommerce.sitemapsModule').controller('virtoCommerce.sitemap
     }
 
     function showDownloadDialog() {
+        var selectedRows = $scope.gridApi ? $scope.gridApi.selection.getSelectedRows() : [];
+        var sitemapIds = selectedRows.length > 0 ? _.pluck(selectedRows, 'id') : undefined;
         var baseUrl = blade.store.url || blade.store.secureUrl
         var confirmDialog = {
             id: 'confirmBaseUrl',
             originalBaseUrl: angular.copy(baseUrl),
             baseUrl: baseUrl,
+            actionType: 'download',
+            selectedCount: selectedRows.length,
             templateUrl: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/dialogs/confirm-base-url-dialog.tpl.html',
             controller: 'virtoCommerce.sitemapsModule.baseUrlDialogController',
             resolve: {
@@ -148,7 +157,8 @@ angular.module('virtoCommerce.sitemapsModule').controller('virtoCommerce.sitemap
                     controller: 'virtoCommerce.sitemapsModule.sitemapDownloadController',
                     template: 'Modules/$(VirtoCommerce.Sitemaps)/Scripts/blades/sitemap-download.tpl.html',
                     storeId: blade.store.id,
-                    baseUrl: baseUrl
+                    baseUrl: baseUrl,
+                    sitemapIds: sitemapIds
                 };
                 bladeNavigationService.showBlade(newBlade, blade);
             }

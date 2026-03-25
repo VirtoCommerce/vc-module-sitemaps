@@ -11,7 +11,8 @@
 
     sitemapApi.download({
         storeId: blade.storeId,
-        baseUrl: blade.baseUrl
+        baseUrl: blade.baseUrl,
+        sitemapIds: blade.sitemapIds
     },
     function (response) {
         blade.notification = response;

@@ -9,7 +9,7 @@ namespace VirtoCommerce.SitemapsModule.Data.Services;
 
 public interface ISitemapGenerator
 {
-    Task<IList<SitemapFile>> GetSitemapFilesAsync(string storeId, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null);
+    Task<IList<SitemapFile>> GetSitemapFilesAsync(string storeId, string baseUrl, Action<ExportImportProgressInfo> progressCallback = null, string[] sitemapIds = null);
 
     void SaveSitemapFile(SitemapFile file, Stream stream, Action<ExportImportProgressInfo> progressCallback = null);
 }
