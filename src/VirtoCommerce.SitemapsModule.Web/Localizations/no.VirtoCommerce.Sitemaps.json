@@ -138,7 +138,11 @@
       "confirmBaseUrl": {
         "title": "Base-URL",
         "messageNoBaseUrl": "Angi base-URL for nettstedskart",
-        "messageConfirmBaseUrl": "Bekreft base-URL for nettstedskart"
+        "messageConfirmBaseUrl": "Bekreft base-URL for nettstedskart",
+        "messageExportAll": "Alle nettstedskart vil bli eksportert. Bekreft base-URL for nettstedskart.",
+        "messageExportSelected": "{{count}} valgte nettstedskart vil bli eksportert. Bekreft base-URL for nettstedskart.",
+        "messageDownloadAll": "Alle nettstedskart vil bli lastet ned som ZIP. Bekreft base-URL for nettstedskart.",
+        "messageDownloadSelected": "{{count}} valgte nettstedskart vil bli lastet ned som ZIP. Bekreft base-URL for nettstedskart."
       },
       "discardChanges": {
         "title": "Lagre endringer",

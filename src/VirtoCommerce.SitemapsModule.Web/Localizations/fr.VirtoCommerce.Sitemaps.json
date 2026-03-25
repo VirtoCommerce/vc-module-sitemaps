@@ -138,7 +138,11 @@
       "confirmBaseUrl": {
         "title": "URL de base",
         "messageNoBaseUrl": "Entrez l'URL de base pour les plans de site",
-        "messageConfirmBaseUrl": "Confirmez l'URL de base pour les plans de site"
+        "messageConfirmBaseUrl": "Confirmez l'URL de base pour les plans de site",
+        "messageExportAll": "Tous les plans de site seront exportés. Confirmez l'URL de base pour les plans de site.",
+        "messageExportSelected": "{{count}} plan(s) de site sélectionné(s) seront exportés. Confirmez l'URL de base pour les plans de site.",
+        "messageDownloadAll": "Tous les plans de site seront téléchargés en ZIP. Confirmez l'URL de base pour les plans de site.",
+        "messageDownloadSelected": "{{count}} plan(s) de site sélectionné(s) seront téléchargés en ZIP. Confirmez l'URL de base pour les plans de site."
       },
       "discardChanges": {
         "title": "Enregistrer les modifications",

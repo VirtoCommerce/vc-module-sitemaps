@@ -138,7 +138,11 @@
       "confirmBaseUrl": {
         "title": "Base URL",
         "messageNoBaseUrl": "Enter base URL for sitemaps",
-        "messageConfirmBaseUrl": "Confirm base URL for sitemaps"
+        "messageConfirmBaseUrl": "Confirm base URL for sitemaps",
+        "messageExportAll": "All sitemaps will be exported. Confirm base URL for sitemaps.",
+        "messageExportSelected": "{{count}} selected sitemap(s) will be exported. Confirm base URL for sitemaps.",
+        "messageDownloadAll": "All sitemaps will be downloaded as ZIP. Confirm base URL for sitemaps.",
+        "messageDownloadSelected": "{{count}} selected sitemap(s) will be downloaded as ZIP. Confirm base URL for sitemaps."
       },
       "discardChanges": {
         "title": "Save changes",

@@ -138,7 +138,11 @@
       "confirmBaseUrl": {
         "title": "URL base",
         "messageNoBaseUrl": "Ingrese la URL base para los mapas del sitio",
-        "messageConfirmBaseUrl": "Confirme la URL base para los mapas del sitio"
+        "messageConfirmBaseUrl": "Confirme la URL base para los mapas del sitio",
+        "messageExportAll": "Se exportarán todos los mapas del sitio. Confirme la URL base para los mapas del sitio.",
+        "messageExportSelected": "Se exportarán {{count}} mapa(s) del sitio seleccionado(s). Confirme la URL base para los mapas del sitio.",
+        "messageDownloadAll": "Todos los mapas del sitio se descargarán como ZIP. Confirme la URL base para los mapas del sitio.",
+        "messageDownloadSelected": "{{count}} mapa(s) del sitio seleccionado(s) se descargarán como ZIP. Confirme la URL base para los mapas del sitio."
       },
       "discardChanges": {
         "title": "Guardar cambios",

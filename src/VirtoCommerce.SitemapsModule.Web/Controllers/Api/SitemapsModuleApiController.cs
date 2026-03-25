@@ -216,7 +216,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
         [HttpGet]
         [Route("download")]
-        public async Task<ActionResult<SitemapDownloadNotification>> DownloadSitemap(string storeId, string baseUrl)
+        public async Task<ActionResult<SitemapDownloadNotification>> DownloadSitemap(string storeId, string baseUrl, [FromQuery] string[] sitemapIds = null)
         {
             var notification = new SitemapDownloadNotification(_userNameResolver.GetCurrentUserName())
             {
@@ -228,7 +228,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
             var localTmpFolder = _hostingEnvironment.MapPath(Path.Combine("~/", _platformOptions.LocalUploadFolderPath, "tmp"));
 
-            BackgroundJob.Enqueue<SitemapExportToAssetsJob>(job => job.BackgroundDownload(storeId, baseUrl, localTmpFolder, notification));
+            BackgroundJob.Enqueue<SitemapExportToAssetsJob>(job => job.BackgroundDownload(storeId, baseUrl, localTmpFolder, sitemapIds, notification));
 
             return Ok(notification);
         }
@@ -236,7 +236,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
         [HttpGet]
         [Route("exportToStoreAssets")]
         [Authorize(ModuleConstants.Security.Permissions.ExportToStoreAssets)]
-        public async Task<ActionResult<SitemapDownloadNotification>> ExportToStoreAssets(string storeId, string baseUrl)
+        public async Task<ActionResult<SitemapDownloadNotification>> ExportToStoreAssets(string storeId, string baseUrl, [FromQuery] string[] sitemapIds = null)
         {
             var notification = new SitemapExportToAssetNotification(_userNameResolver.GetCurrentUserName())
             {
@@ -246,7 +246,7 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
             await _notifier.SendAsync(notification);
 
-            BackgroundJob.Enqueue<SitemapExportToAssetsJob>(job => job.BackgroundExportToAssets(storeId, baseUrl, notification));
+            BackgroundJob.Enqueue<SitemapExportToAssetsJob>(job => job.BackgroundExportToAssets(storeId, baseUrl, sitemapIds, notification));
 
             return Ok(notification);
         }
