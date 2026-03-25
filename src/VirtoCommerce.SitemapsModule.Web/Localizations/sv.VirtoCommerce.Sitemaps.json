@@ -138,7 +138,11 @@
       "confirmBaseUrl": {
         "title": "Bas-URL",
         "messageNoBaseUrl": "Ange bas-URL för sajtkartor",
-        "messageConfirmBaseUrl": "Bekräfta bas-URL för sajtkartor"
+        "messageConfirmBaseUrl": "Bekräfta bas-URL för sajtkartor",
+        "messageExportAll": "Alla sajtkartor kommer att exporteras. Bekräfta bas-URL för sajtkartor.",
+        "messageExportSelected": "{{count}} valda sajtkarta/sajtkartor kommer att exporteras. Bekräfta bas-URL för sajtkartor.",
+        "messageDownloadAll": "Alla sajtkartor kommer att laddas ner som ZIP. Bekräfta bas-URL för sajtkartor.",
+        "messageDownloadSelected": "{{count}} valda sajtkarta/sajtkartor kommer att laddas ner som ZIP. Bekräfta bas-URL för sajtkartor."
       },
       "discardChanges": {
         "title": "Spara ändringar",
