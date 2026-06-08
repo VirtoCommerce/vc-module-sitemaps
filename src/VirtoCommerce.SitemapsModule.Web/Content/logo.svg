@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Sitemaps">
+  <title>Sitemaps</title>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="92%" y2="100%">
+      <stop offset="0%" stop-color="#B79DFB"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <filter id="lift" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3.5" flood-color="#3A1D7A" flood-opacity="0.30"/>
+    </filter>
+  </defs>
+
+  <rect width="128" height="128" rx="28" fill="url(#bg)"/>
+
+  <g transform="translate(64,65)" filter="url(#lift)">
+    <!-- Connectors -->
+    <g stroke="#ffffff" stroke-width="4" fill="none">
+      <path d="M0,-18 V-8 H-28 V2 M0,-8 V2 M0,-8 H28 V2"/>
+    </g>
+
+    <!-- Root node -->
+    <rect x="-16" y="-40" width="32" height="22" rx="5" fill="#5FC8F5"/>
+
+    <!-- Child nodes -->
+    <rect x="-42" y="2" width="28" height="20" rx="5" fill="#FFC24D"/>
+    <rect x="-14" y="2" width="28" height="20" rx="5" fill="#3FD8B4"/>
+    <rect x="14" y="2" width="28" height="20" rx="5" fill="#E5484D"/>
+  </g>
+</svg>
