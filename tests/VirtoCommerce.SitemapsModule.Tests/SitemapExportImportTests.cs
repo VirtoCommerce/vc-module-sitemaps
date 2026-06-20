@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -229,7 +230,7 @@ namespace VirtoCommerce.SitemapsModule.Tests
         private readonly Mock<ISitemapItemService> _sitemapItemService;
         private readonly Mock<ISitemapSearchService> _sitemapSearchService;
         private readonly Mock<ISitemapItemSearchService> _sitemapItemSearchService;
-        private readonly Mock<ICancellationToken> _cancellationToken;
+        private readonly CancellationToken _cancellationToken;
         private readonly SitemapExportImport _sitemapExportImport;
 
         public SitemapExportImportTests()
@@ -238,7 +239,7 @@ namespace VirtoCommerce.SitemapsModule.Tests
             _sitemapItemService = new Mock<ISitemapItemService>();
             _sitemapSearchService = new Mock<ISitemapSearchService>();
             _sitemapItemSearchService = new Mock<ISitemapItemSearchService>();
-            _cancellationToken = new Mock<ICancellationToken>();
+            _cancellationToken = CancellationToken.None;
 
             InitSitemapService();
             InitSitemapItemService();
@@ -281,7 +282,7 @@ namespace VirtoCommerce.SitemapsModule.Tests
             string actualJson;
             using (var targetStream = new MemoryStream())
             {
-                await _sitemapExportImport.DoExportAsync(targetStream, IgnoreProgressInfo, _cancellationToken.Object);
+                await _sitemapExportImport.DoExportAsync(targetStream, IgnoreProgressInfo, _cancellationToken);
 
                 var targetStreamContents = targetStream.ToArray();
                 using (var copiedStream = new MemoryStream(targetStreamContents))
@@ -315,7 +316,7 @@ namespace VirtoCommerce.SitemapsModule.Tests
             // Act
             using (var resourceStream = ReadEmbeddedResource("Resources.SerializedSitemapsData.json"))
             {
-                await _sitemapExportImport.DoImportAsync(resourceStream, IgnoreProgressInfo, _cancellationToken.Object);
+                await _sitemapExportImport.DoImportAsync(resourceStream, IgnoreProgressInfo, _cancellationToken);
             }
 
             // Assert
