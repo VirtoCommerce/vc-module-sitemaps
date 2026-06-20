@@ -1,4 +1,6 @@
 using System;
+
+using System.Threading;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,7 +31,7 @@ namespace VirtoCommerce.SitemapsModule.Data.ExportImport
             _jsonSerializer = jsonSerializer;
         }
 
-        public async Task DoExportAsync(Stream outStream, Action<ExportImportProgressInfo> progressCallback, ICancellationToken cancellationToken)
+        public async Task DoExportAsync(Stream outStream, Action<ExportImportProgressInfo> progressCallback, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -39,12 +41,12 @@ namespace VirtoCommerce.SitemapsModule.Data.ExportImport
             using (var sw = new StreamWriter(outStream))
             using (var writer = new JsonTextWriter(sw))
             {
-                await writer.WriteStartObjectAsync();
+                await writer.WriteStartObjectAsync(cancellationToken);
 
                 progressInfo.Description = "Site maps exporting...";
                 progressCallback(progressInfo);
 
-                await writer.WritePropertyNameAsync("Sitemaps");
+                await writer.WritePropertyNameAsync("Sitemaps", cancellationToken);
 
                 await writer.SerializeArrayWithPagingAsync(_jsonSerializer, _batchSize, async (skip, take) => (GenericSearchResult<Sitemap>)await _sitemapSearchService.SearchAsync(new SitemapSearchCriteria { Skip = skip, Take = take }), (processedCount, totalCount) =>
                 {
@@ -55,19 +57,19 @@ namespace VirtoCommerce.SitemapsModule.Data.ExportImport
                 progressInfo.Description = "Site map items exporting...";
                 progressCallback(progressInfo);
 
-                await writer.WritePropertyNameAsync("SitemapItems");
+                await writer.WritePropertyNameAsync("SitemapItems", cancellationToken);
                 await writer.SerializeArrayWithPagingAsync(_jsonSerializer, _batchSize, async (skip, take) => (GenericSearchResult<SitemapItem>)await _sitemapItemSearchService.SearchAsync(new SitemapItemSearchCriteria { Skip = skip, Take = take }), (processedCount, totalCount) =>
                 {
                     progressInfo.Description = $"{processedCount} of {totalCount} site maps items have been exported";
                     progressCallback(progressInfo);
                 }, cancellationToken);
 
-                await writer.WriteEndObjectAsync();
-                await writer.FlushAsync();
+                await writer.WriteEndObjectAsync(cancellationToken);
+                await writer.FlushAsync(cancellationToken);
             }
         }
 
-        public async Task DoImportAsync(Stream inputStream, Action<ExportImportProgressInfo> progressCallback, ICancellationToken cancellationToken)
+        public async Task DoImportAsync(Stream inputStream, Action<ExportImportProgressInfo> progressCallback, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -76,7 +78,7 @@ namespace VirtoCommerce.SitemapsModule.Data.ExportImport
             using (var streamReader = new StreamReader(inputStream))
             using (var reader = new JsonTextReader(streamReader))
             {
-                while (await reader.ReadAsync())
+                while (await reader.ReadAsync(cancellationToken))
                 {
                     if (reader.TokenType == JsonToken.PropertyName)
                     {
