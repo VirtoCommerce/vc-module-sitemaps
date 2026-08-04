@@ -2,8 +2,8 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using Hangfire;
 using Microsoft.Extensions.Logging;
 using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
@@ -46,7 +46,10 @@ public class SitemapExportToAssetsJob
         _blobUrlResolver = blobUrlResolver;
     }
 
-    public async Task ProcessAll(IJobCancellationToken cancellationToken)
+    // Takes a plain CancellationToken instead of Hangfire's IJobCancellationToken: that type came from the Hangfire
+    // package this module no longer references, so the parameter could not be kept. Breaking for any caller or
+    // override compiled against the old signature.
+    public async Task ProcessAll(CancellationToken cancellationToken = default)
     {
         var searchCriteria = AbstractTypeFactory<StoreSearchCriteria>.TryCreateInstance();
 

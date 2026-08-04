@@ -1,14 +1,14 @@
-using System;
+using System;
 using System.Threading;
 using System.IO;
 using System.Threading.Tasks;
-using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.ExportImport;
+using VirtoCommerce.Platform.Core.Jobs;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
@@ -16,11 +16,11 @@ using VirtoCommerce.Platform.Data.Extensions;
 using VirtoCommerce.Platform.Data.MySql.Extensions;
 using VirtoCommerce.Platform.Data.PostgreSql.Extensions;
 using VirtoCommerce.Platform.Data.SqlServer.Extensions;
-using VirtoCommerce.Platform.Hangfire;
 using VirtoCommerce.SitemapsModule.Core;
 using VirtoCommerce.SitemapsModule.Core.Services;
 using VirtoCommerce.SitemapsModule.Data.BackgroundJobs;
 using VirtoCommerce.SitemapsModule.Data.ExportImport;
+using VirtoCommerce.SitemapsModule.Data.Jobs;
 using VirtoCommerce.SitemapsModule.Data.MySql;
 using VirtoCommerce.SitemapsModule.Data.PostgreSql;
 using VirtoCommerce.SitemapsModule.Data.Repositories;
@@ -74,6 +74,18 @@ namespace VirtoCommerce.SitemapsModule.Web
             serviceCollection.AddTransient<ISitemapGenerator, SitemapXmlGenerator>();
             serviceCollection.AddTransient<ISitemapXmlGenerator, SitemapXmlGenerator>();
             serviceCollection.AddTransient<SitemapExportImport>();
+
+            serviceCollection.AddTransient<SitemapExportToAssetsJob>();
+            serviceCollection.AddBackgroundJob<SitemapDownloadJobHandler, SitemapDownloadJobPayload>();
+            serviceCollection.AddBackgroundJob<SitemapExportToAssetsJobHandler, SitemapExportToAssetsJobPayload>();
+
+            // Schedule periodic sitemap export. Registered here rather than in PostInitialize: the schedule is now a
+            // DI registration the engine module picks up, not an imperative call on a resolved service.
+            serviceCollection.AddRecurringJob<SitemapExportAllToAssetsJobHandler, SitemapExportAllToAssetsJobPayload>(schedule => schedule
+                .WithId(nameof(SitemapExportAllToAssetsJobHandler))
+                .FromSettings(
+                    ModuleConstants.Settings.General.EnableExportToAssetsJob,
+                    ModuleConstants.Settings.General.ExportToAssetsJobCronExpression));
         }
 
         public void PostInitialize(IApplicationBuilder appBuilder)
@@ -97,16 +109,6 @@ namespace VirtoCommerce.SitemapsModule.Web
 
             var permissionsRegistrar = appBuilder.ApplicationServices.GetRequiredService<IPermissionsRegistrar>();
             permissionsRegistrar.RegisterPermissions(ModuleInfo.Id, "Sitemaps", ModuleConstants.Security.Permissions.AllPermissions);
-
-            //Schedule periodic image processing job
-            var recurringJobService = appBuilder.ApplicationServices.GetService<IRecurringJobService>();
-
-            recurringJobService.WatchJobSetting(
-                new SettingCronJobBuilder()
-                    .SetEnablerSetting(ModuleConstants.Settings.General.EnableExportToAssetsJob)
-                    .SetCronSetting(ModuleConstants.Settings.General.ExportToAssetsJobCronExpression)
-                    .ToJob<SitemapExportToAssetsJob>(x => x.ProcessAll(JobCancellationToken.Null))
-                    .Build());
         }
 
         public void Uninstall()
