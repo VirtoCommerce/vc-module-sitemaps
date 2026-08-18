@@ -1,6 +1,5 @@
 using System.IO;
 using System.Threading.Tasks;
-using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -8,13 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Jobs;
 using VirtoCommerce.Platform.Core.PushNotifications;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.SitemapsModule.Core;
 using VirtoCommerce.SitemapsModule.Core.Models;
 using VirtoCommerce.SitemapsModule.Core.Models.Search;
 using VirtoCommerce.SitemapsModule.Core.Services;
-using VirtoCommerce.SitemapsModule.Data.BackgroundJobs;
+using VirtoCommerce.SitemapsModule.Data.Jobs;
 using VirtoCommerce.SitemapsModule.Data.Model.PushNotifications;
 using VirtoCommerce.SitemapsModule.Data.Services;
 using VirtoCommerce.SitemapsModule.Web.Extensions;
@@ -228,7 +228,14 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
             var localTmpFolder = _hostingEnvironment.MapPath(Path.Combine("~/", _platformOptions.LocalUploadFolderPath, "tmp"));
 
-            BackgroundJob.Enqueue<SitemapExportToAssetsJob>(job => job.BackgroundDownload(storeId, baseUrl, localTmpFolder, sitemapIds, notification));
+            var payload = AbstractTypeFactory<SitemapDownloadJobPayload>.TryCreateInstance();
+            payload.StoreId = storeId;
+            payload.BaseUrl = baseUrl;
+            payload.LocalTmpFolder = localTmpFolder;
+            payload.SitemapIds = sitemapIds;
+            payload.Notification = notification;
+
+            await BackgroundJob.Enqueue<SitemapDownloadJobHandler>(payload);
 
             return Ok(notification);
         }
@@ -246,7 +253,13 @@ namespace VirtoCommerce.SitemapsModule.Web.Controllers.Api
 
             await _notifier.SendAsync(notification);
 
-            BackgroundJob.Enqueue<SitemapExportToAssetsJob>(job => job.BackgroundExportToAssets(storeId, baseUrl, sitemapIds, notification));
+            var payload = AbstractTypeFactory<SitemapExportToAssetsJobPayload>.TryCreateInstance();
+            payload.StoreId = storeId;
+            payload.BaseUrl = baseUrl;
+            payload.SitemapIds = sitemapIds;
+            payload.Notification = notification;
+
+            await BackgroundJob.Enqueue<SitemapExportToAssetsJobHandler>(payload);
 
             return Ok(notification);
         }
