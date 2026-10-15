@@ -1,0 +1,64 @@
+{
+  "SITEMAPS": {
+    "ADD_CUSTOM": "Add custom URL",
+    "ADD_ITEMS": "Add items",
+    "ADD_SELECTED": "Add selected",
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "You have unsaved changes. Close anyway?",
+      "DELETE_SELECTED": "Delete {count} selected item(s)? This can't be undone."
+    },
+    "BASE_URL": "Base URL",
+    "BASE_URL_HINT": "The store URL the sitemap links are built for (used by Download and Export)",
+    "CUSTOM_URL": "Custom URL",
+    "CUSTOM_URL_HINT": "A URL template, e.g. about-us or {'{'}language{'}'}/contacts",
+    "DOWNLOAD": "Download",
+    "DOWNLOAD_SELECTED": "Download selected",
+    "EMPTY": "No sitemaps",
+    "ERRORS": {
+      "BASE_URL": "An absolute http(s) URL, e.g. https://shop.example.com",
+      "INDEX": "sitemap.xml is the index file",
+      "LOCATION": "An .xml file name (letters, digits, _ - . /)",
+      "TAKEN": "The store already has a sitemap at this location",
+      "URL_TEMPLATE": "Letters, digits, _ - . / and {'{'}placeholders{'}'}"
+    },
+    "EXPORT": "Export to store assets",
+    "FIELDS": {
+      "IMAGE": "Logo",
+      "ITEMS": "Items",
+      "LOCATION": "Location",
+      "MODE": "Mode",
+      "TITLE": "Title",
+      "TYPE": "Type",
+      "URL_TEMPLATE": "URL template"
+    },
+    "GENERAL": "General",
+    "JOB": {
+      "ERRORS": "Errors",
+      "FINISHED": "Finished",
+      "PROCESSED": "Processed",
+      "RESULT": "Result",
+      "STARTED": "Started"
+    },
+    "LOCATION_HINT": "File name of the sitemap, e.g. sitemap/products.xml",
+    "NEW_TITLE": "New sitemap",
+    "NO_ITEMS": "No items",
+    "NO_SOURCE_ITEMS": "Nothing found",
+    "REMOVE_ITEMS": "Remove items",
+    "SOURCE": "Add from",
+    "SOURCES": {
+      "CATALOG": "Catalog items (categories and products)",
+      "CONTENT": "Static content (pages and blogs)",
+      "VENDOR": "Vendors"
+    },
+    "TITLE": "Sitemaps",
+    "TOOLBAR": {
+      "ADD": "Add",
+      "CREATE": "Create",
+      "DELETE": "Delete",
+      "REFRESH": "Refresh",
+      "RESET": "Reset",
+      "SAVE": "Save"
+    },
+    "UP": "Up"
+  }
+}
