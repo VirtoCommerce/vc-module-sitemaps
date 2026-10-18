@@ -1,0 +1,64 @@
+{
+  "SITEMAPS": {
+    "ADD_CUSTOM": "Benutzerdefinierte URL hinzufügen",
+    "ADD_ITEMS": "Elemente hinzufügen",
+    "ADD_SELECTED": "Ausgewählte hinzufügen",
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Sie haben ungespeicherte Änderungen. Trotzdem schließen?",
+      "DELETE_SELECTED": "{count} ausgewählte(s) Element(e) löschen? Dies kann nicht rückgängig gemacht werden."
+    },
+    "BASE_URL": "Basis-URL",
+    "BASE_URL_HINT": "Die Shop-URL, für die die Sitemap-Links erstellt werden (wird von Herunterladen und Exportieren verwendet)",
+    "CUSTOM_URL": "Benutzerdefinierte URL",
+    "CUSTOM_URL_HINT": "Eine URL-Vorlage, z. B. about-us oder {'{'}language{'}'}/contacts",
+    "DOWNLOAD": "Herunterladen",
+    "DOWNLOAD_SELECTED": "Ausgewählte herunterladen",
+    "EMPTY": "Keine Sitemaps",
+    "ERRORS": {
+      "BASE_URL": "Eine absolute http(s)-URL, z. B. https://shop.example.com",
+      "INDEX": "sitemap.xml ist die Indexdatei",
+      "LOCATION": "Ein .xml-Dateiname (Buchstaben, Ziffern, _ - . /)",
+      "TAKEN": "Der Shop hat bereits eine Sitemap an diesem Speicherort",
+      "URL_TEMPLATE": "Buchstaben, Ziffern, _ - . / und {'{'}Platzhalter{'}'}"
+    },
+    "EXPORT": "In die Ressourcen des Shops exportieren",
+    "FIELDS": {
+      "IMAGE": "Logo",
+      "ITEMS": "Elemente",
+      "LOCATION": "Speicherort",
+      "MODE": "Modus",
+      "TITLE": "Titel",
+      "TYPE": "Typ",
+      "URL_TEMPLATE": "URL-Vorlage"
+    },
+    "GENERAL": "Allgemein",
+    "JOB": {
+      "ERRORS": "Fehler",
+      "FINISHED": "Beendet",
+      "PROCESSED": "Verarbeitet",
+      "RESULT": "Ergebnis",
+      "STARTED": "Gestartet"
+    },
+    "LOCATION_HINT": "Dateiname der Sitemap, z. B. sitemap/products.xml",
+    "NEW_TITLE": "Neue Sitemap",
+    "NO_ITEMS": "Keine Elemente",
+    "NO_SOURCE_ITEMS": "Nichts gefunden",
+    "REMOVE_ITEMS": "Elemente entfernen",
+    "SOURCE": "Hinzufügen aus",
+    "SOURCES": {
+      "CATALOG": "Katalogelemente (Kategorien und Produkte)",
+      "CONTENT": "Statische Inhalte (Seiten und Blogs)",
+      "VENDOR": "Lieferanten"
+    },
+    "TITLE": "Sitemaps",
+    "TOOLBAR": {
+      "ADD": "Hinzufügen",
+      "CREATE": "Erstellen",
+      "DELETE": "Löschen",
+      "REFRESH": "Aktualisieren",
+      "RESET": "Zurücksetzen",
+      "SAVE": "Speichern"
+    },
+    "UP": "Nach oben"
+  }
+}

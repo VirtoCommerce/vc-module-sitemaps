@@ -1,0 +1,64 @@
+{
+  "SITEMAPS": {
+    "ADD_CUSTOM": "הוספת URL מותאם אישית",
+    "ADD_ITEMS": "הוספת פריטים",
+    "ADD_SELECTED": "הוספת הנבחרים",
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "יש שינויים שלא נשמרו. האם לסגור בכל זאת?",
+      "DELETE_SELECTED": "מחיקת הפריטים שנבחרו ({count})? לא ניתן לבטל פעולה זו."
+    },
+    "BASE_URL": "URL בסיס",
+    "BASE_URL_HINT": "כתובת ה-URL של החנות שעבורה נבנים הקישורים במפת האתר (משמשת להורדה ולייצוא)",
+    "CUSTOM_URL": "URL מותאם אישית",
+    "CUSTOM_URL_HINT": "תבנית URL, לדוגמה about-us או {'{'}language{'}'}/contacts",
+    "DOWNLOAD": "הורדה",
+    "DOWNLOAD_SELECTED": "הורדת הנבחרים",
+    "EMPTY": "אין מפות אתר",
+    "ERRORS": {
+      "BASE_URL": "כתובת URL מוחלטת מסוג http(s), לדוגמה https://shop.example.com",
+      "INDEX": "sitemap.xml הוא קובץ האינדקס",
+      "LOCATION": "שם קובץ .xml (אותיות, ספרות, _ - . /)",
+      "TAKEN": "לחנות כבר יש מפת אתר במיקום זה",
+      "URL_TEMPLATE": "אותיות, ספרות, _ - . / ו-{'{'}מצייני מיקום{'}'}"
+    },
+    "EXPORT": "ייצוא לנכסי החנות",
+    "FIELDS": {
+      "IMAGE": "לוגו",
+      "ITEMS": "פריטים",
+      "LOCATION": "מיקום",
+      "MODE": "מצב",
+      "TITLE": "כותרת",
+      "TYPE": "סוג",
+      "URL_TEMPLATE": "תבנית URL"
+    },
+    "GENERAL": "כללי",
+    "JOB": {
+      "ERRORS": "שגיאות",
+      "FINISHED": "סיום",
+      "PROCESSED": "עובדו",
+      "RESULT": "תוצאה",
+      "STARTED": "התחלה"
+    },
+    "LOCATION_HINT": "שם הקובץ של מפת האתר, לדוגמה sitemap/products.xml",
+    "NEW_TITLE": "מפת אתר חדשה",
+    "NO_ITEMS": "אין פריטים",
+    "NO_SOURCE_ITEMS": "לא נמצא דבר",
+    "REMOVE_ITEMS": "הסרת פריטים",
+    "SOURCE": "הוספה מתוך",
+    "SOURCES": {
+      "CATALOG": "פריטי קטלוג (קטגוריות ומוצרים)",
+      "CONTENT": "תוכן סטטי (דפים ובלוגים)",
+      "VENDOR": "ספקים"
+    },
+    "TITLE": "מפות אתר",
+    "TOOLBAR": {
+      "ADD": "הוספה",
+      "CREATE": "יצירה",
+      "DELETE": "מחיקה",
+      "REFRESH": "רענון",
+      "RESET": "איפוס",
+      "SAVE": "שמירה"
+    },
+    "UP": "רמה אחת למעלה"
+  }
+}

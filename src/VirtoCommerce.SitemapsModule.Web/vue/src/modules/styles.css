@@ -1,0 +1,19 @@
+/* the blade body layout shared by the sitemap blades (as in the Orders detail) */
+.sitemaps-form {
+  padding: 20px 22px 36px;
+}
+
+.sitemaps-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.sitemaps-inline-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--neutrals-200);
+}
