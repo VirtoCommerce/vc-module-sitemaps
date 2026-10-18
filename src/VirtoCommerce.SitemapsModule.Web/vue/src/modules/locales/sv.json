@@ -1,0 +1,64 @@
+{
+  "SITEMAPS": {
+    "ADD_CUSTOM": "Lägg till anpassad URL",
+    "ADD_ITEMS": "Lägg till objekt",
+    "ADD_SELECTED": "Lägg till valda",
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Du har osparade ändringar. Stäng ändå?",
+      "DELETE_SELECTED": "Radera {count} markerade objekt? Det går inte att ångra."
+    },
+    "BASE_URL": "Bas-URL",
+    "BASE_URL_HINT": "Butikens URL som sajtkartans länkar skapas för (används av Ladda ner och Exportera)",
+    "CUSTOM_URL": "Anpassad URL",
+    "CUSTOM_URL_HINT": "En URL-mall, t.ex. about-us eller {'{'}language{'}'}/contacts",
+    "DOWNLOAD": "Ladda ner",
+    "DOWNLOAD_SELECTED": "Ladda ner valda",
+    "EMPTY": "Inga sajtkartor",
+    "ERRORS": {
+      "BASE_URL": "En absolut http(s)-URL, t.ex. https://shop.example.com",
+      "INDEX": "sitemap.xml är indexfilen",
+      "LOCATION": "Ett .xml-filnamn (bokstäver, siffror, _ - . /)",
+      "TAKEN": "Butiken har redan en sajtkarta på den här platsen",
+      "URL_TEMPLATE": "Bokstäver, siffror, _ - . / och {'{'}platshållare{'}'}"
+    },
+    "EXPORT": "Exportera till butikens resurser",
+    "FIELDS": {
+      "IMAGE": "Logotyp",
+      "ITEMS": "Objekt",
+      "LOCATION": "Plats",
+      "MODE": "Läge",
+      "TITLE": "Titel",
+      "TYPE": "Typ",
+      "URL_TEMPLATE": "URL-mall"
+    },
+    "GENERAL": "Allmänt",
+    "JOB": {
+      "ERRORS": "Fel",
+      "FINISHED": "Slutförd",
+      "PROCESSED": "Behandlade",
+      "RESULT": "Resultat",
+      "STARTED": "Startad"
+    },
+    "LOCATION_HINT": "Sajtkartans filnamn, t.ex. sitemap/products.xml",
+    "NEW_TITLE": "Ny sajtkarta",
+    "NO_ITEMS": "Inga objekt",
+    "NO_SOURCE_ITEMS": "Inget hittades",
+    "REMOVE_ITEMS": "Ta bort objekt",
+    "SOURCE": "Lägg till från",
+    "SOURCES": {
+      "CATALOG": "Katalogobjekt (kategorier och produkter)",
+      "CONTENT": "Statiskt innehåll (sidor och bloggar)",
+      "VENDOR": "Leverantörer"
+    },
+    "TITLE": "Sajtkartor",
+    "TOOLBAR": {
+      "ADD": "Lägg till",
+      "CREATE": "Skapa",
+      "DELETE": "Radera",
+      "REFRESH": "Uppdatera",
+      "RESET": "Återställ",
+      "SAVE": "Spara"
+    },
+    "UP": "Upp"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "SITEMAPS": {
+    "ADD_CUSTOM": "添加自定义 URL",
+    "ADD_ITEMS": "添加项目",
+    "ADD_SELECTED": "添加选定项",
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "您有未保存的更改。仍要关闭吗？",
+      "DELETE_SELECTED": "删除所选的 {count} 个项目？此操作无法撤销。"
+    },
+    "BASE_URL": "基本 URL",
+    "BASE_URL_HINT": "用于生成网站地图链接的商店 URL（供下载和导出使用）",
+    "CUSTOM_URL": "自定义 URL",
+    "CUSTOM_URL_HINT": "URL 模板，例如 about-us 或 {'{'}language{'}'}/contacts",
+    "DOWNLOAD": "下载",
+    "DOWNLOAD_SELECTED": "下载所选项",
+    "EMPTY": "没有网站地图",
+    "ERRORS": {
+      "BASE_URL": "绝对 http(s) URL，例如 https://shop.example.com",
+      "INDEX": "sitemap.xml 是索引文件",
+      "LOCATION": ".xml 文件名（字母、数字、_ - . /）",
+      "TAKEN": "该商店在此位置已有网站地图",
+      "URL_TEMPLATE": "字母、数字、_ - . / 和 {'{'}占位符{'}'}"
+    },
+    "EXPORT": "导出到商店资产",
+    "FIELDS": {
+      "IMAGE": "标志",
+      "ITEMS": "项目",
+      "LOCATION": "位置",
+      "MODE": "模式",
+      "TITLE": "标题",
+      "TYPE": "类型",
+      "URL_TEMPLATE": "URL 模板"
+    },
+    "GENERAL": "常规",
+    "JOB": {
+      "ERRORS": "错误",
+      "FINISHED": "完成时间",
+      "PROCESSED": "已处理",
+      "RESULT": "结果",
+      "STARTED": "开始时间"
+    },
+    "LOCATION_HINT": "网站地图的文件名，例如 sitemap/products.xml",
+    "NEW_TITLE": "新网站地图",
+    "NO_ITEMS": "没有项目",
+    "NO_SOURCE_ITEMS": "未找到任何内容",
+    "REMOVE_ITEMS": "移除项目",
+    "SOURCE": "添加来源",
+    "SOURCES": {
+      "CATALOG": "目录项目（类别和产品）",
+      "CONTENT": "静态内容（页面和博客）",
+      "VENDOR": "供应商"
+    },
+    "TITLE": "网站地图",
+    "TOOLBAR": {
+      "ADD": "添加",
+      "CREATE": "创建",
+      "DELETE": "删除",
+      "REFRESH": "刷新",
+      "RESET": "重置",
+      "SAVE": "保存"
+    },
+    "UP": "向上"
+  }
+}

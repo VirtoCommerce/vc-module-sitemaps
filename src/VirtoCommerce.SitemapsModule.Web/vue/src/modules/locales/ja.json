@@ -1,0 +1,64 @@
+{
+  "SITEMAPS": {
+    "ADD_CUSTOM": "カスタムURLを追加",
+    "ADD_ITEMS": "アイテムを追加",
+    "ADD_SELECTED": "選択したものを追加",
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "保存されていない変更があります。閉じてもよろしいですか？",
+      "DELETE_SELECTED": "選択した {count} 件のアイテムを削除しますか？この操作は元に戻せません。"
+    },
+    "BASE_URL": "基本URL",
+    "BASE_URL_HINT": "サイトマップのリンクを生成するストアのURL (ダウンロードとエクスポートで使用)",
+    "CUSTOM_URL": "カスタムURL",
+    "CUSTOM_URL_HINT": "URLテンプレート (例: about-us、{'{'}language{'}'}/contacts)",
+    "DOWNLOAD": "ダウンロード",
+    "DOWNLOAD_SELECTED": "選択したものをダウンロード",
+    "EMPTY": "サイトマップがありません",
+    "ERRORS": {
+      "BASE_URL": "絶対 http(s) URL (例: https://shop.example.com)",
+      "INDEX": "sitemap.xml はインデックスファイルです",
+      "LOCATION": ".xml ファイル名 (英字、数字、_ - . /)",
+      "TAKEN": "このストアには既にこの場所にサイトマップがあります",
+      "URL_TEMPLATE": "英字、数字、_ - . / および {'{'}プレースホルダー{'}'}"
+    },
+    "EXPORT": "ストアのリソースにエクスポート",
+    "FIELDS": {
+      "IMAGE": "ロゴ",
+      "ITEMS": "アイテム",
+      "LOCATION": "場所",
+      "MODE": "モード",
+      "TITLE": "タイトル",
+      "TYPE": "タイプ",
+      "URL_TEMPLATE": "URLテンプレート"
+    },
+    "GENERAL": "全般",
+    "JOB": {
+      "ERRORS": "エラー",
+      "FINISHED": "終了",
+      "PROCESSED": "処理済み",
+      "RESULT": "結果",
+      "STARTED": "開始"
+    },
+    "LOCATION_HINT": "サイトマップのファイル名 (例: sitemap/products.xml)",
+    "NEW_TITLE": "新しいサイトマップ",
+    "NO_ITEMS": "アイテムがありません",
+    "NO_SOURCE_ITEMS": "見つかりませんでした",
+    "REMOVE_ITEMS": "アイテムを削除",
+    "SOURCE": "追加元",
+    "SOURCES": {
+      "CATALOG": "カタログアイテム (カテゴリと製品)",
+      "CONTENT": "静的コンテンツ (ページとブログ)",
+      "VENDOR": "ベンダー"
+    },
+    "TITLE": "サイトマップ",
+    "TOOLBAR": {
+      "ADD": "追加",
+      "CREATE": "作成",
+      "DELETE": "削除",
+      "REFRESH": "更新",
+      "RESET": "リセット",
+      "SAVE": "保存"
+    },
+    "UP": "上へ"
+  }
+}

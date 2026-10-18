@@ -1,0 +1,64 @@
+{
+  "SITEMAPS": {
+    "ADD_CUSTOM": "Adicionar URL personalizada",
+    "ADD_ITEMS": "Adicionar itens",
+    "ADD_SELECTED": "Adicionar selecionados",
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Há alterações não salvas. Fechar mesmo assim?",
+      "DELETE_SELECTED": "Excluir {count} item(ns) selecionado(s)? Esta ação não pode ser desfeita."
+    },
+    "BASE_URL": "URL base",
+    "BASE_URL_HINT": "A URL da loja para a qual os links do sitemap são gerados (usada por Baixar e Exportar)",
+    "CUSTOM_URL": "URL personalizada",
+    "CUSTOM_URL_HINT": "Um modelo de URL, p. ex. about-us ou {'{'}language{'}'}/contacts",
+    "DOWNLOAD": "Baixar",
+    "DOWNLOAD_SELECTED": "Baixar selecionados",
+    "EMPTY": "Nenhum sitemap",
+    "ERRORS": {
+      "BASE_URL": "Uma URL http(s) absoluta, p. ex. https://shop.example.com",
+      "INDEX": "sitemap.xml é o arquivo de índice",
+      "LOCATION": "Um nome de arquivo .xml (letras, dígitos, _ - . /)",
+      "TAKEN": "A loja já tem um sitemap neste local",
+      "URL_TEMPLATE": "Letras, dígitos, _ - . / e {'{'}marcadores{'}'}"
+    },
+    "EXPORT": "Exportar para ativos da loja",
+    "FIELDS": {
+      "IMAGE": "Logotipo",
+      "ITEMS": "Itens",
+      "LOCATION": "Localização",
+      "MODE": "Modo",
+      "TITLE": "Título",
+      "TYPE": "Tipo",
+      "URL_TEMPLATE": "Modelo de URL"
+    },
+    "GENERAL": "Geral",
+    "JOB": {
+      "ERRORS": "Erros",
+      "FINISHED": "Concluído",
+      "PROCESSED": "Processado",
+      "RESULT": "Resultado",
+      "STARTED": "Iniciado"
+    },
+    "LOCATION_HINT": "Nome de arquivo do sitemap, p. ex. sitemap/products.xml",
+    "NEW_TITLE": "Novo sitemap",
+    "NO_ITEMS": "Nenhum item",
+    "NO_SOURCE_ITEMS": "Nada encontrado",
+    "REMOVE_ITEMS": "Remover itens",
+    "SOURCE": "Adicionar de",
+    "SOURCES": {
+      "CATALOG": "Itens do catálogo (categorias e produtos)",
+      "CONTENT": "Conteúdo estático (páginas e blogs)",
+      "VENDOR": "Fornecedores"
+    },
+    "TITLE": "Sitemaps",
+    "TOOLBAR": {
+      "ADD": "Adicionar",
+      "CREATE": "Criar",
+      "DELETE": "Excluir",
+      "REFRESH": "Atualizar",
+      "RESET": "Redefinir",
+      "SAVE": "Salvar"
+    },
+    "UP": "Subir"
+  }
+}
