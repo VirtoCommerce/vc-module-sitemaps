@@ -1,0 +1,64 @@
+{
+  "SITEMAPS": {
+    "ADD_CUSTOM": "Ajouter une URL personnalisée",
+    "ADD_ITEMS": "Ajouter des éléments",
+    "ADD_SELECTED": "Ajouter la sélection",
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Vous avez des modifications non enregistrées. Fermer quand même ?",
+      "DELETE_SELECTED": "Supprimer {count} élément(s) sélectionné(s) ? Cette action est irréversible."
+    },
+    "BASE_URL": "URL de base",
+    "BASE_URL_HINT": "L'URL du magasin pour laquelle les liens du plan de site sont générés (utilisée par Télécharger et Exporter)",
+    "CUSTOM_URL": "URL personnalisée",
+    "CUSTOM_URL_HINT": "Un modèle d'URL, par ex. about-us ou {'{'}language{'}'}/contacts",
+    "DOWNLOAD": "Télécharger",
+    "DOWNLOAD_SELECTED": "Télécharger la sélection",
+    "EMPTY": "Aucun plan de site",
+    "ERRORS": {
+      "BASE_URL": "Une URL http(s) absolue, par ex. https://shop.example.com",
+      "INDEX": "sitemap.xml est le fichier d'index",
+      "LOCATION": "Un nom de fichier .xml (lettres, chiffres, _ - . /)",
+      "TAKEN": "Le magasin a déjà un plan de site à cet emplacement",
+      "URL_TEMPLATE": "Lettres, chiffres, _ - . / et {'{'}espaces réservés{'}'}"
+    },
+    "EXPORT": "Exporter vers les ressources du magasin",
+    "FIELDS": {
+      "IMAGE": "Logo",
+      "ITEMS": "Éléments",
+      "LOCATION": "Emplacement",
+      "MODE": "Mode",
+      "TITLE": "Titre",
+      "TYPE": "Type",
+      "URL_TEMPLATE": "Modèle d'URL"
+    },
+    "GENERAL": "Général",
+    "JOB": {
+      "ERRORS": "Erreurs",
+      "FINISHED": "Terminé",
+      "PROCESSED": "Traité",
+      "RESULT": "Résultat",
+      "STARTED": "Démarré"
+    },
+    "LOCATION_HINT": "Nom de fichier du plan de site, par ex. sitemap/products.xml",
+    "NEW_TITLE": "Nouveau plan de site",
+    "NO_ITEMS": "Aucun élément",
+    "NO_SOURCE_ITEMS": "Aucun résultat",
+    "REMOVE_ITEMS": "Retirer des éléments",
+    "SOURCE": "Ajouter depuis",
+    "SOURCES": {
+      "CATALOG": "Éléments du catalogue (catégories et produits)",
+      "CONTENT": "Contenu statique (pages et blogs)",
+      "VENDOR": "Fournisseurs"
+    },
+    "TITLE": "Plans de site",
+    "TOOLBAR": {
+      "ADD": "Ajouter",
+      "CREATE": "Créer",
+      "DELETE": "Supprimer",
+      "REFRESH": "Actualiser",
+      "RESET": "Réinitialiser",
+      "SAVE": "Enregistrer"
+    },
+    "UP": "Niveau supérieur"
+  }
+}

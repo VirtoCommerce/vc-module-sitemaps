@@ -1,0 +1,64 @@
+{
+  "SITEMAPS": {
+    "ADD_CUSTOM": "Agregar URL personalizada",
+    "ADD_ITEMS": "Agregar elementos",
+    "ADD_SELECTED": "Agregar seleccionados",
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Tiene cambios sin guardar. ¿Cerrar de todos modos?",
+      "DELETE_SELECTED": "¿Eliminar {count} elemento(s) seleccionado(s)? Esta acción no se puede deshacer."
+    },
+    "BASE_URL": "URL base",
+    "BASE_URL_HINT": "La URL de la tienda para la que se generan los enlaces del mapa del sitio (la usan Descargar y Exportar)",
+    "CUSTOM_URL": "URL personalizada",
+    "CUSTOM_URL_HINT": "Una plantilla de URL, p. ej., about-us o {'{'}language{'}'}/contacts",
+    "DOWNLOAD": "Descargar",
+    "DOWNLOAD_SELECTED": "Descargar seleccionados",
+    "EMPTY": "No hay mapas del sitio",
+    "ERRORS": {
+      "BASE_URL": "Una URL http(s) absoluta, p. ej., https://shop.example.com",
+      "INDEX": "sitemap.xml es el archivo de índice",
+      "LOCATION": "Un nombre de archivo .xml (letras, dígitos, _ - . /)",
+      "TAKEN": "La tienda ya tiene un mapa del sitio en esta ubicación",
+      "URL_TEMPLATE": "Letras, dígitos, _ - . / y {'{'}marcadores{'}'}"
+    },
+    "EXPORT": "Exportar a activos de la tienda",
+    "FIELDS": {
+      "IMAGE": "Logotipo",
+      "ITEMS": "Elementos",
+      "LOCATION": "Ubicación",
+      "MODE": "Modo",
+      "TITLE": "Título",
+      "TYPE": "Tipo",
+      "URL_TEMPLATE": "Plantilla de URL"
+    },
+    "GENERAL": "General",
+    "JOB": {
+      "ERRORS": "Errores",
+      "FINISHED": "Finalizado",
+      "PROCESSED": "Procesado",
+      "RESULT": "Resultado",
+      "STARTED": "Iniciado"
+    },
+    "LOCATION_HINT": "Nombre de archivo del mapa del sitio, p. ej., sitemap/products.xml",
+    "NEW_TITLE": "Nuevo mapa del sitio",
+    "NO_ITEMS": "No hay elementos",
+    "NO_SOURCE_ITEMS": "No se encontró nada",
+    "REMOVE_ITEMS": "Quitar elementos",
+    "SOURCE": "Agregar desde",
+    "SOURCES": {
+      "CATALOG": "Elementos del catálogo (categorías y productos)",
+      "CONTENT": "Contenido estático (páginas y blogs)",
+      "VENDOR": "Proveedores"
+    },
+    "TITLE": "Mapas del sitio",
+    "TOOLBAR": {
+      "ADD": "Agregar",
+      "CREATE": "Crear",
+      "DELETE": "Eliminar",
+      "REFRESH": "Actualizar",
+      "RESET": "Restablecer",
+      "SAVE": "Guardar"
+    },
+    "UP": "Subir"
+  }
+}

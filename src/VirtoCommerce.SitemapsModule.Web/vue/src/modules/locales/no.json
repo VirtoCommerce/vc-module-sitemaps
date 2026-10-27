@@ -1,0 +1,64 @@
+{
+  "SITEMAPS": {
+    "ADD_CUSTOM": "Legg til egendefinert URL",
+    "ADD_ITEMS": "Legg til elementer",
+    "ADD_SELECTED": "Legg til valgte",
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Du har ulagrede endringer. Lukke likevel?",
+      "DELETE_SELECTED": "Slette {count} valgt(e) element(er)? Dette kan ikke angres."
+    },
+    "BASE_URL": "Base-URL",
+    "BASE_URL_HINT": "Butikkens URL som nettstedskartlenkene bygges for (brukes av Last ned og Eksporter)",
+    "CUSTOM_URL": "Egendefinert URL",
+    "CUSTOM_URL_HINT": "En URL-mal, f.eks. about-us eller {'{'}language{'}'}/contacts",
+    "DOWNLOAD": "Last ned",
+    "DOWNLOAD_SELECTED": "Last ned valgte",
+    "EMPTY": "Ingen nettstedskart",
+    "ERRORS": {
+      "BASE_URL": "En absolutt http(s)-URL, f.eks. https://shop.example.com",
+      "INDEX": "sitemap.xml er indeksfilen",
+      "LOCATION": "Et .xml-filnavn (bokstaver, sifre, _ - . /)",
+      "TAKEN": "Butikken har allerede et nettstedskart på denne plasseringen",
+      "URL_TEMPLATE": "Bokstaver, sifre, _ - . / og {'{'}plassholdere{'}'}"
+    },
+    "EXPORT": "Eksporter til butikkens ressurser",
+    "FIELDS": {
+      "IMAGE": "Logo",
+      "ITEMS": "Elementer",
+      "LOCATION": "Plassering",
+      "MODE": "Modus",
+      "TITLE": "Tittel",
+      "TYPE": "Type",
+      "URL_TEMPLATE": "URL-mal"
+    },
+    "GENERAL": "Generelt",
+    "JOB": {
+      "ERRORS": "Feil",
+      "FINISHED": "Fullført",
+      "PROCESSED": "Behandlet",
+      "RESULT": "Resultat",
+      "STARTED": "Startet"
+    },
+    "LOCATION_HINT": "Filnavnet til nettstedskartet, f.eks. sitemap/products.xml",
+    "NEW_TITLE": "Nytt nettstedskart",
+    "NO_ITEMS": "Ingen elementer",
+    "NO_SOURCE_ITEMS": "Ingenting funnet",
+    "REMOVE_ITEMS": "Fjern elementer",
+    "SOURCE": "Legg til fra",
+    "SOURCES": {
+      "CATALOG": "Katalogelementer (kategorier og produkter)",
+      "CONTENT": "Statisk innhold (sider og blogger)",
+      "VENDOR": "Leverandører"
+    },
+    "TITLE": "Nettstedskart",
+    "TOOLBAR": {
+      "ADD": "Legg til",
+      "CREATE": "Opprett",
+      "DELETE": "Slett",
+      "REFRESH": "Oppdater",
+      "RESET": "Tilbakestill",
+      "SAVE": "Lagre"
+    },
+    "UP": "Opp"
+  }
+}

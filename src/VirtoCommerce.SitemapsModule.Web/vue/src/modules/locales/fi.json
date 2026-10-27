@@ -1,0 +1,64 @@
+{
+  "SITEMAPS": {
+    "ADD_CUSTOM": "Lisää mukautettu URL",
+    "ADD_ITEMS": "Lisää kohteita",
+    "ADD_SELECTED": "Lisää valitut",
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Sinulla on tallentamattomia muutoksia. Suljetaanko silti?",
+      "DELETE_SELECTED": "Poistetaanko {count} valittua kohdetta? Toimintoa ei voi kumota."
+    },
+    "BASE_URL": "Perus-URL",
+    "BASE_URL_HINT": "Kaupan URL, jolle sivukartan linkit muodostetaan (käytetään latauksessa ja viennissä)",
+    "CUSTOM_URL": "Mukautettu URL",
+    "CUSTOM_URL_HINT": "URL-malli, esim. about-us tai {'{'}language{'}'}/contacts",
+    "DOWNLOAD": "Lataa",
+    "DOWNLOAD_SELECTED": "Lataa valitut",
+    "EMPTY": "Ei sivukarttoja",
+    "ERRORS": {
+      "BASE_URL": "Absoluuttinen http(s)-URL, esim. https://shop.example.com",
+      "INDEX": "sitemap.xml on hakemistotiedosto",
+      "LOCATION": ".xml-tiedoston nimi (kirjaimet, numerot, _ - . /)",
+      "TAKEN": "Kaupalla on jo sivukartta tässä sijainnissa",
+      "URL_TEMPLATE": "Kirjaimet, numerot, _ - . / ja {'{'}paikkamerkit{'}'}"
+    },
+    "EXPORT": "Vie kaupan resursseihin",
+    "FIELDS": {
+      "IMAGE": "Logo",
+      "ITEMS": "Kohteet",
+      "LOCATION": "Sijainti",
+      "MODE": "Tila",
+      "TITLE": "Otsikko",
+      "TYPE": "Tyyppi",
+      "URL_TEMPLATE": "URL-malli"
+    },
+    "GENERAL": "Yleiset",
+    "JOB": {
+      "ERRORS": "Virheet",
+      "FINISHED": "Valmis",
+      "PROCESSED": "Käsitelty",
+      "RESULT": "Tulos",
+      "STARTED": "Aloitettu"
+    },
+    "LOCATION_HINT": "Sivukartan tiedostonimi, esim. sitemap/products.xml",
+    "NEW_TITLE": "Uusi sivukartta",
+    "NO_ITEMS": "Ei kohteita",
+    "NO_SOURCE_ITEMS": "Mitään ei löytynyt",
+    "REMOVE_ITEMS": "Poista kohteita",
+    "SOURCE": "Lisää lähteestä",
+    "SOURCES": {
+      "CATALOG": "Luettelokohteet (kategoriat ja tuotteet)",
+      "CONTENT": "Staattinen sisältö (sivut ja blogit)",
+      "VENDOR": "Toimittajat"
+    },
+    "TITLE": "Sivukartat",
+    "TOOLBAR": {
+      "ADD": "Lisää",
+      "CREATE": "Luo",
+      "DELETE": "Poista",
+      "REFRESH": "Päivitä",
+      "RESET": "Palauta",
+      "SAVE": "Tallenna"
+    },
+    "UP": "Ylös"
+  }
+}

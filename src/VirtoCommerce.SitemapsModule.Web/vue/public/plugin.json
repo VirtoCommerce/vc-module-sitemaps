@@ -1,0 +1,3 @@
+{
+  "remote": { "name": "sitemaps_admin", "exposed": "./Module" }
+}
