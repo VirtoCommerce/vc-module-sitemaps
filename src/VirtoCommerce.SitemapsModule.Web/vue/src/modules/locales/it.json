@@ -1,0 +1,64 @@
+{
+  "SITEMAPS": {
+    "ADD_CUSTOM": "Aggiungi URL personalizzato",
+    "ADD_ITEMS": "Aggiungi elementi",
+    "ADD_SELECTED": "Aggiungi selezionati",
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Ci sono modifiche non salvate. Chiudere comunque?",
+      "DELETE_SELECTED": "Eliminare {count} elemento/i selezionato/i? L'operazione non può essere annullata."
+    },
+    "BASE_URL": "URL di base",
+    "BASE_URL_HINT": "L'URL del negozio per cui vengono generati i link della sitemap (usato da Scarica ed Esporta)",
+    "CUSTOM_URL": "URL personalizzato",
+    "CUSTOM_URL_HINT": "Un modello di URL, ad es. about-us o {'{'}language{'}'}/contacts",
+    "DOWNLOAD": "Scarica",
+    "DOWNLOAD_SELECTED": "Scarica selezionati",
+    "EMPTY": "Nessuna sitemap",
+    "ERRORS": {
+      "BASE_URL": "Un URL http(s) assoluto, ad es. https://shop.example.com",
+      "INDEX": "sitemap.xml è il file di indice",
+      "LOCATION": "Un nome file .xml (lettere, cifre, _ - . /)",
+      "TAKEN": "Il negozio ha già una sitemap in questa posizione",
+      "URL_TEMPLATE": "Lettere, cifre, _ - . / e {'{'}segnaposto{'}'}"
+    },
+    "EXPORT": "Esporta nelle risorse del negozio",
+    "FIELDS": {
+      "IMAGE": "Logo",
+      "ITEMS": "Elementi",
+      "LOCATION": "Posizione",
+      "MODE": "Modalità",
+      "TITLE": "Titolo",
+      "TYPE": "Tipo",
+      "URL_TEMPLATE": "Modello URL"
+    },
+    "GENERAL": "Generale",
+    "JOB": {
+      "ERRORS": "Errori",
+      "FINISHED": "Completato",
+      "PROCESSED": "Elaborato",
+      "RESULT": "Risultato",
+      "STARTED": "Avviato"
+    },
+    "LOCATION_HINT": "Nome file della sitemap, ad es. sitemap/products.xml",
+    "NEW_TITLE": "Nuova sitemap",
+    "NO_ITEMS": "Nessun elemento",
+    "NO_SOURCE_ITEMS": "Nessun risultato",
+    "REMOVE_ITEMS": "Rimuovi elementi",
+    "SOURCE": "Aggiungi da",
+    "SOURCES": {
+      "CATALOG": "Elementi del catalogo (categorie e prodotti)",
+      "CONTENT": "Contenuto statico (pagine e blog)",
+      "VENDOR": "Fornitori"
+    },
+    "TITLE": "Sitemap",
+    "TOOLBAR": {
+      "ADD": "Aggiungi",
+      "CREATE": "Crea",
+      "DELETE": "Elimina",
+      "REFRESH": "Aggiorna",
+      "RESET": "Reimposta",
+      "SAVE": "Salva"
+    },
+    "UP": "Su"
+  }
+}

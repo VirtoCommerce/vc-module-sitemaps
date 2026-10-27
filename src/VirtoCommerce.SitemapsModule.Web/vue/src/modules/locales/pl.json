@@ -1,0 +1,64 @@
+{
+  "SITEMAPS": {
+    "ADD_CUSTOM": "Dodaj niestandardowy URL",
+    "ADD_ITEMS": "Dodaj elementy",
+    "ADD_SELECTED": "Dodaj wybrane",
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Masz niezapisane zmiany. Zamknąć mimo to?",
+      "DELETE_SELECTED": "Usunąć zaznaczone elementy ({count})? Tej operacji nie można cofnąć."
+    },
+    "BASE_URL": "Podstawowy URL",
+    "BASE_URL_HINT": "URL sklepu, dla którego tworzone są linki mapy witryny (używany przez Pobierz i Eksportuj)",
+    "CUSTOM_URL": "Niestandardowy URL",
+    "CUSTOM_URL_HINT": "Szablon URL, np. about-us lub {'{'}language{'}'}/contacts",
+    "DOWNLOAD": "Pobierz",
+    "DOWNLOAD_SELECTED": "Pobierz wybrane",
+    "EMPTY": "Brak map witryn",
+    "ERRORS": {
+      "BASE_URL": "Bezwzględny URL http(s), np. https://shop.example.com",
+      "INDEX": "sitemap.xml jest plikiem indeksu",
+      "LOCATION": "Nazwa pliku .xml (litery, cyfry, _ - . /)",
+      "TAKEN": "Sklep ma już mapę witryny w tej lokalizacji",
+      "URL_TEMPLATE": "Litery, cyfry, _ - . / i {'{'}symbole zastępcze{'}'}"
+    },
+    "EXPORT": "Eksportuj do zasobów sklepu",
+    "FIELDS": {
+      "IMAGE": "Logo",
+      "ITEMS": "Elementy",
+      "LOCATION": "Lokalizacja",
+      "MODE": "Tryb",
+      "TITLE": "Tytuł",
+      "TYPE": "Typ",
+      "URL_TEMPLATE": "Szablon URL"
+    },
+    "GENERAL": "Ogólne",
+    "JOB": {
+      "ERRORS": "Błędy",
+      "FINISHED": "Zakończono",
+      "PROCESSED": "Przetworzone",
+      "RESULT": "Wynik",
+      "STARTED": "Rozpoczęto"
+    },
+    "LOCATION_HINT": "Nazwa pliku mapy witryny, np. sitemap/products.xml",
+    "NEW_TITLE": "Nowa mapa witryny",
+    "NO_ITEMS": "Brak elementów",
+    "NO_SOURCE_ITEMS": "Nic nie znaleziono",
+    "REMOVE_ITEMS": "Usuń elementy",
+    "SOURCE": "Dodaj z",
+    "SOURCES": {
+      "CATALOG": "Elementy katalogu (kategorie i produkty)",
+      "CONTENT": "Treść statyczna (strony i blogi)",
+      "VENDOR": "Dostawcy"
+    },
+    "TITLE": "Mapy witryn",
+    "TOOLBAR": {
+      "ADD": "Dodaj",
+      "CREATE": "Utwórz",
+      "DELETE": "Usuń",
+      "REFRESH": "Odśwież",
+      "RESET": "Resetuj",
+      "SAVE": "Zapisz"
+    },
+    "UP": "W górę"
+  }
+}

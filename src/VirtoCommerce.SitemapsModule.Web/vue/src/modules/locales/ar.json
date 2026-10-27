@@ -1,0 +1,64 @@
+{
+  "SITEMAPS": {
+    "ADD_CUSTOM": "إضافة عنوان URL مخصص",
+    "ADD_ITEMS": "إضافة عناصر",
+    "ADD_SELECTED": "إضافة المحدد",
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "لديك تغييرات غير محفوظة. هل تريد الإغلاق على أي حال؟",
+      "DELETE_SELECTED": "هل تريد حذف العناصر المحددة ({count})؟ لا يمكن التراجع عن هذا الإجراء."
+    },
+    "BASE_URL": "عنوان URL الأساسي",
+    "BASE_URL_HINT": "عنوان URL للمتجر الذي تُنشأ له روابط خريطة الموقع (يُستخدم في التنزيل والتصدير)",
+    "CUSTOM_URL": "عنوان URL مخصص",
+    "CUSTOM_URL_HINT": "قالب عنوان URL، مثل about-us أو {'{'}language{'}'}/contacts",
+    "DOWNLOAD": "تنزيل",
+    "DOWNLOAD_SELECTED": "تنزيل المحدد",
+    "EMPTY": "لا توجد خرائط مواقع",
+    "ERRORS": {
+      "BASE_URL": "عنوان URL مطلق يبدأ بـ http(s)، مثل https://shop.example.com",
+      "INDEX": "sitemap.xml هو ملف الفهرس",
+      "LOCATION": "اسم ملف .xml (أحرف وأرقام و_ - . /)",
+      "TAKEN": "لدى المتجر بالفعل خريطة موقع في هذا المسار",
+      "URL_TEMPLATE": "أحرف وأرقام و_ - . / و{'{'}عناصر نائبة{'}'}"
+    },
+    "EXPORT": "تصدير إلى أصول المتجر",
+    "FIELDS": {
+      "IMAGE": "الشعار",
+      "ITEMS": "العناصر",
+      "LOCATION": "المسار",
+      "MODE": "الوضع",
+      "TITLE": "العنوان",
+      "TYPE": "النوع",
+      "URL_TEMPLATE": "قالب عنوان URL"
+    },
+    "GENERAL": "عام",
+    "JOB": {
+      "ERRORS": "الأخطاء",
+      "FINISHED": "وقت الانتهاء",
+      "PROCESSED": "تمت المعالجة",
+      "RESULT": "النتيجة",
+      "STARTED": "وقت البدء"
+    },
+    "LOCATION_HINT": "اسم ملف خريطة الموقع، مثل sitemap/products.xml",
+    "NEW_TITLE": "خريطة موقع جديدة",
+    "NO_ITEMS": "لا توجد عناصر",
+    "NO_SOURCE_ITEMS": "لم يتم العثور على شيء",
+    "REMOVE_ITEMS": "إزالة العناصر",
+    "SOURCE": "الإضافة من",
+    "SOURCES": {
+      "CATALOG": "عناصر الكتالوج (الفئات والمنتجات)",
+      "CONTENT": "المحتوى الثابت (الصفحات والمدونات)",
+      "VENDOR": "البائعون"
+    },
+    "TITLE": "خرائط الموقع",
+    "TOOLBAR": {
+      "ADD": "إضافة",
+      "CREATE": "إنشاء",
+      "DELETE": "حذف",
+      "REFRESH": "تحديث",
+      "RESET": "إعادة تعيين",
+      "SAVE": "حفظ"
+    },
+    "UP": "المستوى الأعلى"
+  }
+}
